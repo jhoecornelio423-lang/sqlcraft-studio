@@ -1,0 +1,9 @@
+{
+  "name": "sqlcraft-studio",
+  "version": "1.0.0",
+  "description": "Plataforma Interactiva de Práctica SQL con Evaluador Automático",
+  "scripts": {
+    "dev": "npx -y serve -p 5173 .",
+    "start": "python -m http.server 5173"
+  }
+}

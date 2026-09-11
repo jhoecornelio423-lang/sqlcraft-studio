@@ -1,0 +1,8 @@
+services:
+  sqlcraft:
+    build: .
+    image: sqlcraft:latest
+    container_name: sqlcraft-app
+    restart: always
+    ports:
+      - "80:80"

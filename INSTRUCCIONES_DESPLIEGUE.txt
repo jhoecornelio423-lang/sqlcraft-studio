@@ -1,0 +1,32 @@
+====================================================================
+INSTRUCCIONES DE DESPLIEGUE PARA EL LIDER DEL PROYECTO (UBUNTU DOCKER)
+====================================================================
+
+La imagen de Docker de SQLCraft Studio ya esta compilada, testeada
+y empaquetada en el archivo:
+-> sqlcraft-image.tar (~28 MB)
+
+No requiere compilar, ni instalar dependencias, ni exponer codigo fuente.
+
+PASOS EN EL SERVIDOR UBUNTU:
+
+1. Copiar el archivo sqlcraft-image.tar al servidor (por scp, sftp o descarga).
+
+2. Cargar la imagen en Docker:
+   docker load -i sqlcraft-image.tar
+
+3. Encender el contenedor en segundo plano (puerto 80):
+   docker run -d -p 80:80 --name sqlcraft --restart always sqlcraft:latest
+
+(Opcional: Si el puerto 80 ya esta ocupado en el servidor, cambiarlo a otro puerto, por ejemplo 8080):
+   docker run -d -p 8080:80 --name sqlcraft --restart always sqlcraft:latest
+
+4. Para verificar que esta corriendo:
+   docker ps
+
+5. Para detenerlo o reiniciarlo en el futuro:
+   docker restart sqlcraft
+   docker stop sqlcraft
+
+Listo! La aplicacion estara accesible en http://<IP-DEL-SERVIDOR>
+====================================================================

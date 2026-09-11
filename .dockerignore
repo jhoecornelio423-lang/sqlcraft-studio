@@ -1,0 +1,11 @@
+﻿.git
+.gitignore
+.vscode
+.playwright-mcp
+node_modules
+*.md
+*.py
+*.sql
+*.tar
+Dockerfile
+docker-compose.yml

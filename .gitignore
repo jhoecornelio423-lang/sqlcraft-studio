@@ -1,0 +1,20 @@
+# Archivos comprimidos e imagenes docker exportadas
+*.tar
+*.tar.gz
+*.zip
+
+# Capturas de pantalla y rastreo temporal de pruebas
+*.png
+.playwright-mcp/
+
+# Base de datos interna temporal del MCP
+sqlite_mcp_server.db
+
+# Entorno y dependencias
+node_modules/
+.vscode/
+.idea/
+
+# Archivos del sistema operativo
+Thumbs.db
+.DS_Store
