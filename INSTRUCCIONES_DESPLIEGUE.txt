@@ -1,32 +1,38 @@
 ====================================================================
-INSTRUCCIONES DE DESPLIEGUE PARA EL LIDER DEL PROYECTO (UBUNTU DOCKER)
+INSTRUCCIONES DE DESPLIEGUE (DOCKER / UBUNTU / VPS)
 ====================================================================
 
-La imagen de Docker de SQLCraft Studio ya esta compilada, testeada
-y empaquetada en el archivo:
--> sqlcraft-image.tar (~28 MB)
+SQLCraft Studio cuenta con soporte nativo para Docker y Nginx.
 
-No requiere compilar, ni instalar dependencias, ni exponer codigo fuente.
+OPCIÓN 1: Despliegue con Docker Compose (Recomendado)
+----------------------------------------------------
+1. Clonar el repositorio o copiar el directorio del proyecto al servidor:
+   git clone https://github.com/jhoecornelio423-lang/sqlcraft-studio.git
+   cd sqlcraft-studio
 
-PASOS EN EL SERVIDOR UBUNTU:
+2. Levantar el servicio en segundo plano:
+   docker compose up -d --build
 
-1. Copiar el archivo sqlcraft-image.tar al servidor (por scp, sftp o descarga).
+3. Verificar que el contenedor está activo:
+   docker compose ps
 
-2. Cargar la imagen en Docker:
-   docker load -i sqlcraft-image.tar
+OPCIÓN 2: Despliegue con Docker CLI
+-----------------------------------
+1. Construir la imagen de Docker:
+   docker build -t sqlcraft:latest .
 
-3. Encender el contenedor en segundo plano (puerto 80):
+2. Ejecutar el contenedor en segundo plano (Puerto 80):
    docker run -d -p 80:80 --name sqlcraft --restart always sqlcraft:latest
 
-(Opcional: Si el puerto 80 ya esta ocupado en el servidor, cambiarlo a otro puerto, por ejemplo 8080):
-   docker run -d -p 8080:80 --name sqlcraft --restart always sqlcraft:latest
+   (Si el puerto 80 está ocupado, usar por ejemplo 5173 o 8080: -p 8080:80)
 
-4. Para verificar que esta corriendo:
-   docker ps
+OPCIÓN 3: Servidor Local de Desarrollo
+--------------------------------------
+- Con Python:
+  python -m http.server 5173
 
-5. Para detenerlo o reiniciarlo en el futuro:
-   docker restart sqlcraft
-   docker stop sqlcraft
+- Con Node.js / NPM:
+  npm start
 
-Listo! La aplicacion estara accesible en http://<IP-DEL-SERVIDOR>
+La aplicación estará accesible en: http://<IP-DEL-SERVIDOR> o http://localhost:5173
 ====================================================================
