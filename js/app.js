@@ -8,12 +8,20 @@ let ejercicioActualIndex = 0;
 let ejerciciosResueltos = new Set();
 let ejerciciosAyudados = new Set(); // Retos donde se consultó la solución oficial
 let tabActiva = "resultado"; // 'resultado', 'esperado', 'comparar', 'esquema', 'historial'
-let modoActual = "practice"; // 'practice' | 'sandbox'
+let modoActual = "practice"; // 'practice' | 'exam' | 'sandbox'
 let filtroEstado = "all"; // 'all' | 'pending' | 'completed'
 let filtroNivel = "all"; // 'all' | 'Básico' | 'Intermedio' | 'Avanzado'
 let filtroTexto = "";
 let editorCM = null;
 let historialConsultas = [];
+
+// Estado del Examen de Sección
+let examenRespuestasTeoria = {};
+let examenRetosResueltos = new Set();
+let examenTabActiva = "teoria";
+let examenRetoPracticoIndex = 0;
+let examenCalificado = false;
+let examenCodigosPracticos = {};
 let sonidoHabilitado = true;
 let ultimoResultadoUsuario = null;
 let ultimoResultadoEsperado = null;
@@ -170,6 +178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderizarListaEjercicios();
   cargarEjercicio(0);
   actualizarEstadisticas();
+  inicializarExamenSeccion();
   configurarEventosUI();
   inicializarPanelesRedimensionables();
   renderizarVisorEsquema();
@@ -218,6 +227,12 @@ function inicializarEditorCodeMirror() {
     if (modoActual === "practice") {
       const ejercicio = BANCO_EJERCICIOS[ejercicioActualIndex];
       guardarCodigoEjercicio(ejercicio.id, editorCM.getValue());
+    } else if (modoActual === "exam") {
+      if (window.EXAMEN_SECCION_1 && window.EXAMEN_SECCION_1.desafiosPracticos[examenRetoPracticoIndex]) {
+        const reto = window.EXAMEN_SECCION_1.desafiosPracticos[examenRetoPracticoIndex];
+        examenCodigosPracticos[reto.id] = editorCM.getValue();
+        guardarProgresoExamenLocal();
+      }
     } else {
       localStorage.setItem("sqlcraft_sandbox_code", editorCM.getValue());
     }
@@ -453,10 +468,10 @@ function actualizarEstadisticas() {
     if (resueltos === total) {
       levelEl.innerHTML = `<span>👑 Gran Arquitecto SQL</span>`;
       levelEl.className = "level-capsule rank-master";
-    } else if (resueltos >= 60) {
+    } else if (resueltos >= 40) {
       levelEl.innerHTML = `<span>🟣 Especialista SQL</span>`;
       levelEl.className = "level-capsule rank-advanced";
-    } else if (resueltos >= 30) {
+    } else if (resueltos >= 20) {
       levelEl.innerHTML = `<span>🔵 Analista de Datos</span>`;
       levelEl.className = "level-capsule rank-intermediate";
     } else {
@@ -508,10 +523,14 @@ function ejecutarCodigoUsuario() {
   return res;
 }
 
-// Comprobar la respuesta del usuario contra la solución oficial
+// Comprobar la respuesta del usuario contra la solución oficial o validar reto de examen
 function comprobarRespuesta() {
   if (modoActual === "sandbox") {
     ejecutarCodigoUsuario();
+    return;
+  }
+  if (modoActual === "exam") {
+    validarRetoPracticoActivo();
     return;
   }
 
@@ -817,31 +836,525 @@ function formatearCodigoSQL() {
   editorCM.setValue(formatted);
 }
 
-// Modo Sandbox vs Modo Desafíos
+// Modos de Aplicación (Práctica, Examen de Certificación, Sandbox Libre)
 function activarModo(modo) {
   modoActual = modo;
   const btnPractice = document.getElementById("btn-mode-practice");
+  const btnExam = document.getElementById("btn-mode-exam");
   const btnSandbox = document.getElementById("btn-mode-sandbox");
   const practiceView = document.getElementById("exercise-content-view");
+  const examView = document.getElementById("exam-content-view");
   const sandboxView = document.getElementById("sandbox-content-view");
   const titleText = document.getElementById("editor-title-text");
 
-  if (modo === "practice") {
-    btnPractice.classList.add("active");
-    btnSandbox.classList.remove("active");
-    practiceView.style.display = "block";
-    sandboxView.style.display = "none";
-    titleText.textContent = "Editor SQL (Modo Reto)";
-  } else {
-    btnSandbox.classList.add("active");
-    btnPractice.classList.remove("active");
-    practiceView.style.display = "none";
-    sandboxView.style.display = "block";
-    titleText.textContent = "Editor SQL (Modo Sandbox Libre)";
+  if (btnPractice) btnPractice.classList.toggle("active", modo === "practice");
+  if (btnExam) btnExam.classList.toggle("active", modo === "exam");
+  if (btnSandbox) btnSandbox.classList.toggle("active", modo === "sandbox");
 
+  if (practiceView) practiceView.style.display = modo === "practice" ? "block" : "none";
+  if (examView) examView.style.display = modo === "exam" ? "block" : "none";
+  if (sandboxView) sandboxView.style.display = modo === "sandbox" ? "block" : "none";
+
+  if (modo === "practice") {
+    if (titleText) titleText.textContent = "Editor SQL (Modo Reto)";
+    const ej = BANCO_EJERCICIOS[ejercicioActualIndex];
+    if (ej && editorCM) {
+      const guardado = obtenerCodigoGuardado(ej.id);
+      editorCM.setValue(guardado || `-- Escribe tu consulta SQL para el reto ${ej.id}:\n`);
+    }
+  } else if (modo === "exam") {
+    if (titleText) titleText.textContent = "Editor SQL (Examen de Sección 1)";
+    inicializarExamenSeccion();
+    if (examenTabActiva === "practica") {
+      cargarRetoPracticoExamenEnEditor(examenRetoPracticoIndex);
+    } else {
+      cargarRetoPracticoExamenEnEditor(0);
+    }
+  } else {
+    if (titleText) titleText.textContent = "Editor SQL (Modo Sandbox Libre)";
     const saved = localStorage.getItem("sqlcraft_sandbox_code") || "SELECT * FROM videojuegos LIMIT 10;";
     if (editorCM) editorCM.setValue(saved);
   }
+
+  if (editorCM) {
+    setTimeout(() => editorCM.refresh(), 50);
+  }
+}
+
+// -------------------------------------------------------------------
+// MÓDULO: EXAMEN DE CERTIFICACIÓN - SECCIÓN 1
+// -------------------------------------------------------------------
+
+function guardarProgresoExamenLocal() {
+  try {
+    localStorage.setItem("sqlcraft_exam_s1_theory", JSON.stringify(examenRespuestasTeoria));
+    localStorage.setItem("sqlcraft_exam_s1_practical", JSON.stringify([...examenRetosResueltos]));
+    localStorage.setItem("sqlcraft_exam_s1_codes", JSON.stringify(examenCodigosPracticos));
+    localStorage.setItem("sqlcraft_exam_s1_graded", JSON.stringify(examenCalificado));
+  } catch (e) {}
+}
+
+function cargarProgresoExamenLocal() {
+  try {
+    const th = localStorage.getItem("sqlcraft_exam_s1_theory");
+    if (th) examenRespuestasTeoria = JSON.parse(th);
+    const pr = localStorage.getItem("sqlcraft_exam_s1_practical");
+    if (pr) examenRetosResueltos = new Set(JSON.parse(pr));
+    const cd = localStorage.getItem("sqlcraft_exam_s1_codes");
+    if (cd) examenCodigosPracticos = JSON.parse(cd);
+    const gr = localStorage.getItem("sqlcraft_exam_s1_graded");
+    if (gr !== null) examenCalificado = JSON.parse(gr);
+  } catch (e) {}
+}
+
+function inicializarExamenSeccion() {
+  cargarProgresoExamenLocal();
+  renderizarExamenTeoria();
+  renderizarExamenPractica();
+  actualizarPuntajeEnVivoExamen();
+
+  if (examenCalificado) {
+    const btnRes = document.getElementById("btn-exam-tab-resultado");
+    if (btnRes) btnRes.style.display = "inline-flex";
+    renderizarExamenResultados();
+  }
+}
+
+function cambiarTabExamen(tab) {
+  examenTabActiva = tab;
+  const btnTeoria = document.getElementById("btn-exam-tab-teoria");
+  const btnPractica = document.getElementById("btn-exam-tab-practica");
+  const btnResultado = document.getElementById("btn-exam-tab-resultado");
+  const panTeoria = document.getElementById("exam-teoria-container");
+  const panPractica = document.getElementById("exam-practica-container");
+  const panResultado = document.getElementById("exam-resultado-container");
+  const btnPrev = document.getElementById("btn-exam-prev-step");
+  const btnNext = document.getElementById("btn-exam-next-step");
+
+  if (btnTeoria) btnTeoria.classList.toggle("active", tab === "teoria");
+  if (btnPractica) btnPractica.classList.toggle("active", tab === "practica");
+  if (btnResultado) btnResultado.classList.toggle("active", tab === "resultado");
+
+  if (panTeoria) panTeoria.style.display = tab === "teoria" ? "block" : "none";
+  if (panPractica) panPractica.style.display = tab === "practica" ? "block" : "none";
+  if (panResultado) panResultado.style.display = tab === "resultado" ? "block" : "none";
+
+  if (tab === "teoria") {
+    if (btnPrev) btnPrev.style.display = "none";
+    if (btnNext) {
+      btnNext.style.display = "inline-flex";
+      btnNext.innerHTML = "Ir a Retos Prácticos ▶";
+      btnNext.onclick = () => cambiarTabExamen("practica");
+    }
+  } else if (tab === "practica") {
+    if (btnPrev) {
+      btnPrev.style.display = "inline-flex";
+      btnPrev.innerHTML = "◀ Volver a Teoría";
+      btnPrev.onclick = () => cambiarTabExamen("teoria");
+    }
+    if (btnNext) {
+      if (examenCalificado) {
+        btnNext.style.display = "inline-flex";
+        btnNext.innerHTML = "Ver Calificación ▶";
+        btnNext.onclick = () => cambiarTabExamen("resultado");
+      } else {
+        btnNext.style.display = "none";
+      }
+    }
+    cargarRetoPracticoExamenEnEditor(examenRetoPracticoIndex);
+  } else if (tab === "resultado") {
+    if (btnPrev) {
+      btnPrev.style.display = "inline-flex";
+      btnPrev.innerHTML = "◀ Volver a Práctica";
+      btnPrev.onclick = () => cambiarTabExamen("practica");
+    }
+    if (btnNext) btnNext.style.display = "none";
+  }
+}
+
+function renderizarExamenTeoria() {
+  const container = document.getElementById("exam-teoria-container");
+  if (!container || !window.EXAMEN_SECCION_1) return;
+
+  const examData = window.EXAMEN_SECCION_1;
+  let html = "";
+
+  examData.preguntasTeoricas.forEach((q, idx) => {
+    const respondida = examenRespuestasTeoria[q.id];
+    const cardStatusClass = examenCalificado
+      ? (respondida === q.correcta ? "exam-card-correct" : "exam-card-incorrect")
+      : "";
+
+    html += `
+      <div class="exam-question-card ${cardStatusClass}" id="exam-q-card-${q.id}">
+        <div class="exam-q-header">
+          <span class="exam-q-index">Pregunta ${idx + 1} de ${examData.preguntasTeoricas.length}</span>
+          <span class="exam-q-points">${q.puntos} pts</span>
+        </div>
+        <h4 class="exam-q-title">${escapeHtml(q.titulo)}</h4>
+        <p class="exam-q-text">${escapeHtml(q.pregunta)}</p>
+        <div class="exam-options-list">
+    `;
+
+    q.opciones.forEach(opt => {
+      let optClass = "exam-option-item";
+      const isSelected = respondida === opt.id;
+      if (isSelected) optClass += " selected";
+
+      if (examenCalificado) {
+        if (opt.id === q.correcta) {
+          optClass += " option-correct";
+        } else if (isSelected && opt.id !== q.correcta) {
+          optClass += " option-incorrect";
+        }
+      }
+
+      html += `
+        <div class="${optClass}" onclick="seleccionarOpcionTeorica('${q.id}', '${opt.id}')">
+          <span class="exam-option-radio"></span>
+          <span class="exam-option-text"><strong>${opt.id})</strong> ${escapeHtml(opt.texto)}</span>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+
+    if (examenCalificado) {
+      const esAcierto = respondida === q.correcta;
+      html += `
+        <div class="exam-explanation-callout ${esAcierto ? 'exp-correct' : 'exp-incorrect'}">
+          <strong>${esAcierto ? '✅ Justificación Técnica:' : '❌ Explicación y Corrección:'}</strong>
+          <p>${escapeHtml(q.explicacion)}</p>
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function seleccionarOpcionTeorica(preguntaId, opcionId) {
+  if (examenCalificado) {
+    mostrarBanner("info", "El examen ya ha sido calificado. Puedes revisar las justificaciones técnicas o reiniciar para un nuevo intento.");
+    return;
+  }
+  reproducirSonido("click");
+  examenRespuestasTeoria[preguntaId] = opcionId;
+  guardarProgresoExamenLocal();
+  actualizarPuntajeEnVivoExamen();
+  renderizarExamenTeoria();
+}
+
+function renderizarExamenPractica() {
+  const selectorContainer = document.getElementById("exam-practical-selector");
+  const detailContainer = document.getElementById("exam-practical-detail");
+  if (!selectorContainer || !detailContainer || !window.EXAMEN_SECCION_1) return;
+
+  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+
+  let selectorHtml = "";
+  retos.forEach((reto, idx) => {
+    const isCompleted = examenRetosResueltos.has(reto.id);
+    const isActive = idx === examenRetoPracticoIndex;
+    const chipClass = `practical-tab-chip ${isActive ? 'active' : ''} ${isCompleted ? 'passed' : ''}`;
+    const icon = isCompleted ? "✅" : "💻";
+
+    selectorHtml += `
+      <button class="${chipClass}" onclick="seleccionarRetoPracticoExamen(${idx})" type="button">
+        <span class="chip-icon">${icon}</span>
+        <span>Reto ${idx + 1}</span>
+        <span class="chip-pts">${reto.puntos} pts</span>
+      </button>
+    `;
+  });
+  selectorContainer.innerHTML = selectorHtml;
+
+  const retoActivo = retos[examenRetoPracticoIndex];
+  if (!retoActivo) return;
+
+  const estaResuelto = examenRetosResueltos.has(retoActivo.id);
+
+  let detailHtml = `
+    <div class="exam-practical-header">
+      <div class="practical-tag-row">
+        <span class="practical-badge">RETO PRÁCTICO ${examenRetoPracticoIndex + 1} DE ${retos.length}</span>
+        <span class="practical-points-badge">${retoActivo.puntos} puntos</span>
+        ${estaResuelto ? '<span class="practical-solved-badge">✅ Reto Validado con Éxito (15/15 pts)</span>' : '<span class="practical-pending-badge">⏳ Pendiente de Validación</span>'}
+      </div>
+      <h3 class="practical-challenge-title">${escapeHtml(retoActivo.titulo)}</h3>
+    </div>
+    <div class="practical-challenge-desc">
+      ${retoActivo.descripcion}
+    </div>
+    <div class="practical-hints-box">
+      <strong>⚙️ Pautas de Evaluación Práctica:</strong>
+      <ul>
+        <li>Escribe la sentencia SQL solicitada en la consola del editor.</li>
+        <li>Presiona <strong>Probar (Ctrl+Enter)</strong> para inspeccionar la tabla devuelta.</li>
+        <li>Presiona <strong>🎯 Comprobar / Validar (Ctrl+Shift+Enter)</strong> para contrastar contra el criterio formal de certificación.</li>
+      </ul>
+    </div>
+  `;
+
+  detailContainer.innerHTML = detailHtml;
+}
+
+function seleccionarRetoPracticoExamen(idx) {
+  if (!window.EXAMEN_SECCION_1) return;
+  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  if (idx < 0 || idx >= retos.length) return;
+
+  if (editorCM && retos[examenRetoPracticoIndex]) {
+    examenCodigosPracticos[retos[examenRetoPracticoIndex].id] = editorCM.getValue();
+    guardarProgresoExamenLocal();
+  }
+
+  examenRetoPracticoIndex = idx;
+  renderizarExamenPractica();
+  cargarRetoPracticoExamenEnEditor(idx);
+}
+
+function cargarRetoPracticoExamenEnEditor(idx) {
+  if (!editorCM || !window.EXAMEN_SECCION_1) return;
+  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  const reto = retos[idx];
+  if (!reto) return;
+
+  const codigoGuardado = examenCodigosPracticos[reto.id];
+  const plantilla = codigoGuardado || `-- Examen Sección 1 - Reto Práctico ${idx + 1}: ${reto.titulo}\n-- Escribe tu consulta SQL a continuación:\n`;
+
+  editorCM.setValue(plantilla);
+  setTimeout(() => editorCM.refresh(), 50);
+}
+
+function validarRetoPracticoActivo() {
+  if (!window.EXAMEN_SECCION_1) return;
+  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  const reto = retos[examenRetoPracticoIndex];
+  if (!reto) return;
+
+  const userRes = ejecutarCodigoUsuario();
+  if (!userRes || !userRes.success) return;
+
+  const expRes = ejecutarConsulta(reto.queryEsperada);
+  ultimoResultadoEsperado = expRes;
+  actualizarInsigniasFilas(userRes.rowCount, expRes.rowCount);
+
+  const veredicto = compararResultados(userRes, expRes);
+
+  if (veredicto.correcto) {
+    reproducirSonido("success");
+    mostrarBanner("success", `🌟 ¡Excelente! Reto práctico ${examenRetoPracticoIndex + 1} validado exitosamente (+15 pts).`);
+    lanzarConfeti();
+
+    examenRetosResueltos.add(reto.id);
+    if (editorCM) examenCodigosPracticos[reto.id] = editorCM.getValue();
+    guardarProgresoExamenLocal();
+    actualizarPuntajeEnVivoExamen();
+    renderizarExamenPractica();
+  } else {
+    reproducirSonido("error");
+    mostrarBanner("error", `❌ El resultado no coincide con la especificación del examen: ${veredicto.mensaje}`);
+  }
+}
+
+function actualizarPuntajeEnVivoExamen() {
+  const pill = document.getElementById("exam-live-score-pill");
+  if (!pill || !window.EXAMEN_SECCION_1) return;
+
+  const examData = window.EXAMEN_SECCION_1;
+
+  if (examenCalificado) {
+    let puntosTeoria = 0;
+    examData.preguntasTeoricas.forEach(q => {
+      if (examenRespuestasTeoria[q.id] === q.correcta) puntosTeoria += q.puntos;
+    });
+    let puntosPractica = 0;
+    examData.desafiosPracticos.forEach(r => {
+      if (examenRetosResueltos.has(r.id)) puntosPractica += r.puntos;
+    });
+    const totalPuntos = puntosTeoria + puntosPractica;
+    const aprobado = totalPuntos >= 70;
+    pill.textContent = `Calificación: ${totalPuntos} / 100 pts (${aprobado ? 'APROBADO ✅' : 'NO APROBADO ❌'})`;
+    pill.className = `exam-score-pill ${aprobado ? 'passed' : 'failed'}`;
+  } else {
+    const numTeoria = Object.keys(examenRespuestasTeoria).length;
+    const numPractica = examenRetosResueltos.size;
+    pill.textContent = `Avance: ${numTeoria}/8 Teoría • ${numPractica}/4 Práctica`;
+    pill.className = "exam-score-pill in-progress";
+  }
+}
+
+function calificarExamenSeccion() {
+  if (!window.EXAMEN_SECCION_1) return;
+  const examData = window.EXAMEN_SECCION_1;
+
+  const respondidasTeoria = Object.keys(examenRespuestasTeoria).length;
+  const totalTeoria = examData.preguntasTeoricas.length;
+  const resueltosPractica = examenRetosResueltos.size;
+  const totalPractica = examData.desafiosPracticos.length;
+
+  const faltanTeoria = totalTeoria - respondidasTeoria;
+  const faltanPractica = totalPractica - resueltosPractica;
+
+  if (faltanTeoria > 0 || faltanPractica > 0) {
+    let msg = "Aún tienes componentes pendientes en el examen:\n";
+    if (faltanTeoria > 0) msg += `• ${faltanTeoria} pregunta(s) teórica(s) sin responder.\n`;
+    if (faltanPractica > 0) msg += `• ${faltanPractica} reto(s) práctico(s) sin validar.\n`;
+    msg += "\n¿Deseas finalizar y calificar ahora mismo?";
+
+    if (!confirm(msg)) {
+      return;
+    }
+  }
+
+  let puntosTeoria = 0;
+  let aciertosTeoria = 0;
+  examData.preguntasTeoricas.forEach(q => {
+    if (examenRespuestasTeoria[q.id] === q.correcta) {
+      puntosTeoria += q.puntos;
+      aciertosTeoria++;
+    }
+  });
+
+  let puntosPractica = 0;
+  examData.desafiosPracticos.forEach(r => {
+    if (examenRetosResueltos.has(r.id)) {
+      puntosPractica += r.puntos;
+    }
+  });
+
+  const puntajeTotal = puntosTeoria + puntosPractica;
+  const aprobado = puntajeTotal >= 70;
+
+  examenCalificado = true;
+  guardarProgresoExamenLocal();
+
+  const btnResTab = document.getElementById("btn-exam-tab-resultado");
+  if (btnResTab) btnResTab.style.display = "inline-flex";
+
+  renderizarExamenTeoria();
+  renderizarExamenPractica();
+  renderizarExamenResultados();
+  actualizarPuntajeEnVivoExamen();
+  cambiarTabExamen("resultado");
+
+  if (aprobado) {
+    reproducirSonido("success");
+    lanzarConfeti();
+    mostrarBanner("success", `🏆 ¡Felicidades! Has APROBADO el Examen de la Sección 1 con ${puntajeTotal}/100 puntos.`);
+  } else {
+    reproducirSonido("error");
+    mostrarBanner("error", `⚠️ Has obtenido ${puntajeTotal}/100 puntos. Se requiere mínimo 70 puntos para certificar. ¡Revisa las justificaciones técnicas e inténtalo de nuevo!`);
+  }
+}
+
+function renderizarExamenResultados() {
+  const container = document.getElementById("exam-resultado-container");
+  if (!container || !window.EXAMEN_SECCION_1) return;
+
+  const examData = window.EXAMEN_SECCION_1;
+
+  let puntosTeoria = 0;
+  let aciertosTeoria = 0;
+  examData.preguntasTeoricas.forEach(q => {
+    if (examenRespuestasTeoria[q.id] === q.correcta) {
+      puntosTeoria += q.puntos;
+      aciertosTeoria++;
+    }
+  });
+
+  let puntosPractica = 0;
+  let aciertosPractica = 0;
+  examData.desafiosPracticos.forEach(r => {
+    if (examenRetosResueltos.has(r.id)) {
+      puntosPractica += r.puntos;
+      aciertosPractica++;
+    }
+  });
+
+  const puntajeTotal = puntosTeoria + puntosPractica;
+  const aprobado = puntajeTotal >= 70;
+
+  let html = `
+    <div class="exam-results-card ${aprobado ? 'result-passed' : 'result-failed'}">
+      <div class="results-badge-icon">${aprobado ? '🏆' : '📚'}</div>
+      <h2 class="results-status-title">${aprobado ? '¡Certificación Aprobada!' : 'Evaluación Finalizada (Pendiente de Aprobación)'}</h2>
+      <div class="results-score-display">${puntajeTotal} <span class="score-max">/ 100 pts</span></div>
+      <p class="results-feedback-message">
+        ${aprobado
+          ? '¡Excelente dominio conceptual y técnico! Has demostrado una comprensión sólida del estándar ANSI SQL, precedencia lógica de operadores, filtrado avanzado, ordenamiento y expresiones condicionales CASE.'
+          : 'Estás muy cerca de dominar todos los conceptos. Revisa las justificaciones teóricas en la pestaña de Teoría y asegúrate de validar todos los retos prácticos antes de volver a presentar el examen.'
+        }
+      </p>
+
+      <div class="results-breakdown-grid">
+        <div class="breakdown-stat-box">
+          <span class="stat-box-title">🧠 Evaluación Teórica</span>
+          <span class="stat-box-value">${puntosTeoria} / 40 pts</span>
+          <span class="stat-box-sub">${aciertosTeoria} de ${examData.preguntasTeoricas.length} preguntas correctas</span>
+        </div>
+        <div class="breakdown-stat-box">
+          <span class="stat-box-title">💻 Retos Prácticos</span>
+          <span class="stat-box-value">${puntosPractica} / 60 pts</span>
+          <span class="stat-box-sub">${aciertosPractica} de ${examData.desafiosPracticos.length} retos validados</span>
+        </div>
+        <div class="breakdown-stat-box">
+          <span class="stat-box-title">🎯 Criterio de Aprobación</span>
+          <span class="stat-box-value">70%</span>
+          <span class="stat-box-sub">${aprobado ? 'Superado con éxito' : 'No alcanzado (Mínimo 70 pts)'}</span>
+        </div>
+      </div>
+
+      <div class="results-actions-row">
+        <button class="btn btn-secondary" onclick="cambiarTabExamen('teoria')">
+          🔍 Ver Justificaciones Teóricas
+        </button>
+        <button class="btn btn-secondary" onclick="cambiarTabExamen('practica')">
+          💻 Ver Consultas Prácticas
+        </button>
+        <button class="btn btn-warning" onclick="reiniciarExamenSeccion()">
+          🔄 Reintentar Examen desde Cero
+        </button>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+function reiniciarExamenSeccion() {
+  if (!confirm("¿Deseas reiniciar el examen? Se borrarán las respuestas seleccionadas y el puntaje actual para permitirte presentar una nueva evaluación limpia.")) {
+    return;
+  }
+
+  examenRespuestasTeoria = {};
+  examenRetosResueltos = new Set();
+  examenCodigosPracticos = {};
+  examenCalificado = false;
+  guardarProgresoExamenLocal();
+
+  const btnResTab = document.getElementById("btn-exam-tab-resultado");
+  if (btnResTab) btnResTab.style.display = "none";
+
+  renderizarExamenTeoria();
+  renderizarExamenPractica();
+  actualizarPuntajeEnVivoExamen();
+  cambiarTabExamen("teoria");
+
+  mostrarBanner("info", "🔄 Examen reiniciado. ¡Mucho éxito en este nuevo intento!");
+}
+
+// Exponer funciones globales para los eventos inline de la UI
+if (typeof window !== "undefined") {
+  window.seleccionarOpcionTeorica = seleccionarOpcionTeorica;
+  window.seleccionarRetoPracticoExamen = seleccionarRetoPracticoExamen;
+  window.cambiarTabExamen = cambiarTabExamen;
+  window.calificarExamenSeccion = calificarExamenSeccion;
+  window.reiniciarExamenSeccion = reiniciarExamenSeccion;
+  window.activarModo = activarModo;
 }
 
 // Inserción de Snippets y Chuleta
@@ -933,8 +1446,32 @@ function actualizarBotonSonido() {
 // Configurar Todos los Eventos del DOM
 function configurarEventosUI() {
   // Modos
-  document.getElementById("btn-mode-practice").addEventListener("click", () => activarModo("practice"));
-  document.getElementById("btn-mode-sandbox").addEventListener("click", () => activarModo("sandbox"));
+  const btnModePractice = document.getElementById("btn-mode-practice");
+  if (btnModePractice) btnModePractice.addEventListener("click", () => activarModo("practice"));
+
+  const btnModeExam = document.getElementById("btn-mode-exam");
+  if (btnModeExam) btnModeExam.addEventListener("click", () => activarModo("exam"));
+
+  const btnModeSandbox = document.getElementById("btn-mode-sandbox");
+  if (btnModeSandbox) btnModeSandbox.addEventListener("click", () => activarModo("sandbox"));
+
+  // Acceso al examen desde la barra lateral
+  const btnSidebarExam = document.getElementById("btn-sidebar-exam-trigger");
+  if (btnSidebarExam) btnSidebarExam.addEventListener("click", () => activarModo("exam"));
+
+  // Pestañas del Examen
+  const btnExamTabTeoria = document.getElementById("btn-exam-tab-teoria");
+  if (btnExamTabTeoria) btnExamTabTeoria.addEventListener("click", () => cambiarTabExamen("teoria"));
+
+  const btnExamTabPractica = document.getElementById("btn-exam-tab-practica");
+  if (btnExamTabPractica) btnExamTabPractica.addEventListener("click", () => cambiarTabExamen("practica"));
+
+  const btnExamTabResultado = document.getElementById("btn-exam-tab-resultado");
+  if (btnExamTabResultado) btnExamTabResultado.addEventListener("click", () => cambiarTabExamen("resultado"));
+
+  // Botón Calificar Examen
+  const btnFinalizarExamen = document.getElementById("btn-finalizar-examen");
+  if (btnFinalizarExamen) btnFinalizarExamen.addEventListener("click", calificarExamenSeccion);
 
   // Navegación
   document.getElementById("btn-nav-prev").addEventListener("click", () => navegarEjercicio(-1));

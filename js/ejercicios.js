@@ -1,1432 +1,1359 @@
-// Banco de 90 Ejercicios Interactivos SQL (30 Básico, 30 Intermedio, 30 Avanzado)
+/**
+ * SQLCraft Studio - Banco de Ejercicios y Exámenes de Certificación
+ * Sección 1: Dominio de Consultas SELECT y Filtrado de Datos
+ * 60 Desafíos (20 Básico, 20 Intermedio, 20 Avanzado) + Examen Teórico-Práctico
+ */
+
+const SECCIONES_CATALOGO = [
+  {
+    id: 1,
+    titulo: "Sección 1: Consultas SELECT y Filtrado de Datos",
+    descripcion: "Fundamentos esenciales de extracción, proyecciones, alias, operadores relacionales y lógicos, rangos, patrones, ordenamiento, límites y expresiones condicionales CASE.",
+    totalRetos: 60,
+    niveles: {
+      "Básico": 20,
+      "Intermedio": 20,
+      "Avanzado": 20
+    }
+  }
+];
+
 const BANCO_EJERCICIOS = [
   {
     "id": 1,
-    "modulo": "Módulo 1: Proyección y Alias",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 1: Proyección, Alias y DISTINCT",
     "nivel": "Básico",
     "tags": [
       "SELECT"
     ],
-    "titulo": "1. Catálogo general de videojuegos",
+    "titulo": "1. Proyección de columnas específicas",
     "descripcion": "Obtén el <strong>titulo</strong>, la <strong>consola</strong> y el <strong>precio</strong> de todos los videojuegos disponibles en la tabla <code>videojuegos</code>.",
     "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos;",
     "pistas": [
-      "Especifica las tres columnas separadas por coma.",
-      "Tabla: videojuegos."
+      "Enumera las tres columnas separadas por comas justo después de la palabra clave SELECT.",
+      "Indica la tabla de origen con FROM videojuegos;"
     ],
-    "explicacion": "La cláusula SELECT proyecta columnas específicas reduciendo el tráfico de datos."
+    "explicacion": "La proyección explícita de columnas optimiza la transferencia de red y evita cargar atributos innecesarios."
   },
   {
     "id": 2,
-    "modulo": "Módulo 1: Proyección y Alias",
-    "nivel": "Básico",
-    "tags": [
-      "SELECT"
-    ],
-    "titulo": "2. Directorio de clientes",
-    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>email</strong> de todos los clientes de la tabla <code>clientes</code>.",
-    "queryEsperada": "SELECT nombre, apellido, email FROM clientes;",
-    "pistas": [
-      "Selecciona las columnas solicitadas de clientes."
-    ],
-    "explicacion": "Permite extraer información de contacto básica de los usuarios."
-  },
-  {
-    "id": 3,
-    "modulo": "Módulo 1: Proyección y Alias",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 1: Proyección, Alias y DISTINCT",
     "nivel": "Básico",
     "tags": [
       "SELECT",
       "*"
     ],
-    "titulo": "3. Inventario completo con comodín (*)",
-    "descripcion": "Extrae todos los campos y registros de la tabla <code>videojuegos</code> utilizando el asterisco (<code>*</code>).",
-    "queryEsperada": "SELECT * FROM videojuegos;",
+    "titulo": "2. Exploración completa con asterisco (*)",
+    "descripcion": "Extrae todos los campos y registros de la tabla <code>clientes</code> usando el comodín asterisco (<code>*</code>).",
+    "queryEsperada": "SELECT * FROM clientes;",
     "pistas": [
-      "Usa SELECT * FROM videojuegos;"
+      "El asterisco (*) representa todas las columnas de la tabla.",
+      "Escribe: SELECT * FROM clientes;"
     ],
-    "explicacion": "El asterisco (*) devuelve todas las columnas de la tabla origen."
+    "explicacion": "SELECT * es ideal para exploración inicial en consolas de desarrollo, aunque en producción se desaconseja por rendimiento."
+  },
+  {
+    "id": 3,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 1: Proyección, Alias y DISTINCT",
+    "nivel": "Básico",
+    "tags": [
+      "SELECT",
+      "AS"
+    ],
+    "titulo": "3. Renombrado de columnas con alias (AS)",
+    "descripcion": "Muestra el <strong>titulo</strong> renombrado como <code>nombre_juego</code> y la <strong>calificacion</strong> renombrada como <code>puntaje</code> de la tabla <code>videojuegos</code>.",
+    "queryEsperada": "SELECT titulo AS nombre_juego, calificacion AS puntaje FROM videojuegos;",
+    "pistas": [
+      "Usa la cláusula AS después del nombre original de cada columna.",
+      "Estructura: SELECT columna AS nuevo_nombre FROM ..."
+    ],
+    "explicacion": "Los alias mejoran la legibilidad de las columnas en reportes e integraciones con APIs."
   },
   {
     "id": 4,
-    "modulo": "Módulo 1: Proyección y Alias",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 1: Proyección, Alias y DISTINCT",
     "nivel": "Básico",
     "tags": [
       "SELECT",
-      "AS"
+      "Aritmética"
     ],
-    "titulo": "4. Renombrando columnas con alias (AS)",
-    "descripcion": "Selecciona el <strong>titulo</strong> renombrado como <code>nombre_juego</code> y el <strong>precio</strong> renombrado como <code>precio_dolares</code> de la tabla <code>videojuegos</code>.",
-    "queryEsperada": "SELECT titulo AS nombre_juego, precio AS precio_dolares FROM videojuegos;",
+    "titulo": "4. Cálculo de descuento en la proyección",
+    "descripcion": "Calcula un <strong>descuento del 10%</strong> sobre los precios. Proyecta el <strong>titulo</strong>, el <strong>precio</strong> original y el precio con descuento redondeado a 2 decimales renombrado como <code>precio_con_descuento</code> (<code>ROUND(precio * 0.90, 2)</code>) de la tabla <code>videojuegos</code>.",
+    "queryEsperada": "SELECT titulo, precio, ROUND(precio * 0.90, 2) AS precio_con_descuento FROM videojuegos;",
     "pistas": [
-      "Usa la palabra clave AS para renombrar cada columna."
+      "Para descontar el 10% multiplica por 0.90.",
+      "Aplica ROUND(precio * 0.90, 2) AS precio_con_descuento."
     ],
-    "explicacion": "AS asigna un alias legible en el resultado sin alterar el esquema de la tabla."
+    "explicacion": "SQL permite evaluar expresiones aritméticas directamente en la cláusula SELECT sin alterar los datos almacenados en disco."
   },
   {
     "id": 5,
-    "modulo": "Módulo 1: Proyección y Alias",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 1: Proyección, Alias y DISTINCT",
     "nivel": "Básico",
     "tags": [
-      "SELECT",
-      "AS"
+      "DISTINCT"
     ],
-    "titulo": "5. Billetera virtual de clientes",
-    "descripcion": "Obtén el <strong>email</strong> y el <strong>saldo_cuenta</strong> renombrado como <code>saldo_disponible</code> de todos los clientes.",
-    "queryEsperada": "SELECT email, saldo_cuenta AS saldo_disponible FROM clientes;",
+    "titulo": "5. Catálogo único de géneros con DISTINCT",
+    "descripcion": "Obtén la lista de géneros únicos disponibles en la tabla <code>videojuegos</code> sin que aparezcan valores duplicados.",
+    "queryEsperada": "SELECT DISTINCT genero FROM videojuegos;",
     "pistas": [
-      "SELECT email, saldo_cuenta AS saldo_disponible FROM clientes;"
+      "Coloca la palabra reservada DISTINCT inmediatamente después de SELECT.",
+      "Sintaxis: SELECT DISTINCT columna FROM ..."
     ],
-    "explicacion": "Útil para adecuar los nombres de columnas a interfaces de usuario."
+    "explicacion": "DISTINCT filtra las filas redundantes en la proyección asegurando que cada valor retornado sea único."
   },
   {
     "id": 6,
-    "modulo": "Módulo 1: Proyección y Alias",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 1: Proyección, Alias y DISTINCT",
     "nivel": "Básico",
     "tags": [
-      "SELECT"
+      "DISTINCT"
     ],
-    "titulo": "6. Registro resumido de ventas",
-    "descripcion": "Muestra el <strong>id</strong>, <strong>cantidad</strong>, <strong>precio_unitario</strong> y <strong>metodo_pago</strong> de la tabla <code>ventas</code>.",
-    "queryEsperada": "SELECT id, cantidad, precio_unitario, metodo_pago FROM ventas;",
+    "titulo": "6. Combinaciones únicas de consola y género",
+    "descripcion": "Muestra todas las combinaciones únicas de <strong>consola</strong> y <strong>genero</strong> existentes en la tabla <code>videojuegos</code>.",
+    "queryEsperada": "SELECT DISTINCT consola, genero FROM videojuegos;",
     "pistas": [
-      "Selecciona los 4 campos solicitados de la tabla ventas."
+      "Aplica DISTINCT sobre ambas columnas simultáneamente.",
+      "Escribe: SELECT DISTINCT consola, genero FROM videojuegos;"
     ],
-    "explicacion": "Proyecta los datos clave de cada transacción comercial."
+    "explicacion": "Cuando DISTINCT se aplica a múltiples columnas, evalúa la unicidad de la tupla completa, no de cada columna por separado."
   },
   {
     "id": 7,
-    "modulo": "Módulo 2: Valores Únicos (DISTINCT)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 2: Filtrado y Operadores Relacionales",
     "nivel": "Básico",
     "tags": [
-      "SELECT",
-      "DISTINCT"
+      "WHERE",
+      "="
     ],
-    "titulo": "7. Consolas disponibles sin duplicados",
-    "descripcion": "Obtén una lista única de todas las <strong>consolas</strong> para las cuales hay juegos registrados en la tienda.",
-    "queryEsperada": "SELECT DISTINCT consola FROM videojuegos;",
+    "titulo": "7. Filtrado exacto de texto con WHERE",
+    "descripcion": "Obtén todos los datos de los clientes cuyo <strong>pais</strong> sea exactamente <code>'México'</code> de la tabla <code>clientes</code>.",
+    "queryEsperada": "SELECT * FROM clientes WHERE pais = 'México';",
     "pistas": [
-      "Coloca DISTINCT justo después de SELECT."
+      "Las cadenas de texto en SQL van encerradas entre comillas simples: 'México'.",
+      "Usa la cláusula WHERE pais = 'México';"
     ],
-    "explicacion": "DISTINCT remueve registros duplicados en el conjunto de resultados."
+    "explicacion": "La cláusula WHERE evalúa una condición booleana fila por fila, reteniendo únicamente aquellas donde el resultado es TRUE."
   },
   {
     "id": 8,
-    "modulo": "Módulo 2: Valores Únicos (DISTINCT)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 2: Filtrado y Operadores Relacionales",
     "nivel": "Básico",
     "tags": [
-      "SELECT",
-      "DISTINCT"
+      "WHERE",
+      ">"
     ],
-    "titulo": "8. Países de procedencia de clientes",
-    "descripcion": "Muestra la lista de <strong>países</strong> únicos de donde provienen los clientes registrados.",
-    "queryEsperada": "SELECT DISTINCT pais FROM clientes;",
+    "titulo": "8. Filtrado numérico estricto (>)",
+    "descripcion": "Selecciona el <strong>titulo</strong> y la <strong>calificacion</strong> de aquellos videojuegos cuya calificación sea estrictamente mayor a <code>9.5</code>.",
+    "queryEsperada": "SELECT titulo, calificacion FROM videojuegos WHERE calificacion > 9.5;",
     "pistas": [
-      "SELECT DISTINCT pais FROM clientes;"
+      "Utiliza el operador relacional mayor que (>).",
+      "Los números decimales en SQL se escriben con punto: 9.5."
     ],
-    "explicacion": "Permite conocer la cobertura geográfica sin repeticiones."
+    "explicacion": "El operador '>' compara valores numéricos de forma estricta excluyendo el valor frontera."
   },
   {
     "id": 9,
-    "modulo": "Módulo 2: Valores Únicos (DISTINCT)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 2: Filtrado y Operadores Relacionales",
     "nivel": "Básico",
     "tags": [
-      "SELECT",
-      "DISTINCT"
+      "WHERE",
+      "<="
     ],
-    "titulo": "9. Géneros temáticos en inventario",
-    "descripcion": "Obtén la lista sin duplicados de todos los <strong>géneros</strong> de videojuegos disponibles en la tienda.",
-    "queryEsperada": "SELECT DISTINCT genero FROM videojuegos;",
+    "titulo": "9. Filtrado con límite superior inclusivo (<=)",
+    "descripcion": "Muestra el <strong>titulo</strong> y el <strong>precio</strong> de los videojuegos que cuesten <code>20.0</code> dólares o menos.",
+    "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio <= 20.0;",
     "pistas": [
-      "Aplica DISTINCT sobre la columna genero."
+      "Utiliza el operador menor o igual (<=).",
+      "Condición: WHERE precio <= 20.0;"
     ],
-    "explicacion": "Devuelve las categorías de juegos existentes en la tienda."
+    "explicacion": "El operador '<=' incluye tanto los valores menores como el valor exacto del límite especificado."
   },
   {
     "id": 10,
-    "modulo": "Módulo 2: Valores Únicos (DISTINCT)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 2: Filtrado y Operadores Relacionales",
     "nivel": "Básico",
     "tags": [
-      "SELECT",
-      "DISTINCT"
+      "WHERE",
+      "<>"
     ],
-    "titulo": "10. Estudios de desarrollo asociados",
-    "descripcion": "Consulta la lista única de <strong>desarrolladores</strong> que han creado los juegos de nuestro catálogo.",
-    "queryEsperada": "SELECT DISTINCT desarrollador FROM videojuegos;",
+    "titulo": "10. Exclusión de valores con desigualdad (<>)",
+    "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de todos los clientes que no sean de <code>'España'</code>.",
+    "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais <> 'España';",
     "pistas": [
-      "SELECT DISTINCT desarrollador FROM videojuegos;"
+      "El operador estándar ANSI SQL para desigualdad es <> (también se acepta !=).",
+      "Filtro: WHERE pais <> 'España';"
     ],
-    "explicacion": "Identifica a todos los creadores y publishers registrados."
+    "explicacion": "El operador '<>' excluye filas que coincidan exactamente con el valor dado."
   },
   {
     "id": 11,
-    "modulo": "Módulo 2: Valores Únicos (DISTINCT)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 3: Operadores Lógicos AND, OR, NOT",
     "nivel": "Básico",
     "tags": [
-      "SELECT",
-      "DISTINCT"
+      "WHERE",
+      "AND"
     ],
-    "titulo": "11. Métodos de pago aceptados en compras",
-    "descripcion": "Muestra los diferentes métodos de pago (<strong>metodo_pago</strong>) que han sido utilizados en la tabla <code>ventas</code> sin duplicados.",
-    "queryEsperada": "SELECT DISTINCT metodo_pago FROM ventas;",
+    "titulo": "11. Conjunción estricta con AND",
+    "descripcion": "Consulta el <strong>titulo</strong>, <strong>consola</strong> y <strong>precio</strong> de los videojuegos que sean para la consola <code>'PC'</code> Y que cuesten menos de <code>30.0</code> dólares.",
+    "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos WHERE consola = 'PC' AND precio < 30.0;",
     "pistas": [
-      "SELECT DISTINCT metodo_pago FROM ventas;"
+      "El operador AND exige que ambas condiciones se cumplan simultáneamente.",
+      "Condición: WHERE consola = 'PC' AND precio < 30.0;"
     ],
-    "explicacion": "Determina qué formas de pago han tenido actividad real."
+    "explicacion": "La conjunción lógica AND solo produce TRUE cuando ambas expresiones booleanas son verdaderas."
   },
   {
     "id": 12,
-    "modulo": "Módulo 3: Ordenación (ORDER BY)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 3: Operadores Lógicos AND, OR, NOT",
     "nivel": "Básico",
     "tags": [
-      "ORDER BY",
-      "ASC"
+      "WHERE",
+      "OR"
     ],
-    "titulo": "12. Directorio telefónico por apellido",
-    "descripcion": "Muestra el <strong>nombre</strong> y <strong>apellido</strong> de los clientes ordenados alfabéticamente por su apellido de la A a la Z.",
-    "queryEsperada": "SELECT nombre, apellido FROM clientes ORDER BY apellido ASC;",
+    "titulo": "12. Disyunción inclusiva con OR",
+    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes que vivan en <code>'Colombia'</code> O en <code>'Argentina'</code>.",
+    "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais = 'Colombia' OR pais = 'Argentina';",
     "pistas": [
-      "Usa ORDER BY apellido ASC al final de la consulta."
+      "El operador OR permite que se cumpla cualquiera de las dos opciones.",
+      "WHERE pais = 'Colombia' OR pais = 'Argentina';"
     ],
-    "explicacion": "ORDER BY ordena los resultados de forma ascendente (ASC) o descendente (DESC)."
+    "explicacion": "El operador OR retorna TRUE si al menos una de las condiciones es verdadera."
   },
   {
     "id": 13,
-    "modulo": "Módulo 3: Ordenación (ORDER BY)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 3: Operadores Lógicos AND, OR, NOT",
     "nivel": "Básico",
     "tags": [
-      "ORDER BY",
-      "DESC"
+      "WHERE",
+      "NOT"
     ],
-    "titulo": "13. Juegos ordenados por precio descendente",
-    "descripcion": "Muestra el <strong>titulo</strong> y el <strong>precio</strong> de todos los videojuegos, ordenados desde el más caro al más barato.",
-    "queryEsperada": "SELECT titulo, precio FROM videojuegos ORDER BY precio DESC;",
+    "titulo": "13. Inversión lógica con NOT",
+    "descripcion": "Obtén el <strong>titulo</strong> y <strong>genero</strong> de todos los videojuegos que NO pertenezcan al género <code>'Acción'</code> usando el operador <code>NOT</code>.",
+    "queryEsperada": "SELECT titulo, genero FROM videojuegos WHERE NOT genero = 'Acción';",
     "pistas": [
-      "Usa ORDER BY precio DESC."
+      "Antepón la palabra reservada NOT antes de la condición.",
+      "Escribe: WHERE NOT genero = 'Acción';"
     ],
-    "explicacion": "Permite clasificar productos por valor económico."
+    "explicacion": "NOT invierte el resultado lógico de una expresión: convierte TRUE en FALSE y viceversa."
   },
   {
     "id": 14,
-    "modulo": "Módulo 3: Ordenación (ORDER BY)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 4: Rangos, Listas y Patrones",
     "nivel": "Básico",
     "tags": [
-      "ORDER BY",
-      "DESC"
+      "BETWEEN"
     ],
-    "titulo": "14. Ranking de videojuegos por calificación",
-    "descripcion": "Obtén el <strong>titulo</strong> y la <strong>calificacion</strong> de los juegos ordenados de mayor a menor puntuación.",
-    "queryEsperada": "SELECT titulo, calificacion FROM videojuegos ORDER BY calificacion DESC;",
+    "titulo": "14. Rango inclusivo con BETWEEN",
+    "descripcion": "Muestra el <strong>titulo</strong> y el <strong>año_lanzamiento</strong> de los videojuegos lanzados entre los años <code>2015</code> y <code>2020</code> (ambos inclusive).",
+    "queryEsperada": "SELECT titulo, año_lanzamiento FROM videojuegos WHERE año_lanzamiento BETWEEN 2015 AND 2020;",
     "pistas": [
-      "ORDER BY calificacion DESC."
+      "Usa el operador BETWEEN valor_min AND valor_max.",
+      "WHERE año_lanzamiento BETWEEN 2015 AND 2020;"
     ],
-    "explicacion": "Excelente para mostrar las recomendaciones más aclamadas por la crítica."
+    "explicacion": "BETWEEN es una sintaxis concisa equivalente a (campo >= min AND campo <= max), incluyendo siempre ambos límites."
   },
   {
     "id": 15,
-    "modulo": "Módulo 3: Ordenación (ORDER BY)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 4: Rangos, Listas y Patrones",
+    "nivel": "Básico",
+    "tags": [
+      "NOT BETWEEN"
+    ],
+    "titulo": "15. Exclusión de franja con NOT BETWEEN",
+    "descripcion": "Encuentra el <strong>titulo</strong> y el <strong>precio</strong> de los videojuegos cuyo precio NO esté dentro de la franja de <code>20.0</code> a <code>60.0</code> dólares.",
+    "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio NOT BETWEEN 20.0 AND 60.0;",
+    "pistas": [
+      "Combina NOT con BETWEEN.",
+      "WHERE precio NOT BETWEEN 20.0 AND 60.0;"
+    ],
+    "explicacion": "NOT BETWEEN selecciona valores que se encuentren estrictamente por debajo del mínimo o por encima del máximo."
+  },
+  {
+    "id": 16,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 4: Rangos, Listas y Patrones",
+    "nivel": "Básico",
+    "tags": [
+      "IN"
+    ],
+    "titulo": "16. Pertenencia a lista con IN",
+    "descripcion": "Consulta el <strong>titulo</strong> y la <strong>consola</strong> de los videojuegos disponibles para <code>'Nintendo Switch'</code> o <code>'PlayStation 5'</code> utilizando el operador <code>IN</code>.",
+    "queryEsperada": "SELECT titulo, consola FROM videojuegos WHERE consola IN ('Nintendo Switch', 'PlayStation 5');",
+    "pistas": [
+      "Encierra los valores permitidos entre paréntesis separados por comas.",
+      "WHERE consola IN ('Nintendo Switch', 'PlayStation 5');"
+    ],
+    "explicacion": "El operador IN simplifica múltiples cláusulas OR sucesivas sobre una misma columna."
+  },
+  {
+    "id": 17,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 4: Rangos, Listas y Patrones",
+    "nivel": "Básico",
+    "tags": [
+      "NOT IN"
+    ],
+    "titulo": "17. Exclusión de lista con NOT IN",
+    "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes cuyo país NO sea ni <code>'México'</code> ni <code>'España'</code>.",
+    "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais NOT IN ('México', 'España');",
+    "pistas": [
+      "Usa NOT IN ('México', 'España').",
+      "WHERE pais NOT IN ('México', 'España');"
+    ],
+    "explicacion": "NOT IN comprueba que el valor evaluado no coincida con ninguno de los elementos del conjunto."
+  },
+  {
+    "id": 18,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 4: Rangos, Listas y Patrones",
+    "nivel": "Básico",
+    "tags": [
+      "LIKE"
+    ],
+    "titulo": "18. Búsqueda por prefijo con LIKE (%)",
+    "descripcion": "Encuentra el <strong>titulo</strong> y <strong>desarrollador</strong> de los videojuegos cuyo desarrollador comience con la palabra <code>'Rockstar'</code>.",
+    "queryEsperada": "SELECT titulo, desarrollador FROM videojuegos WHERE desarrollador LIKE 'Rockstar%';",
+    "pistas": [
+      "El comodín % colocado al final busca cualquier texto que inicie con ese prefijo.",
+      "WHERE desarrollador LIKE 'Rockstar%';"
+    ],
+    "explicacion": "El operador LIKE permite coincidencias difusas de cadenas. El símbolo % representa cero o más caracteres arbitrarios."
+  },
+  {
+    "id": 19,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 5: Ordenamiento y Límites",
     "nivel": "Básico",
     "tags": [
       "ORDER BY",
       "ASC"
     ],
-    "titulo": "15. Clientes por antigüedad de registro",
-    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>fecha_registro</strong> de los clientes ordenados desde el más antiguo al más reciente.",
-    "queryEsperada": "SELECT nombre, apellido, fecha_registro FROM clientes ORDER BY fecha_registro ASC;",
+    "titulo": "19. Ordenamiento ascendente con ORDER BY",
+    "descripcion": "Muestra el <strong>titulo</strong> y el <strong>precio</strong> de todos los videojuegos ordenados del más barato al más caro (ascendente).",
+    "queryEsperada": "SELECT titulo, precio FROM videojuegos ORDER BY precio ASC;",
     "pistas": [
-      "ORDER BY fecha_registro ASC."
+      "Añade ORDER BY precio ASC al final de la consulta.",
+      "ASC indica orden ascendente (menor a mayor)."
     ],
-    "explicacion": "Las fechas en formato ISO se ordenan cronológicamente con ASC."
-  },
-  {
-    "id": 16,
-    "modulo": "Módulo 3: Ordenación (ORDER BY)",
-    "nivel": "Básico",
-    "tags": [
-      "ORDER BY",
-      "MÚLTIPLE"
-    ],
-    "titulo": "16. Ordenación compuesta por género y título",
-    "descripcion": "Lista el <strong>genero</strong> y el <strong>titulo</strong> de todos los videojuegos ordenados alfabéticamente por género y, en caso de empate, alfabéticamente por título.",
-    "queryEsperada": "SELECT genero, titulo FROM videojuegos ORDER BY genero ASC, titulo ASC;",
-    "pistas": [
-      "Separa las columnas en ORDER BY con comas: ORDER BY genero ASC, titulo ASC."
-    ],
-    "explicacion": "SQL permite ordenar por múltiples columnas jerárquicamente."
-  },
-  {
-    "id": 17,
-    "modulo": "Módulo 3: Ordenación (ORDER BY)",
-    "nivel": "Básico",
-    "tags": [
-      "ORDER BY",
-      "DESC"
-    ],
-    "titulo": "17. Ventas recientes primero",
-    "descripcion": "Muestra el <strong>id</strong>, <strong>fecha_venta</strong> y <strong>precio_unitario</strong> de las ventas ordenadas cronológicamente desde la más reciente a la más antigua.",
-    "queryEsperada": "SELECT id, fecha_venta, precio_unitario FROM ventas ORDER BY fecha_venta DESC;",
-    "pistas": [
-      "ORDER BY fecha_venta DESC."
-    ],
-    "explicacion": "Permite auditar las últimas operaciones comerciales."
-  },
-  {
-    "id": 18,
-    "modulo": "Módulo 4: Límites y Paginación (LIMIT)",
-    "nivel": "Básico",
-    "tags": [
-      "LIMIT",
-      "ORDER BY"
-    ],
-    "titulo": "18. Top 5 videojuegos con más stock",
-    "descripcion": "Muestra el <strong>titulo</strong>, <strong>consola</strong> y <strong>stock</strong> de los 5 videojuegos con mayor cantidad de unidades en almacén.",
-    "queryEsperada": "SELECT titulo, consola, stock FROM videojuegos ORDER BY stock DESC LIMIT 5;",
-    "pistas": [
-      "Combina ORDER BY stock DESC con LIMIT 5."
-    ],
-    "explicacion": "LIMIT restringe el número de filas entregadas por la consulta."
-  },
-  {
-    "id": 19,
-    "modulo": "Módulo 4: Límites y Paginación (LIMIT)",
-    "nivel": "Básico",
-    "tags": [
-      "LIMIT",
-      "ORDER BY"
-    ],
-    "titulo": "19. Los 3 clientes con mayor saldo",
-    "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de los 3 clientes con más fondos en su cuenta.",
-    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes ORDER BY saldo_cuenta DESC LIMIT 3;",
-    "pistas": [
-      "ORDER BY saldo_cuenta DESC LIMIT 3."
-    ],
-    "explicacion": "Ideal para identificar a los clientes con mayor capacidad de compra inmediata."
+    "explicacion": "ORDER BY clasifica las filas del conjunto de resultados. Si se omite la dirección, ASC es el comportamiento predeterminado."
   },
   {
     "id": 20,
-    "modulo": "Módulo 4: Límites y Paginación (LIMIT)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 5: Ordenamiento y Límites",
     "nivel": "Básico",
+    "tags": [
+      "ORDER BY",
+      "LIMIT"
+    ],
+    "titulo": "20. Top 5 mejores valorados con LIMIT",
+    "descripcion": "Obtén el <strong>titulo</strong> y la <strong>calificacion</strong> de los <strong>5</strong> videojuegos con mayor calificación de la tienda.",
+    "queryEsperada": "SELECT titulo, calificacion FROM videojuegos ORDER BY calificacion DESC LIMIT 5;",
+    "pistas": [
+      "Ordena de mayor a menor con DESC y luego corta con LIMIT 5.",
+      "ORDER BY calificacion DESC LIMIT 5;"
+    ],
+    "explicacion": "La combinación de ORDER BY DESC con LIMIT es el patrón estándar en SQL para resolver problemas de 'Top N'."
+  },
+  {
+    "id": 21,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 6: Precedencia Lógica y Paréntesis",
+    "nivel": "Intermedio",
+    "tags": [
+      "WHERE",
+      "ORDER BY",
+      "LIMIT"
+    ],
+    "titulo": "21. Los 3 juegos disponibles más económicos",
+    "descripcion": "Consulta el <strong>titulo</strong>, <strong>precio</strong> y <strong>stock</strong> de los 3 videojuegos disponibles en inventario (<code>stock > 0</code>) que tengan el menor precio.",
+    "queryEsperada": "SELECT titulo, precio, stock FROM videojuegos WHERE stock > 0 ORDER BY precio ASC LIMIT 3;",
+    "pistas": [
+      "Aplica primero el filtro WHERE stock > 0.",
+      "Luego ordena por precio ASC y corta con LIMIT 3."
+    ],
+    "explicacion": "Filtra primero las existencias positivas y clasifica el subconjunto resultante para extraer los 3 más accesibles."
+  },
+  {
+    "id": 22,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 6: Precedencia Lógica y Paréntesis",
+    "nivel": "Intermedio",
+    "tags": [
+      "WHERE",
+      "AND",
+      "OR"
+    ],
+    "titulo": "22. Precedencia lógica: (A OR B) AND C",
+    "descripcion": "Obtén el <strong>titulo</strong>, <strong>consola</strong> y <strong>calificacion</strong> de los videojuegos que pertenezcan a <code>'PC'</code> O a <code>'Nintendo Switch'</code>, pero que OBLIGATORIAMENTE tengan una calificación mayor o igual a <code>9.5</code>.",
+    "queryEsperada": "SELECT titulo, consola, calificacion FROM videojuegos WHERE (consola = 'PC' OR consola = 'Nintendo Switch') AND calificacion >= 9.5;",
+    "pistas": [
+      "Encierra entre paréntesis la condición de consola: (consola = 'PC' OR consola = 'Nintendo Switch').",
+      "Luego añade: AND calificacion >= 9.5;"
+    ],
+    "explicacion": "Debido a que AND tiene mayor prioridad que OR, sin paréntesis la consulta devolvería todos los juegos de PC sin importar su calificación."
+  },
+  {
+    "id": 23,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 6: Precedencia Lógica y Paréntesis",
+    "nivel": "Intermedio",
+    "tags": [
+      "WHERE",
+      "AND",
+      "OR"
+    ],
+    "titulo": "23. Precedencia inversa: A OR (B AND C)",
+    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong>, <strong>pais</strong> y <strong>saldo_cuenta</strong> de los clientes que vivan en <code>'México'</code> O que estén activos (<code>activo = 1</code>) con un saldo mayor a <code>100.0</code>.",
+    "queryEsperada": "SELECT nombre, apellido, pais, saldo_cuenta FROM clientes WHERE pais = 'México' OR (activo = 1 AND saldo_cuenta > 100.0);",
+    "pistas": [
+      "Agrupa con paréntesis la condición compuesta: (activo = 1 AND saldo_cuenta > 100.0).",
+      "Usa OR para unir con pais = 'México'."
+    ],
+    "explicacion": "Los paréntesis eliminan ambigüedad y documentan explícitamente las reglas de negocio del filtrado."
+  },
+  {
+    "id": 24,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 7: Patrones Específicos y Búsqueda",
+    "nivel": "Intermedio",
+    "tags": [
+      "LIKE",
+      "_"
+    ],
+    "titulo": "24. Comodín posicional exacto (_)",
+    "descripcion": "Encuentra el <strong>titulo</strong> y <strong>año_lanzamiento</strong> de los videojuegos cuyo año de lanzamiento comience con <code>'202'</code> seguido de exactamente un dígito adicional (juegos de la década de 2020).",
+    "queryEsperada": "SELECT titulo, año_lanzamiento FROM videojuegos WHERE año_lanzamiento LIKE '202_';",
+    "pistas": [
+      "El guion bajo (_) representa exactamente un único carácter.",
+      "WHERE año_lanzamiento LIKE '202_';"
+    ],
+    "explicacion": "A diferencia de '%', el comodín '_' restringe la longitud a exactamente un único símbolo en esa posición."
+  },
+  {
+    "id": 25,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 7: Patrones Específicos y Búsqueda",
+    "nivel": "Intermedio",
+    "tags": [
+      "LIKE",
+      "%"
+    ],
+    "titulo": "25. Coincidencia de subcadena con %texto%",
+    "descripcion": "Muestra el <strong>titulo</strong> y el <strong>genero</strong> de todos los videojuegos cuyo género contenga en cualquier posición la palabra <code>'Acción'</code>.",
+    "queryEsperada": "SELECT titulo, genero FROM videojuegos WHERE genero LIKE '%Acción%';",
+    "pistas": [
+      "Coloca el símbolo % tanto antes como después del término: '%Acción%'.",
+      "Esto capturará géneros como 'Acción RPG' y 'Acción Aventura'."
+    ],
+    "explicacion": "El patrón '%palabra%' es la técnica estándar para búsquedas de texto contenido en cualquier parte del campo."
+  },
+  {
+    "id": 26,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 7: Patrones Específicos y Búsqueda",
+    "nivel": "Intermedio",
+    "tags": [
+      "NOT LIKE"
+    ],
+    "titulo": "26. Exclusión de patrones corporativos con NOT LIKE",
+    "descripcion": "Obtén el <strong>titulo</strong> y <strong>desarrollador</strong> de los videojuegos cuyo desarrollador no contenga la palabra <code>'Studio'</code> ni contenga <code>'Games'</code>.",
+    "queryEsperada": "SELECT titulo, desarrollador FROM videojuegos WHERE desarrollador NOT LIKE '%Studio%' AND desarrollador NOT LIKE '%Games%';",
+    "pistas": [
+      "Usa dos cláusulas NOT LIKE unidas con AND.",
+      "WHERE desarrollador NOT LIKE '%Studio%' AND desarrollador NOT LIKE '%Games%';"
+    ],
+    "explicacion": "Para excluir múltiples patrones de subcadena simultáneamente, se encadenan mediante el operador AND."
+  },
+  {
+    "id": 27,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 8: Filtrado de Fechas y Cronología",
+    "nivel": "Intermedio",
+    "tags": [
+      "BETWEEN",
+      "Fechas"
+    ],
+    "titulo": "27. Filtrado cronológico con BETWEEN",
+    "descripcion": "Encuentra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>fecha_registro</strong> de los clientes registrados entre el <code>'2021-01-01'</code> y el <code>'2022-12-31'</code>.",
+    "queryEsperada": "SELECT nombre, apellido, fecha_registro FROM clientes WHERE fecha_registro BETWEEN '2021-01-01' AND '2022-12-31';",
+    "pistas": [
+      "Las fechas en formato ISO YYYY-MM-DD se comparan directamente como cadenas alfanuméricas.",
+      "WHERE fecha_registro BETWEEN '2021-01-01' AND '2022-12-31';"
+    ],
+    "explicacion": "El formato estándar ISO-8601 permite ordenar y comparar rangos de fechas de forma natural con BETWEEN."
+  },
+  {
+    "id": 28,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 8: Filtrado de Fechas y Cronología",
+    "nivel": "Intermedio",
+    "tags": [
+      "WHERE",
+      "Fechas",
+      "ORDER BY"
+    ],
+    "titulo": "28. Nuevos clientes a partir de 2022 ordenados",
+    "descripcion": "Muestra el <strong>nombre</strong>, <strong>email</strong> y <strong>fecha_registro</strong> de los clientes registrados desde el <code>'2022-01-01'</code> en adelante, ordenados del más antiguo al más reciente.",
+    "queryEsperada": "SELECT nombre, email, fecha_registro FROM clientes WHERE fecha_registro >= '2022-01-01' ORDER BY fecha_registro ASC;",
+    "pistas": [
+      "Usa el operador >= '2022-01-01'.",
+      "Ordena con ORDER BY fecha_registro ASC."
+    ],
+    "explicacion": "Al ordenar fechas en formato ISO de forma ascendente, los registros más antiguos aparecen primero."
+  },
+  {
+    "id": 29,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 9: Ordenamiento Compuesto y Paginación",
+    "nivel": "Intermedio",
+    "tags": [
+      "ORDER BY"
+    ],
+    "titulo": "29. Ordenamiento compuesto multi-columna",
+    "descripcion": "Muestra el <strong>titulo</strong>, <strong>consola</strong> y <strong>precio</strong> de todos los videojuegos ordenados primero por <strong>consola</strong> alfabéticamente (ASC) y, para la misma consola, por <strong>precio</strong> de mayor a menor (DESC).",
+    "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos ORDER BY consola ASC, precio DESC;",
+    "pistas": [
+      "Separa las columnas de ordenación por coma indicando la dirección de cada una.",
+      "ORDER BY consola ASC, precio DESC;"
+    ],
+    "explicacion": "SQL permite clasificar jerárquicamente: si hay empates en la primera columna, se desempata con la segunda."
+  },
+  {
+    "id": 30,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 9: Ordenamiento Compuesto y Paginación",
+    "nivel": "Intermedio",
+    "tags": [
+      "DISTINCT",
+      "WHERE",
+      "ORDER BY"
+    ],
+    "titulo": "30. Países únicos con saldo positivo ordenados",
+    "descripcion": "Extrae los países únicos de aquellos clientes que tengan un <strong>saldo_cuenta</strong> mayor a cero, ordenados alfabéticamente.",
+    "queryEsperada": "SELECT DISTINCT pais FROM clientes WHERE saldo_cuenta > 0 ORDER BY pais ASC;",
+    "pistas": [
+      "Usa SELECT DISTINCT pais ... WHERE saldo_cuenta > 0 ORDER BY pais ASC;"
+    ],
+    "explicacion": "Combina DISTINCT para evitar redundancia junto con un filtro de solvencia y ordenación alfabética."
+  },
+  {
+    "id": 31,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 9: Ordenamiento Compuesto y Paginación",
+    "nivel": "Intermedio",
     "tags": [
       "LIMIT",
       "OFFSET"
     ],
-    "titulo": "20. Segundo y tercer juego más caros (OFFSET)",
-    "descripcion": "Obtén el <strong>titulo</strong> y el <strong>precio</strong> del segundo y tercer juego más caros del catálogo (omitiendo el primero).",
-    "queryEsperada": "SELECT titulo, precio FROM videojuegos ORDER BY precio DESC LIMIT 2 OFFSET 1;",
+    "titulo": "31. Paginación de catálogo con OFFSET",
+    "descripcion": "Simula la página 2 de un listado paginado: selecciona el <strong>id</strong>, <strong>titulo</strong> y <strong>precio</strong> de los videojuegos ordenados por <strong>id ASC</strong>, omitiendo los primeros 5 y obteniendo los siguientes 5 registros.",
+    "queryEsperada": "SELECT id, titulo, precio FROM videojuegos ORDER BY id ASC LIMIT 5 OFFSET 5;",
     "pistas": [
-      "Usa LIMIT 2 OFFSET 1 tras ordenar descendentemente."
+      "Usa LIMIT 5 OFFSET 5 al final de la consulta.",
+      "ORDER BY id ASC asegura un orden determinista."
     ],
-    "explicacion": "OFFSET salta filas iniciales para construir paginadores web."
-  },
-  {
-    "id": 21,
-    "modulo": "Módulo 4: Límites y Paginación (LIMIT)",
-    "nivel": "Básico",
-    "tags": [
-      "LIMIT"
-    ],
-    "titulo": "21. Primeras 4 ventas registradas",
-    "descripcion": "Consulta el <strong>id</strong>, <strong>fecha_venta</strong> y <strong>precio_unitario</strong> de las primeras 4 ventas según su id ascendente.",
-    "queryEsperada": "SELECT id, fecha_venta, precio_unitario FROM ventas ORDER BY id ASC LIMIT 4;",
-    "pistas": [
-      "ORDER BY id ASC LIMIT 4."
-    ],
-    "explicacion": "Permite recuperar un lote inicial de transacciones."
-  },
-  {
-    "id": 22,
-    "modulo": "Módulo 4: Límites y Paginación (LIMIT)",
-    "nivel": "Básico",
-    "tags": [
-      "LIMIT",
-      "ORDER BY"
-    ],
-    "titulo": "22. Los 3 videojuegos más clásicos",
-    "descripcion": "Obtén el <strong>titulo</strong> y el <strong>año_lanzamiento</strong> de los 3 juegos más antiguos del inventario.",
-    "queryEsperada": "SELECT titulo, año_lanzamiento FROM videojuegos ORDER BY año_lanzamiento ASC LIMIT 3;",
-    "pistas": [
-      "ORDER BY año_lanzamiento ASC LIMIT 3."
-    ],
-    "explicacion": "Identifica los títulos de lanzamiento más remoto."
-  },
-  {
-    "id": 23,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "WHERE",
-      "IGUALDAD"
-    ],
-    "titulo": "23. Títulos para Nintendo Switch",
-    "descripcion": "Obtén todas las columnas (<code>*</code>) de los videojuegos que pertenezcan a la consola <strong>'Nintendo Switch'</strong>.",
-    "queryEsperada": "SELECT * FROM videojuegos WHERE consola = 'Nintendo Switch';",
-    "pistas": [
-      "WHERE consola = 'Nintendo Switch'."
-    ],
-    "explicacion": "El operador = compara cadenas de texto exactamente."
-  },
-  {
-    "id": 24,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "WHERE",
-      "COMPARACIÓN"
-    ],
-    "titulo": "24. Videojuegos económicos por debajo de $20",
-    "descripcion": "Muestra el <strong>titulo</strong> y <strong>precio</strong> de los juegos cuyo precio sea menor a 20.00 dólares.",
-    "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio < 20.00;",
-    "pistas": [
-      "WHERE precio < 20.00."
-    ],
-    "explicacion": "El operador < filtra valores numéricos menores al umbral."
-  },
-  {
-    "id": 25,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "WHERE"
-    ],
-    "titulo": "25. Clientes activos en plataforma",
-    "descripcion": "Obtén el <strong>nombre</strong>, <strong>email</strong> y <strong>activo</strong> de los clientes cuya cuenta se encuentre activa (<code>activo = 1</code>).",
-    "queryEsperada": "SELECT nombre, email, activo FROM clientes WHERE activo = 1;",
-    "pistas": [
-      "WHERE activo = 1."
-    ],
-    "explicacion": "Los booleanos en SQLite se representan como 1 (verdadero) y 0 (falso)."
-  },
-  {
-    "id": 26,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "WHERE"
-    ],
-    "titulo": "26. Videojuegos agotados sin existencias",
-    "descripcion": "Consulta el <strong>titulo</strong> y <strong>stock</strong> de aquellos videojuegos que no tengan ninguna unidad disponible (<code>stock = 0</code>).",
-    "queryEsperada": "SELECT titulo, stock FROM videojuegos WHERE stock = 0;",
-    "pistas": [
-      "WHERE stock = 0."
-    ],
-    "explicacion": "Permite generar alertas de reabastecimiento de inventario."
-  },
-  {
-    "id": 27,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "WHERE"
-    ],
-    "titulo": "27. Clientes con cuenta en ceros",
-    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de los clientes que tengan un saldo exactamente igual a 0.00.",
-    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes WHERE saldo_cuenta = 0.00;",
-    "pistas": [
-      "WHERE saldo_cuenta = 0.00."
-    ],
-    "explicacion": "Filtra usuarios sin saldo a favor en su billetera."
-  },
-  {
-    "id": 28,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "COUNT"
-    ],
-    "titulo": "28. Total global de títulos registrados",
-    "descripcion": "Cuenta el total de videojuegos existentes en la tabla <code>videojuegos</code> con el alias <code>total_juegos</code>.",
-    "queryEsperada": "SELECT COUNT(*) AS total_juegos FROM videojuegos;",
-    "pistas": [
-      "SELECT COUNT(*) AS total_juegos FROM videojuegos;"
-    ],
-    "explicacion": "COUNT(*) cuenta todas las filas de la tabla."
-  },
-  {
-    "id": 29,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "MIN",
-      "MAX"
-    ],
-    "titulo": "29. Rango de precios extremos",
-    "descripcion": "Calcula el precio mínimo con el alias <code>precio_minimo</code> y el precio máximo con el alias <code>precio_maximo</code> de todo el catálogo.",
-    "queryEsperada": "SELECT MIN(precio) AS precio_minimo, MAX(precio) AS precio_maximo FROM videojuegos;",
-    "pistas": [
-      "SELECT MIN(precio) AS precio_minimo, MAX(precio) AS precio_maximo FROM videojuegos;"
-    ],
-    "explicacion": "MIN y MAX extraen los extremos de una columna numérica."
-  },
-  {
-    "id": 30,
-    "modulo": "Módulo 5: Filtros Básicos (WHERE)",
-    "nivel": "Básico",
-    "tags": [
-      "AVG",
-      "ROUND"
-    ],
-    "titulo": "30. Precio medio del inventario",
-    "descripcion": "Calcula el precio promedio de todos los videojuegos redondeado a 2 decimales con el alias <code>precio_promedio</code>.",
-    "queryEsperada": "SELECT ROUND(AVG(precio), 2) AS precio_promedio FROM videojuegos;",
-    "pistas": [
-      "Usa ROUND(AVG(precio), 2) AS precio_promedio."
-    ],
-    "explicacion": "AVG obtiene el valor medio y ROUND limita los dígitos decimales."
-  },
-  {
-    "id": 31,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
-    "nivel": "Intermedio",
-    "tags": [
-      "BETWEEN",
-      "ORDER BY"
-    ],
-    "titulo": "31. Lanzamientos entre 2018 y 2022",
-    "descripcion": "Muestra el <strong>titulo</strong> y <strong>año_lanzamiento</strong> de los videojuegos estrenados entre 2018 y 2022 inclusive, ordenados del más reciente al más antiguo.",
-    "queryEsperada": "SELECT titulo, año_lanzamiento FROM videojuegos WHERE año_lanzamiento BETWEEN 2018 AND 2022 ORDER BY año_lanzamiento DESC;",
-    "pistas": [
-      "WHERE año_lanzamiento BETWEEN 2018 AND 2022 ORDER BY año_lanzamiento DESC;"
-    ],
-    "explicacion": "BETWEEN es inclusivo y evalúa límites numéricos o de fechas."
+    "explicacion": "OFFSET salta N filas iniciales y LIMIT toma las M siguientes, conformando la base de la paginación web."
   },
   {
     "id": 32,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 9: Ordenamiento Compuesto y Paginación",
     "nivel": "Intermedio",
     "tags": [
-      "BETWEEN",
+      "LIMIT",
+      "OFFSET",
       "ORDER BY"
     ],
-    "titulo": "32. Videojuegos de gama media ($20 a $50)",
-    "descripcion": "Obtén el <strong>titulo</strong> y <strong>precio</strong> de los videojuegos con precio entre 20.00 y 50.00 dólares, ordenados por precio ascendente.",
-    "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio BETWEEN 20.00 AND 50.00 ORDER BY precio ASC;",
+    "titulo": "32. Paginación determinista con desempate",
+    "descripcion": "Selecciona el <strong>titulo</strong>, <strong>calificacion</strong> e <strong>id</strong> de los videojuegos ordenados por <strong>calificacion DESC</strong> (y por <strong>id ASC</strong> en caso de empate), saltando 10 registros y mostrando los siguientes 5.",
+    "queryEsperada": "SELECT titulo, calificacion, id FROM videojuegos ORDER BY calificacion DESC, id ASC LIMIT 5 OFFSET 10;",
     "pistas": [
-      "WHERE precio BETWEEN 20.00 AND 50.00 ORDER BY precio ASC;"
+      "Ordena por dos columnas: calificacion DESC, id ASC.",
+      "Aplica LIMIT 5 OFFSET 10;"
     ],
-    "explicacion": "Permite segmentar productos por franjas de precio."
+    "explicacion": "Para evitar que la paginación repita u omita filas con valores idénticos, siempre debe incluirse un criterio único de desempate."
   },
   {
     "id": 33,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
     "nivel": "Intermedio",
     "tags": [
-      "IN"
+      "WHERE",
+      "Booleanos"
     ],
-    "titulo": "33. Clientes de España o México",
-    "descripcion": "Lista el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes que residan en <strong>'España'</strong> o <strong>'México'</strong> utilizando el operador <code>IN</code>.",
-    "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais IN ('España', 'México');",
+    "titulo": "33. Filtrado por estado activo y saldo mínimo",
+    "descripcion": "Consulta el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de los clientes con cuenta activa (<code>activo = 1</code>) cuyo saldo sea mayor o igual a <code>50.0</code>.",
+    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes WHERE activo = 1 AND saldo_cuenta >= 50.0;",
     "pistas": [
-      "WHERE pais IN ('España', 'México')."
+      "En SQLite los booleanos se representan como 1 (TRUE) y 0 (FALSE).",
+      "WHERE activo = 1 AND saldo_cuenta >= 50.0;"
     ],
-    "explicacion": "IN evalúa si un valor coincide con cualquiera de los miembros de una lista."
+    "explicacion": "Representación estándar de estados booleanos en motores relacionales combinada con filtros cuantitativos."
   },
   {
     "id": 34,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
     "nivel": "Intermedio",
     "tags": [
-      "IN"
+      "WHERE",
+      "Aritmética"
     ],
-    "titulo": "34. Juegos de la familia PlayStation",
-    "descripcion": "Muestra el <strong>titulo</strong>, <strong>consola</strong> y <strong>precio</strong> de los videojuegos de <strong>'PlayStation 4'</strong> o <strong>'PlayStation 5'</strong> usando <code>IN</code>.",
-    "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos WHERE consola IN ('PlayStation 4', 'PlayStation 5');",
+    "titulo": "34. Valorización total de inventario en WHERE",
+    "descripcion": "Muestra el <strong>titulo</strong>, <strong>precio</strong>, <strong>stock</strong> y el valor total del inventario proyectado como <code>(precio * stock) AS valor_inventario</code> para aquellos juegos cuyo valor total almacenado supere los <code>1000.0</code> dólares, ordenados por <code>valor_inventario DESC</code>.",
+    "queryEsperada": "SELECT titulo, precio, stock, (precio * stock) AS valor_inventario FROM videojuegos WHERE (precio * stock) > 1000.0 ORDER BY valor_inventario DESC;",
     "pistas": [
-      "WHERE consola IN ('PlayStation 4', 'PlayStation 5')."
+      "Como el WHERE no puede usar el alias en SQLite, escribe: WHERE (precio * stock) > 1000.0.",
+      "Ordena con ORDER BY valor_inventario DESC."
     ],
-    "explicacion": "Agrupa múltiples comprobaciones de igualdad en una sola cláusula limpia."
+    "explicacion": "Demuestra la necesidad de repetir la fórmula en la cláusula WHERE debido al orden de evaluación lógica de SQL."
   },
   {
     "id": 35,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
     "nivel": "Intermedio",
     "tags": [
-      "NOT IN"
+      "NOT IN",
+      "NOT LIKE"
     ],
-    "titulo": "35. Clientes fuera de Sudamérica (NOT IN)",
-    "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes cuyo país NO sea 'Chile', 'Perú', 'Colombia' ni 'Argentina'.",
-    "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais NOT IN ('Chile', 'Perú', 'Colombia', 'Argentina');",
+    "titulo": "35. Exclusión simultánea por consola y género",
+    "descripcion": "Obtén el <strong>titulo</strong>, <strong>consola</strong> y <strong>genero</strong> de los videojuegos que NO sean para <code>'PC'</code> ni <code>'PlayStation 4'</code> Y cuyo género no contenga <code>'Acción'</code>.",
+    "queryEsperada": "SELECT titulo, consola, genero FROM videojuegos WHERE consola NOT IN ('PC', 'PlayStation 4') AND genero NOT LIKE '%Acción%';",
     "pistas": [
-      "WHERE pais NOT IN ('Chile', 'Perú', 'Colombia', 'Argentina')."
+      "Combina NOT IN con NOT LIKE mediante AND.",
+      "WHERE consola NOT IN ('PC', 'PlayStation 4') AND genero NOT LIKE '%Acción%';"
     ],
-    "explicacion": "NOT IN excluye filas cuyos valores pertenezcan a la lista proporcionada."
+    "explicacion": "Depura el catálogo aplicando exclusión categórica de plataformas y exclusión difusa de géneros."
   },
   {
     "id": 36,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
     "nivel": "Intermedio",
     "tags": [
-      "IN"
+      "UPPER",
+      "WHERE"
     ],
-    "titulo": "36. Ventas digitales por Tarjeta o PayPal",
-    "descripcion": "Consulta el <strong>id</strong>, <strong>metodo_pago</strong> y <strong>precio_unitario</strong> de las ventas pagadas con 'Tarjeta' o 'PayPal'.",
-    "queryEsperada": "SELECT id, metodo_pago, precio_unitario FROM ventas WHERE metodo_pago IN ('Tarjeta', 'PayPal');",
+    "titulo": "36. Filtrado insensible a mayúsculas con UPPER",
+    "descripcion": "Selecciona el <strong>nombre</strong>, <strong>apellido</strong> y <strong>email</strong> de los clientes cuyo país sea <code>'Colombia'</code>, asegurando una comparación robusta convirtiendo el campo a mayúsculas con <code>UPPER(pais) = 'COLOMBIA'</code>.",
+    "queryEsperada": "SELECT nombre, apellido, email FROM clientes WHERE UPPER(pais) = 'COLOMBIA';",
     "pistas": [
-      "WHERE metodo_pago IN ('Tarjeta', 'PayPal')."
+      "Aplica UPPER sobre la columna pais.",
+      "Compara con el literal en mayúsculas: 'COLOMBIA'."
     ],
-    "explicacion": "Filtra transacciones por canales de pago específicos."
+    "explicacion": "Normalizar cadenas con UPPER o LOWER previene inconsistencias por diferencias de capitalización en la captura de datos."
   },
   {
     "id": 37,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
-    "nivel": "Intermedio",
-    "tags": [
-      "BETWEEN",
-      "FECHAS"
-    ],
-    "titulo": "37. Registros de clientes en el bienio 2021-2022",
-    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>fecha_registro</strong> de los clientes registrados entre el '2021-01-01' y el '2022-12-31', ordenados de más antiguo a más reciente.",
-    "queryEsperada": "SELECT nombre, apellido, fecha_registro FROM clientes WHERE fecha_registro BETWEEN '2021-01-01' AND '2022-12-31' ORDER BY fecha_registro ASC;",
-    "pistas": [
-      "WHERE fecha_registro BETWEEN '2021-01-01' AND '2022-12-31' ORDER BY fecha_registro ASC;"
-    ],
-    "explicacion": "Las fechas textuales ISO se comparan de forma natural con BETWEEN."
-  },
-  {
-    "id": 38,
-    "modulo": "Módulo 6: Rangos y Conjuntos (BETWEEN / IN)",
-    "nivel": "Intermedio",
-    "tags": [
-      "NOT IN"
-    ],
-    "titulo": "38. Títulos que no son de PC ni Switch",
-    "descripcion": "Obtén el <strong>titulo</strong> y <strong>consola</strong> de los videojuegos que NO sean para 'PC' ni 'Nintendo Switch'.",
-    "queryEsperada": "SELECT titulo, consola FROM videojuegos WHERE consola NOT IN ('PC', 'Nintendo Switch');",
-    "pistas": [
-      "WHERE consola NOT IN ('PC', 'Nintendo Switch')."
-    ],
-    "explicacion": "Filtra el catálogo descartando plataformas seleccionadas."
-  },
-  {
-    "id": 39,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
-    "nivel": "Intermedio",
-    "tags": [
-      "LIKE",
-      "COMODINES"
-    ],
-    "titulo": "39. Títulos que inician con 'The'",
-    "descripcion": "Obtén el <strong>titulo</strong> y <strong>genero</strong> de los videojuegos cuyo nombre comience con la palabra 'The'.",
-    "queryEsperada": "SELECT titulo, genero FROM videojuegos WHERE titulo LIKE 'The%';",
-    "pistas": [
-      "WHERE titulo LIKE 'The%'."
-    ],
-    "explicacion": "El comodín % representa cero o más caracteres arbitrarios."
-  },
-  {
-    "id": 40,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
-    "nivel": "Intermedio",
-    "tags": [
-      "LIKE"
-    ],
-    "titulo": "40. Correos estándar @email.com",
-    "descripcion": "Muestra el <strong>nombre</strong> y <strong>email</strong> de los clientes cuya dirección termine exactamente en '@email.com'.",
-    "queryEsperada": "SELECT nombre, email FROM clientes WHERE email LIKE '%@email.com';",
-    "pistas": [
-      "WHERE email LIKE '%@email.com'."
-    ],
-    "explicacion": "LIKE con % al principio busca terminaciones específicas de texto."
-  },
-  {
-    "id": 41,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
-    "nivel": "Intermedio",
-    "tags": [
-      "LIKE",
-      "SUBGUION"
-    ],
-    "titulo": "41. Apellidos con 'o' en segunda letra",
-    "descripcion": "Busca el <strong>nombre</strong> y <strong>apellido</strong> de los clientes cuyo apellido tenga la vocal 'o' en su segunda posición exacta.",
-    "queryEsperada": "SELECT nombre, apellido FROM clientes WHERE apellido LIKE '_o%';",
-    "pistas": [
-      "El comodín guion bajo (_) coincide con un único carácter: '_o%'."
-    ],
-    "explicacion": "El guion bajo actúa como comodín posicional estricto de 1 carácter."
-  },
-  {
-    "id": 42,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
-    "nivel": "Intermedio",
-    "tags": [
-      "LIKE"
-    ],
-    "titulo": "42. Franquicias con la palabra 'War'",
-    "descripcion": "Obtén el <strong>titulo</strong> y <strong>desarrollador</strong> de los videojuegos que contengan la palabra 'War' en cualquier parte de su título.",
-    "queryEsperada": "SELECT titulo, desarrollador FROM videojuegos WHERE titulo LIKE '%War%';",
-    "pistas": [
-      "WHERE titulo LIKE '%War%'."
-    ],
-    "explicacion": "%palabra% busca coincidencias en cualquier posición de la cadena."
-  },
-  {
-    "id": 43,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
-    "nivel": "Intermedio",
-    "tags": [
-      "UPPER"
-    ],
-    "titulo": "43. Nombres en mayúsculas sostenidas",
-    "descripcion": "Muestra el <strong>nombre</strong> y <strong>apellido</strong> de los clientes convertidos a mayúsculas con los alias <code>nombre_mayus</code> y <code>apellido_mayus</code>.",
-    "queryEsperada": "SELECT UPPER(nombre) AS nombre_mayus, UPPER(apellido) AS apellido_mayus FROM clientes;",
-    "pistas": [
-      "Usa UPPER(nombre) y UPPER(apellido)."
-    ],
-    "explicacion": "UPPER convierte todos los caracteres de texto a mayúsculas."
-  },
-  {
-    "id": 44,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
     "nivel": "Intermedio",
     "tags": [
       "LENGTH",
+      "WHERE"
+    ],
+    "titulo": "37. Filtrado analítico por longitud de texto",
+    "descripcion": "Muestra el <strong>titulo</strong> y su longitud proyectada como <code>LENGTH(titulo) AS longitud_titulo</code> de aquellos videojuegos cuyos títulos tengan más de <code>20</code> caracteres, ordenados por <code>longitud_titulo DESC</code>.",
+    "queryEsperada": "SELECT titulo, LENGTH(titulo) AS longitud_titulo FROM videojuegos WHERE LENGTH(titulo) > 20 ORDER BY longitud_titulo DESC;",
+    "pistas": [
+      "Usa la función escalar LENGTH(titulo) en el SELECT y en el WHERE.",
+      "Ordena por longitud_titulo DESC."
+    ],
+    "explicacion": "LENGTH calcula el número de caracteres de una cadena para análisis y restricciones de interfaz."
+  },
+  {
+    "id": 38,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
+    "nivel": "Intermedio",
+    "tags": [
+      "BETWEEN",
+      "IN",
+      "ORDER BY"
+    ],
+    "titulo": "38. Filtro triple: Rango, Plataforma y Calidad",
+    "descripcion": "Encuentra el <strong>titulo</strong>, <strong>consola</strong>, <strong>precio</strong> y <strong>calificacion</strong> de los videojuegos con precio entre <code>20.0</code> y <code>60.0</code>, disponibles para <code>'PC'</code> o <code>'Nintendo Switch'</code>, ordenados por <strong>calificacion DESC</strong>.",
+    "queryEsperada": "SELECT titulo, consola, precio, calificacion FROM videojuegos WHERE precio BETWEEN 20.0 AND 60.0 AND consola IN ('PC', 'Nintendo Switch') ORDER BY calificacion DESC;",
+    "pistas": [
+      "Usa precio BETWEEN 20.0 AND 60.0.",
+      "Une con consola IN ('PC', 'Nintendo Switch') y finaliza con ORDER BY calificacion DESC."
+    ],
+    "explicacion": "Combina rangos numéricos continuos con listas discretas y ordenamiento de prioridad."
+  },
+  {
+    "id": 39,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
+    "nivel": "Intermedio",
+    "tags": [
+      "WHERE",
+      "ORDER BY"
+    ],
+    "titulo": "39. Detección de quiebres de stock (Agotados)",
+    "descripcion": "Obtén el <strong>titulo</strong>, <strong>consola</strong> y <strong>stock</strong> de los videojuegos que se encuentren completamente agotados (<code>stock = 0</code>), ordenados alfabéticamente por <strong>titulo ASC</strong>.",
+    "queryEsperada": "SELECT titulo, consola, stock FROM videojuegos WHERE stock = 0 ORDER BY titulo ASC;",
+    "pistas": [
+      "Filtro: WHERE stock = 0.",
+      "Orden: ORDER BY titulo ASC."
+    ],
+    "explicacion": "Monitoreo crítico de inventario para generar alertas de reposición inmediata."
+  },
+  {
+    "id": 40,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 10: Filtros Avanzados, Cálculos y Funciones",
+    "nivel": "Intermedio",
+    "tags": [
+      "WHERE",
       "ORDER BY",
       "LIMIT"
     ],
-    "titulo": "44. Top 5 títulos más largos en caracteres",
-    "descripcion": "Obtén el <strong>titulo</strong> y la longitud en caracteres del título con el alias <code>longitud_titulo</code> para los 5 juegos con nombres más extensos.",
-    "queryEsperada": "SELECT titulo, LENGTH(titulo) AS longitud_titulo FROM videojuegos ORDER BY longitud_titulo DESC LIMIT 5;",
+    "titulo": "40. Alerta temprana de reposición (Stock Crítico)",
+    "descripcion": "Identifica los <strong>4</strong> videojuegos con existencias disponibles (<code>stock > 0</code>) que tengan el menor stock registrado para solicitar reabastecimiento.",
+    "queryEsperada": "SELECT titulo, precio, stock FROM videojuegos WHERE stock > 0 ORDER BY stock ASC LIMIT 4;",
     "pistas": [
-      "Usa LENGTH(titulo) AS longitud_titulo ORDER BY longitud_titulo DESC LIMIT 5;"
+      "Filtra existencias positivas: WHERE stock > 0.",
+      "Ordena de menor a mayor con ORDER BY stock ASC y limita a 4."
     ],
-    "explicacion": "LENGTH calcula la cantidad de caracteres de una cadena."
+    "explicacion": "Excluye productos agotados y localiza los elementos activos más próximos al desabastecimiento."
+  },
+  {
+    "id": 41,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 11: Lógica Condicional con CASE WHEN",
+    "nivel": "Avanzado",
+    "tags": [
+      "CASE WHEN"
+    ],
+    "titulo": "41. Clasificación dinámica de inventario con CASE",
+    "descripcion": "Proyecta el <strong>titulo</strong>, el <strong>stock</strong> y una columna calculada llamada <code>estado_inventario</code>: si stock es 0 debe decir <code>'Agotado'</code>, si es menor a 20 debe decir <code>'Stock Bajo'</code>, y en cualquier otro caso <code>'Stock Suficiente'</code>. Ordena por <strong>stock ASC</strong>.",
+    "queryEsperada": "SELECT titulo, stock,\n  CASE\n    WHEN stock = 0 THEN 'Agotado'\n    WHEN stock < 20 THEN 'Stock Bajo'\n    ELSE 'Stock Suficiente'\n  END AS estado_inventario\nFROM videojuegos\nORDER BY stock ASC;",
+    "pistas": [
+      "Estructura: CASE WHEN condicion1 THEN '...' WHEN condicion2 THEN '...' ELSE '...' END AS estado_inventario.",
+      "Ordena por stock ASC."
+    ],
+    "explicacion": "La expresión CASE transforma códigos numéricos en etiquetas de negocio intuitivas sin alterar la tabla física."
+  },
+  {
+    "id": 42,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 11: Lógica Condicional con CASE WHEN",
+    "nivel": "Avanzado",
+    "tags": [
+      "CASE WHEN"
+    ],
+    "titulo": "42. Segmentación de precios en tres gamas",
+    "descripcion": "Muestra el <strong>titulo</strong>, el <strong>precio</strong> y una columna <code>gama_precio</code>: <code>'Económico'</code> si precio es menor a 20.0, <code>'Estándar'</code> si está entre 20.0 y 50.0, y <code>'Premium'</code> si supera 50.0. Ordena por <strong>precio DESC</strong>.",
+    "queryEsperada": "SELECT titulo, precio,\n  CASE\n    WHEN precio < 20.0 THEN 'Económico'\n    WHEN precio BETWEEN 20.0 AND 50.0 THEN 'Estándar'\n    ELSE 'Premium'\n  END AS gama_precio\nFROM videojuegos\nORDER BY precio DESC;",
+    "pistas": [
+      "Utiliza WHEN precio < 20.0, WHEN precio BETWEEN 20.0 AND 50.0 y ELSE 'Premium'.",
+      "Cierra con END AS gama_precio y ordena con ORDER BY precio DESC."
+    ],
+    "explicacion": "Segmenta analíticamente una variable continua en intervalos cualitativos de negocio."
+  },
+  {
+    "id": 43,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 11: Lógica Condicional con CASE WHEN",
+    "nivel": "Avanzado",
+    "tags": [
+      "CASE WHEN",
+      "ORDER BY"
+    ],
+    "titulo": "43. Ordenamiento prioritario personalizado con CASE",
+    "descripcion": "Selecciona el <strong>titulo</strong>, la <strong>consola</strong> y el <strong>precio</strong> de los videojuegos ordenándolos bajo una prioridad personalizada de consola: 1º 'Nintendo Switch', 2º 'PlayStation 5', 3º 'PC', 4º cualquier otra, y como segundo criterio por <strong>precio DESC</strong>.",
+    "queryEsperada": "SELECT titulo, consola, precio\nFROM videojuegos\nORDER BY\n  CASE consola\n    WHEN 'Nintendo Switch' THEN 1\n    WHEN 'PlayStation 5' THEN 2\n    WHEN 'PC' THEN 3\n    ELSE 4\n  END ASC,\n  precio DESC;",
+    "pistas": [
+      "Coloca el bloque CASE directamente en la cláusula ORDER BY.",
+      "Asigna enteros (1, 2, 3, 4) y ordénalos ASC junto a precio DESC."
+    ],
+    "explicacion": "El ordenamiento por CASE permite definir ponderaciones arbitrarias que no dependen del orden alfabético natural."
+  },
+  {
+    "id": 44,
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 12: Filtrado Multi-criterio y Seguridad",
+    "nivel": "Avanzado",
+    "tags": [
+      "WHERE",
+      "AND",
+      "OR"
+    ],
+    "titulo": "44. Matriz de ofertas de calidad por consola",
+    "descripcion": "Obtén el <strong>titulo</strong>, <strong>genero</strong>, <strong>consola</strong>, <strong>precio</strong> y <strong>calificacion</strong> de aquellos juegos que cumplan: (ser de PlayStation 5 y costar menos de 60.0) O (ser de Nintendo Switch y costar menos de 30.0), y que en ambos casos su calificación sea al menos <code>9.0</code>.",
+    "queryEsperada": "SELECT titulo, genero, consola, precio, calificacion\nFROM videojuegos\nWHERE ((consola = 'PlayStation 5' AND precio < 60.0) OR (consola = 'Nintendo Switch' AND precio < 30.0))\n  AND calificacion >= 9.0;",
+    "pistas": [
+      "Usa doble nivel de paréntesis: ((consola = '...' AND precio < ...) OR (...)) AND calificacion >= 9.0."
+    ],
+    "explicacion": "Construye filtros con diferentes umbrales cuantitativos por categoría antes de aplicar el corte de calidad global."
   },
   {
     "id": 45,
-    "modulo": "Módulo 7: Patrones y Texto (LIKE)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 12: Filtrado Multi-criterio y Seguridad",
+    "nivel": "Avanzado",
     "tags": [
-      "LIKE"
+      "CASE WHEN",
+      "ORDER BY"
     ],
-    "titulo": "45. Clientes con nombre iniciado en 'M'",
-    "descripcion": "Consulta el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes cuyo nombre empiece con la letra 'M'.",
-    "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE nombre LIKE 'M%';",
+    "titulo": "45. Niveles de fidelidad financiera en clientes",
+    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong>, <strong>saldo_cuenta</strong> y una columna <code>categoria_cliente</code>: 'Cliente Platino' (>= 200.0), 'Cliente Oro' (>= 50.0), 'Cliente Plata' (> 0.0) y 'Sin Saldo' si es 0. Ordena por <strong>saldo_cuenta DESC</strong>.",
+    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta,\n  CASE\n    WHEN saldo_cuenta >= 200.0 THEN 'Cliente Platino'\n    WHEN saldo_cuenta >= 50.0 THEN 'Cliente Oro'\n    WHEN saldo_cuenta > 0.0 THEN 'Cliente Plata'\n    ELSE 'Sin Saldo'\n  END AS categoria_cliente\nFROM clientes\nORDER BY saldo_cuenta DESC;",
     "pistas": [
-      "WHERE nombre LIKE 'M%'."
+      "Evalúa en orden decreciente: >= 200, >= 50, > 0, ELSE.",
+      "Ordena con ORDER BY saldo_cuenta DESC."
     ],
-    "explicacion": "Filtra registros por inicial alfabética."
+    "explicacion": "El orden de los WHEN en un CASE es fundamental: el motor evalúa secuencialmente y detiene en la primera coincidencia verdadera."
   },
   {
     "id": 46,
-    "modulo": "Módulo 8: Lógica Booleana Combinada",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 12: Filtrado Multi-criterio y Seguridad",
+    "nivel": "Avanzado",
     "tags": [
-      "AND",
-      "WHERE"
+      "LIKE"
     ],
-    "titulo": "46. Clientes de México con saldo superior a $50",
-    "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong>, <strong>pais</strong> y <strong>saldo_cuenta</strong> de los clientes mexicanos con saldo superior a 50.00.",
-    "queryEsperada": "SELECT nombre, apellido, pais, saldo_cuenta FROM clientes WHERE pais = 'México' AND saldo_cuenta > 50.00;",
+    "titulo": "46. Detección de títulos con subtítulo (:)",
+    "descripcion": "Encuentra el <strong>titulo</strong> de aquellos videojuegos que incluyan dos puntos seguidos de un espacio (<code>': '</code>) indicando un subtítulo o entrega de saga.",
+    "queryEsperada": "SELECT titulo FROM videojuegos WHERE titulo LIKE '%: %';",
     "pistas": [
-      "WHERE pais = 'México' AND saldo_cuenta > 50.00."
+      "Usa LIKE con '%: %' para capturar los dos puntos seguidos de un espacio en cualquier parte.",
+      "WHERE titulo LIKE '%: %';"
     ],
-    "explicacion": "AND exige que ambas expresiones se cumplan concurrentemente."
+    "explicacion": "Patrones específicos con puntuación permiten identificar estructuras textuales particulares en bases de datos relacionales."
   },
   {
     "id": 47,
-    "modulo": "Módulo 8: Lógica Booleana Combinada",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 12: Filtrado Multi-criterio y Seguridad",
+    "nivel": "Avanzado",
     "tags": [
-      "AND",
-      "WHERE"
+      "LIKE",
+      "ORDER BY"
     ],
-    "titulo": "47. Joyas ocultas: Excelente nota y precio bajo",
-    "descripcion": "Muestra el <strong>titulo</strong>, <strong>calificacion</strong> y <strong>precio</strong> de los videojuegos con calificación mayor o igual a 9.5 y precio menor a 30.00.",
-    "queryEsperada": "SELECT titulo, calificacion, precio FROM videojuegos WHERE calificacion >= 9.5 AND precio < 30.00;",
+    "titulo": "47. Verificación de formato de correo con puntos",
+    "descripcion": "Consulta el <strong>nombre</strong>, <strong>apellido</strong> y <strong>email</strong> de los clientes cuyos correos electrónicos tengan el formato estándar que incluye un punto en el nombre de usuario (usando <code>LIKE '%_%._%@%'</code>), ordenados por <strong>apellido ASC</strong>.",
+    "queryEsperada": "SELECT nombre, apellido, email FROM clientes WHERE email LIKE '%_%._%@%' ORDER BY apellido ASC;",
     "pistas": [
-      "WHERE calificacion >= 9.5 AND precio < 30.00."
+      "El patrón '%_%._%@%' exige texto, un punto, más texto y el símbolo @.",
+      "Ordena por apellido ASC."
     ],
-    "explicacion": "Filtra productos con excelente relación calidad-precio."
+    "explicacion": "Combina comodines '_' y '%' para auditar la validez sintáctica básica de direcciones de correo."
   },
   {
     "id": 48,
-    "modulo": "Módulo 8: Lógica Booleana Combinada",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 12: Filtrado Multi-criterio y Seguridad",
+    "nivel": "Avanzado",
     "tags": [
-      "AND",
-      "OR",
-      "PARÉNTESIS"
+      "WHERE",
+      "BETWEEN",
+      "IN"
     ],
-    "titulo": "48. Agrupación con paréntesis: RPG o Plataformas",
-    "descripcion": "Obtén los videojuegos (<strong>titulo</strong>, <strong>genero</strong>, <strong>precio</strong>, <strong>calificacion</strong>) que sean 'Acción RPG' por menos de $40, O 'Plataformas' con calificación mayor a 9.0.",
-    "queryEsperada": "SELECT titulo, genero, precio, calificacion FROM videojuegos WHERE (genero = 'Acción RPG' AND precio < 40) OR (genero = 'Plataformas' AND calificacion > 9.0);",
+    "titulo": "48. Auditoría transaccional de ventas del primer semestre",
+    "descripcion": "Extrae el <strong>id</strong>, <strong>cliente_id</strong>, <strong>cantidad</strong>, <strong>precio_unitario</strong>, el subtotal calculado <code>(cantidad * precio_unitario) AS subtotal</code>, <strong>metodo_pago</strong> y <strong>fecha_venta</strong> de las ventas pagadas con 'Tarjeta' o 'PayPal' con subtotal >= 50.0 ocurridas en el primer semestre de 2023 (entre '2023-01-01' y '2023-06-30'), ordenadas por <strong>subtotal DESC</strong>.",
+    "queryEsperada": "SELECT id, cliente_id, cantidad, precio_unitario, (cantidad * precio_unitario) AS subtotal, metodo_pago, fecha_venta\nFROM ventas\nWHERE metodo_pago IN ('Tarjeta', 'PayPal')\n  AND (cantidad * precio_unitario) >= 50.0\n  AND fecha_venta BETWEEN '2023-01-01' AND '2023-06-30'\nORDER BY subtotal DESC;",
     "pistas": [
-      "Usa paréntesis para aislar las dos condiciones unidas por OR."
+      "Filtra método con IN ('Tarjeta', 'PayPal').",
+      "Aplica subtotal >= 50.0 y rango de fecha con BETWEEN '2023-01-01' AND '2023-06-30'."
     ],
-    "explicacion": "Los paréntesis anulan la precedencia natural de AND sobre OR."
+    "explicacion": "Consulta típica de control financiero y auditoría interna que cruza medios de cobro, montos y periodos fiscales."
   },
   {
     "id": 49,
-    "modulo": "Módulo 8: Lógica Booleana Combinada",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 12: Filtrado Multi-criterio y Seguridad",
+    "nivel": "Avanzado",
     "tags": [
-      "OR",
-      "WHERE"
+      "CASE WHEN",
+      "Seguridad"
     ],
-    "titulo": "49. Clientes inactivos o sin saldo",
-    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong>, <strong>activo</strong> y <strong>saldo_cuenta</strong> de los clientes que tengan su cuenta inactiva (<code>activo = 0</code>) O su saldo en 0.",
-    "queryEsperada": "SELECT nombre, apellido, activo, saldo_cuenta FROM clientes WHERE activo = 0 OR saldo_cuenta = 0;",
+    "titulo": "49. Enmascaramiento condicional de datos (Data Masking)",
+    "descripcion": "Proyecta el <strong>nombre</strong>, una columna <code>email_contacto</code> que muestre el email real si el cliente está activo (<code>activo = 1</code>) o la leyenda <code>'***CUENTA_INACTIVA***'</code> si está inactivo, además de su <strong>pais</strong> y <strong>activo</strong>, ordenados por <strong>activo DESC, nombre ASC</strong>.",
+    "queryEsperada": "SELECT nombre,\n  CASE\n    WHEN activo = 1 THEN email\n    ELSE '***CUENTA_INACTIVA***'\n  END AS email_contacto,\n  pais, activo\nFROM clientes\nORDER BY activo DESC, nombre ASC;",
     "pistas": [
-      "WHERE activo = 0 OR saldo_cuenta = 0;"
+      "Usa CASE WHEN activo = 1 THEN email ELSE '***CUENTA_INACTIVA***' END AS email_contacto.",
+      "Ordena por activo DESC, nombre ASC."
     ],
-    "explicacion": "OR evalúa verdadero si al menos una de las dos condiciones se cumple."
+    "explicacion": "Patrón fundamental de privacidad y gobernanza de datos para ocultar información sensible de usuarios dados de baja."
   },
   {
     "id": 50,
-    "modulo": "Módulo 8: Lógica Booleana Combinada",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 13: Consultas Analíticas y Casos Límite",
+    "nivel": "Avanzado",
     "tags": [
-      "AND",
-      "DISTINTO"
+      "WHERE",
+      "ORDER BY"
     ],
-    "titulo": "50. Títulos con stock que no son de deportes",
-    "descripcion": "Muestra el <strong>titulo</strong>, <strong>genero</strong> y <strong>stock</strong> de los videojuegos con stock disponible (<code>stock > 0</code>) que NO sean de 'Deportes'.",
-    "queryEsperada": "SELECT titulo, genero, stock FROM videojuegos WHERE stock > 0 AND genero != 'Deportes';",
+    "titulo": "50. Detección de joyas calidad-precio",
+    "descripcion": "Identifica los videojuegos de culto con calificación sobresaliente (<code>calificacion >= 9.5</code>), precio accesible (<code>precio <= 30.0</code>) y con existencias en almacén (<code>stock > 0</code>), mostrando <strong>titulo</strong>, <strong>calificacion</strong>, <strong>precio</strong> y <strong>consola</strong>, ordenados por <strong>calificacion DESC, precio ASC</strong>.",
+    "queryEsperada": "SELECT titulo, calificacion, precio, consola\nFROM videojuegos\nWHERE calificacion >= 9.5\n  AND precio <= 30.0\n  AND stock > 0\nORDER BY calificacion DESC, precio ASC;",
     "pistas": [
-      "WHERE stock > 0 AND genero != 'Deportes'."
+      "Filtra calificacion >= 9.5, precio <= 30.0 y stock > 0.",
+      "Ordena con calificacion DESC, precio ASC."
     ],
-    "explicacion": "El operador != descarta registros que coincidan con el valor."
+    "explicacion": "Análisis multivariable que cruza valoraciones de usuarios, precio de venta e inventario disponible."
   },
   {
     "id": 51,
-    "modulo": "Módulo 8: Lógica Booleana Combinada",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 13: Consultas Analíticas y Casos Límite",
+    "nivel": "Avanzado",
     "tags": [
-      "OR",
-      "WHERE"
+      "CASE WHEN",
+      "ROUND"
     ],
-    "titulo": "51. Ventas por volumen o en Cripto",
-    "descripcion": "Obtén el <strong>id</strong>, <strong>cantidad</strong>, <strong>precio_unitario</strong> y <strong>metodo_pago</strong> de ventas con cantidad mayor o igual a 2 unidades O pagadas con 'Cripto'.",
-    "queryEsperada": "SELECT id, cantidad, precio_unitario, metodo_pago FROM ventas WHERE cantidad >= 2 OR metodo_pago = 'Cripto';",
+    "titulo": "51. Política de descuento diferenciada por plataforma",
+    "descripcion": "Calcula el precio promocional según la plataforma: si la consola es <code>'PlayStation 4'</code> aplica un 20% de descuento (<code>ROUND(precio * 0.80, 2)</code>), si es <code>'PC'</code> aplica un 15% (<code>ROUND(precio * 0.85, 2)</code>), y para las demás consolas mantén el precio regular. Muestra <strong>titulo</strong>, <strong>consola</strong>, <strong>precio</strong> y <code>precio_promocional</code>, ordenados por <strong>precio_promocional ASC</strong>.",
+    "queryEsperada": "SELECT titulo, consola, precio,\n  CASE\n    WHEN consola = 'PlayStation 4' THEN ROUND(precio * 0.80, 2)\n    WHEN consola = 'PC' THEN ROUND(precio * 0.85, 2)\n    ELSE precio\n  END AS precio_promocional\nFROM videojuegos\nORDER BY precio_promocional ASC;",
     "pistas": [
-      "WHERE cantidad >= 2 OR metodo_pago = 'Cripto'."
+      "Usa CASE con dos WHEN calculando los descuentos con ROUND(..., 2).",
+      "Ordena por precio_promocional ASC."
     ],
-    "explicacion": "Permite segmentar transacciones especiales por volumen o método."
+    "explicacion": "Implementa reglas de tarificación dinámica directamente en la consulta SQL."
   },
   {
     "id": 52,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 13: Consultas Analíticas y Casos Límite",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "COUNT"
+      "CASE WHEN"
     ],
-    "titulo": "52. Conteo de juegos por consola",
-    "descripcion": "Obtén la <strong>consola</strong> y la cantidad de juegos registrados (alias <code>cantidad_juegos</code>) ordenados de mayor a menor cantidad.",
-    "queryEsperada": "SELECT consola, COUNT(*) AS cantidad_juegos FROM videojuegos GROUP BY consola ORDER BY cantidad_juegos DESC;",
+    "titulo": "52. Segmentación cronológica por generaciones de consolas",
+    "descripcion": "Clasifica cada juego según su año de lanzamiento: <code>'Clásico Temprano'</code> (< 2015), <code>'Generación Previa'</code> (entre 2015 y 2020) y <code>'Nueva Generación'</code> (> 2020). Proyecta <strong>titulo</strong>, <strong>año_lanzamiento</strong> y la columna <code>epoca</code>, ordenados por <strong>año_lanzamiento ASC, titulo ASC</strong>.",
+    "queryEsperada": "SELECT titulo, año_lanzamiento,\n  CASE\n    WHEN año_lanzamiento < 2015 THEN 'Clásico Temprano'\n    WHEN año_lanzamiento BETWEEN 2015 AND 2020 THEN 'Generación Previa'\n    ELSE 'Nueva Generación'\n  END AS epoca\nFROM videojuegos\nORDER BY año_lanzamiento ASC, titulo ASC;",
     "pistas": [
-      "GROUP BY consola ORDER BY cantidad_juegos DESC;"
+      "Aplica CASE con año_lanzamiento < 2015, BETWEEN 2015 AND 2020 y ELSE.",
+      "Ordena por año_lanzamiento ASC, titulo ASC."
     ],
-    "explicacion": "GROUP BY colapsa filas con la misma consola para agregar conteos."
+    "explicacion": "Agrupa variables continuas en épocas históricas para análisis de catálogo."
   },
   {
     "id": 53,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 13: Consultas Analíticas y Casos Límite",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "AVG",
-      "ROUND"
+      "WHERE",
+      "IN",
+      "AND",
+      "OR"
     ],
-    "titulo": "53. Puntuación media por género",
-    "descripcion": "Muestra el <strong>genero</strong> y la calificación promedio redondeada a 1 decimal (alias <code>promedio_calificacion</code>) ordenado descendentemente.",
-    "queryEsperada": "SELECT genero, ROUND(AVG(calificacion), 1) AS promedio_calificacion FROM videojuegos GROUP BY genero ORDER BY promedio_calificacion DESC;",
+    "titulo": "53. Detección de cuentas prioritarias o en riesgo",
+    "descripcion": "Encuentra los clientes que: (pertenezcan a 'Chile', 'Perú' o 'Argentina' y tengan saldo > 0.0) O (estén inactivos con activo = 0 y saldo = 0.0). Muestra <strong>nombre</strong>, <strong>apellido</strong>, <strong>pais</strong>, <strong>saldo_cuenta</strong> y <strong>activo</strong>, ordenados por <strong>pais ASC, saldo_cuenta DESC</strong>.",
+    "queryEsperada": "SELECT nombre, apellido, pais, saldo_cuenta, activo\nFROM clientes\nWHERE (pais IN ('Chile', 'Perú', 'Argentina') AND saldo_cuenta > 0.0)\n   OR (activo = 0 AND saldo_cuenta = 0.0)\nORDER BY pais ASC, saldo_cuenta DESC;",
     "pistas": [
-      "GROUP BY genero ORDER BY promedio_calificacion DESC;"
+      "Encierra ambas ramas disyuntivas entre paréntesis unidas con OR.",
+      "Ordena por pais ASC, saldo_cuenta DESC."
     ],
-    "explicacion": "Permite comparar qué géneros gozan de mejor aceptación crítica."
+    "explicacion": "Consulta bifurcada que alimenta dos flujos operacionales simultáneos: retención y depuración de cartera."
   },
   {
     "id": 54,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 13: Consultas Analíticas y Casos Límite",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "COUNT"
+      "NOT IN",
+      "WHERE"
     ],
-    "titulo": "54. Distribución de clientes por país",
-    "descripcion": "Consulta el <strong>pais</strong> y el total de clientes registrados (alias <code>total_clientes</code>), ordenado descendentemente por dicho total.",
-    "queryEsperada": "SELECT pais, COUNT(*) AS total_clientes FROM clientes GROUP BY pais ORDER BY total_clientes DESC;",
+    "titulo": "54. Transacciones mayoristas con métodos alternativos",
+    "descripcion": "Consulta las ventas que NO hayan sido pagadas con 'Tarjeta' ni 'PayPal' (usando <code>NOT IN</code>) y donde la cantidad adquirida sea estrictamente mayor a 1, proyectando <strong>id</strong>, <strong>videojuego_id</strong>, <strong>cantidad</strong>, <strong>precio_unitario</strong> y <strong>metodo_pago</strong>, ordenadas por <strong>precio_unitario DESC</strong>.",
+    "queryEsperada": "SELECT id, videojuego_id, cantidad, precio_unitario, metodo_pago\nFROM ventas\nWHERE metodo_pago NOT IN ('Tarjeta', 'PayPal')\n  AND cantidad > 1\nORDER BY precio_unitario DESC;",
     "pistas": [
-      "SELECT pais, COUNT(*) AS total_clientes FROM clientes GROUP BY pais ORDER BY total_clientes DESC;"
+      "Filtra método con NOT IN ('Tarjeta', 'PayPal').",
+      "Añade cantidad > 1 y ordena por precio_unitario DESC."
     ],
-    "explicacion": "Segmentación geográfica de la base de usuarios."
+    "explicacion": "Identifica compras al por mayor liquidadas mediante canales financieros no estándar como Cripto o Transferencia."
   },
   {
     "id": 55,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 13: Consultas Analíticas y Casos Límite",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "SUM"
+      "WHERE",
+      "ORDER BY",
+      "LIMIT"
     ],
-    "titulo": "55. Unidades y transacciones por método de pago",
-    "descripcion": "Para cada <strong>metodo_pago</strong> en la tabla <code>ventas</code>, calcula el número de ventas (alias <code>num_ventas</code>) y la suma de unidades vendidas (alias <code>total_unidades</code>).",
-    "queryEsperada": "SELECT metodo_pago, COUNT(*) AS num_ventas, SUM(cantidad) AS total_unidades FROM ventas GROUP BY metodo_pago;",
+    "titulo": "55. Podio de honor de Nintendo Switch en oferta",
+    "descripcion": "Extrae los <strong>3</strong> videojuegos mejor calificados para <code>'Nintendo Switch'</code> que tengan un precio inferior a <code>60.0</code> dólares, mostrando <strong>titulo</strong>, <strong>consola</strong>, <strong>calificacion</strong> y <strong>precio</strong>.",
+    "queryEsperada": "SELECT titulo, consola, calificacion, precio\nFROM videojuegos\nWHERE consola = 'Nintendo Switch'\n  AND precio < 60.0\nORDER BY calificacion DESC\nLIMIT 3;",
     "pistas": [
-      "GROUP BY metodo_pago con COUNT(*) y SUM(cantidad)."
+      "WHERE consola = 'Nintendo Switch' AND precio < 60.0.",
+      "ORDER BY calificacion DESC LIMIT 3;"
     ],
-    "explicacion": "Resumen transaccional agrupado por canal de pago."
+    "explicacion": "Cálculo de podio de recomendaciones de alta demanda en una plataforma específica."
   },
   {
     "id": 56,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 14: Auditoría de Negocio y El Gran Desafío",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "HAVING"
+      "WHERE",
+      "Fechas"
     ],
-    "titulo": "56. Consolas con al menos 5 títulos",
-    "descripcion": "Muestra las <strong>consolas</strong> que posean 5 o más títulos en el catálogo y la cantidad de juegos (alias <code>cantidad_juegos</code>). Usa <code>HAVING</code>.",
-    "queryEsperada": "SELECT consola, COUNT(*) AS cantidad_juegos FROM videojuegos GROUP BY consola HAVING COUNT(*) >= 5;",
+    "titulo": "56. Clientes pioneros con saldo remanente",
+    "descripcion": "Localiza a los clientes antiguos registrados antes del <code>'2021-01-01'</code> que aún conserven un <strong>saldo_cuenta</strong> mayor a <code>50.0</code> dólares, mostrando <strong>nombre</strong>, <strong>apellido</strong>, <strong>fecha_registro</strong> y <strong>saldo_cuenta</strong>, ordenados cronológicamente por <strong>fecha_registro ASC</strong>.",
+    "queryEsperada": "SELECT nombre, apellido, fecha_registro, saldo_cuenta\nFROM clientes\nWHERE fecha_registro < '2021-01-01'\n  AND saldo_cuenta > 50.0\nORDER BY fecha_registro ASC;",
     "pistas": [
-      "GROUP BY consola HAVING COUNT(*) >= 5;"
+      "WHERE fecha_registro < '2021-01-01' AND saldo_cuenta > 50.0.",
+      "ORDER BY fecha_registro ASC;"
     ],
-    "explicacion": "HAVING filtra grupos agregados después de la ejecución de GROUP BY."
+    "explicacion": "Análisis de cuentas durmientes o clientes antiguos con pasivo financiero pendiente de redención."
   },
   {
     "id": 57,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 14: Auditoría de Negocio y El Gran Desafío",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "HAVING"
+      "LIKE",
+      "NOT IN",
+      "BETWEEN"
     ],
-    "titulo": "57. Países con 3 o más clientes",
-    "descripcion": "Obtén los países (<strong>pais</strong>) con 3 o más clientes registrados y el total de clientes con el alias <code>total_clientes</code>.",
-    "queryEsperada": "SELECT pais, COUNT(*) AS total_clientes FROM clientes GROUP BY pais HAVING COUNT(*) >= 3;",
+    "titulo": "57. Búsqueda combinada: Títulos compuestos fuera de deportes",
+    "descripcion": "Obtén el <strong>titulo</strong>, <strong>genero</strong>, <strong>precio</strong> y <strong>calificacion</strong> de los videojuegos cuyo título contenga las palabras <code>'The'</code> o <code>'of'</code>, que NO pertenezcan a los géneros <code>'Deportes'</code> ni <code>'Carreras'</code> y cuyo precio esté entre <code>15.0</code> y <code>70.0</code>, ordenados por <strong>precio DESC</strong>.",
+    "queryEsperada": "SELECT titulo, genero, precio, calificacion\nFROM videojuegos\nWHERE (titulo LIKE '%The%' OR titulo LIKE '%of%')\n  AND genero NOT IN ('Deportes', 'Carreras')\n  AND precio BETWEEN 15.0 AND 70.0\nORDER BY precio DESC;",
     "pistas": [
-      "GROUP BY pais HAVING COUNT(*) >= 3;"
+      "Agrupa la búsqueda de título: (titulo LIKE '%The%' OR titulo LIKE '%of%').",
+      "Une con genero NOT IN ('Deportes', 'Carreras') y precio BETWEEN 15.0 AND 70.0."
     ],
-    "explicacion": "Identifica mercados con volumen representativo de usuarios."
+    "explicacion": "Combina filtrado semántico de nombres, listas de exclusión de categorías y franjas de precio."
   },
   {
     "id": 58,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 14: Auditoría de Negocio y El Gran Desafío",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "HAVING",
-      "AVG"
+      "LIKE",
+      "IN",
+      "WHERE"
     ],
-    "titulo": "58. Géneros de alto costo promedio",
-    "descripcion": "Muestra los géneros (<strong>genero</strong>) cuyo precio promedio sea estrictamente superior a 40 dólares, junto al promedio redondeado a 2 decimales (alias <code>precio_promedio</code>).",
-    "queryEsperada": "SELECT genero, ROUND(AVG(precio), 2) AS precio_promedio FROM videojuegos GROUP BY genero HAVING AVG(precio) > 40;",
+    "titulo": "58. Clientes activos por iniciales en mercados hispanos",
+    "descripcion": "Encuentra a los clientes cuyo nombre comience por <code>'M'</code>, <code>'L'</code> o <code>'J'</code>, que residan en <code>'México'</code>, <code>'España'</code> o <code>'Colombia'</code> y que estén activos (<code>activo = 1</code>), proyectando <strong>nombre</strong>, <strong>apellido</strong>, <strong>pais</strong> y <strong>email</strong>, ordenados por <strong>nombre ASC</strong>.",
+    "queryEsperada": "SELECT nombre, apellido, pais, email\nFROM clientes\nWHERE (nombre LIKE 'M%' OR nombre LIKE 'L%' OR nombre LIKE 'J%')\n  AND pais IN ('México', 'España', 'Colombia')\n  AND activo = 1\nORDER BY nombre ASC;",
     "pistas": [
-      "GROUP BY genero HAVING AVG(precio) > 40;"
+      "Usa (nombre LIKE 'M%' OR nombre LIKE 'L%' OR nombre LIKE 'J%').",
+      "Filtra país con IN y activo = 1, ordenando con ORDER BY nombre ASC."
     ],
-    "explicacion": "Filtra categorías cuyo ticket promedio supera el estándar."
+    "explicacion": "Segmentación de usuarios para campañas de correo por rangos alfabéticos y mercados objetivo."
   },
   {
     "id": 59,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 14: Auditoría de Negocio y El Gran Desafío",
+    "nivel": "Avanzado",
     "tags": [
-      "GROUP BY",
-      "HAVING"
+      "CASE WHEN",
+      "Aritmética",
+      "LIMIT"
     ],
-    "titulo": "59. Métodos de pago populares (> 3 ventas)",
-    "descripcion": "Lista los métodos de pago (<strong>metodo_pago</strong>) que registren más de 3 ventas con el alias <code>total_transacciones</code>.",
-    "queryEsperada": "SELECT metodo_pago, COUNT(*) AS total_transacciones FROM ventas GROUP BY metodo_pago HAVING COUNT(*) > 3;",
+    "titulo": "59. Clasificación de ventas por magnitud de ticket",
+    "descripcion": "Proyecta el <strong>id</strong>, <strong>fecha_venta</strong>, <strong>cantidad</strong>, <strong>precio_unitario</strong>, el total calculado <code>(cantidad * precio_unitario) AS total_venta</code> y una columna <code>tipo_ticket</code>: 'Venta Mayor' (>= 100.0), 'Venta Media' (>= 50.0) y 'Venta Menor' en otro caso. Ordena por <strong>total_venta DESC</strong> y toma los <strong>10</strong> mayores registros.",
+    "queryEsperada": "SELECT id, fecha_venta, cantidad, precio_unitario,\n  (cantidad * precio_unitario) AS total_venta,\n  CASE\n    WHEN (cantidad * precio_unitario) >= 100.0 THEN 'Venta Mayor'\n    WHEN (cantidad * precio_unitario) >= 50.0 THEN 'Venta Media'\n    ELSE 'Venta Menor'\n  END AS tipo_ticket\nFROM ventas\nORDER BY total_venta DESC\nLIMIT 10;",
     "pistas": [
-      "GROUP BY metodo_pago HAVING COUNT(*) > 3;"
+      "Calcula (cantidad * precio_unitario) AS total_venta.",
+      "Usa la misma expresión en el CASE para categorizar y corta con LIMIT 10."
     ],
-    "explicacion": "Detecta pasarelas de pago con alta tracción."
+    "explicacion": "Análisis de distribución de valor de pedidos (AOV - Average Order Value) para toma de decisiones comerciales."
   },
   {
     "id": 60,
-    "modulo": "Módulo 9: Agrupaciones (GROUP BY y HAVING)",
-    "nivel": "Intermedio",
-    "tags": [
-      "GROUP BY",
-      "SUM",
-      "ORDER BY"
-    ],
-    "titulo": "60. Valor de inventario por consola",
-    "descripcion": "Calcula el valor económico del inventario (<code>precio * stock</code>) agrupado por <strong>consola</strong> con el alias <code>valor_total</code>, ordenado de mayor a menor valor.",
-    "queryEsperada": "SELECT consola, SUM(precio * stock) AS valor_total FROM videojuegos GROUP BY consola ORDER BY valor_total DESC;",
-    "pistas": [
-      "SELECT consola, SUM(precio * stock) AS valor_total FROM videojuegos GROUP BY consola ORDER BY valor_total DESC;"
-    ],
-    "explicacion": "Calcula el capital inmovilizado en stock por cada plataforma."
-  },
-  {
-    "id": 61,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
+    "seccion": "Sección 1: Consultas SELECT y Filtrado",
+    "modulo": "Módulo 14: Auditoría de Negocio y El Gran Desafío",
     "nivel": "Avanzado",
     "tags": [
-      "INNER JOIN"
-    ],
-    "titulo": "61. Ventas vinculadas con clientes",
-    "descripcion": "Combina <code>ventas</code> y <code>clientes</code> para mostrar: <strong>ventas.id</strong>, <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong>, <strong>ventas.fecha_venta</strong> y <strong>ventas.precio_unitario</strong>. Ordena por <code>ventas.id</code> ascendente.",
-    "queryEsperada": "SELECT ventas.id, clientes.nombre, clientes.apellido, ventas.fecha_venta, ventas.precio_unitario FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id ORDER BY ventas.id ASC;",
-    "pistas": [
-      "INNER JOIN clientes ON ventas.cliente_id = clientes.id ORDER BY ventas.id ASC;"
-    ],
-    "explicacion": "INNER JOIN vincula filas coincidentes en clave foránea y primaria."
-  },
-  {
-    "id": 62,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN"
-    ],
-    "titulo": "62. Ventas con título de videojuego",
-    "descripcion": "Combina <code>ventas</code> y <code>videojuegos</code> para mostrar: <strong>ventas.id</strong>, <strong>videojuegos.titulo</strong>, <strong>ventas.cantidad</strong> y <strong>ventas.precio_unitario</strong> ordenado por <code>ventas.id</code> ascendente.",
-    "queryEsperada": "SELECT ventas.id, videojuegos.titulo, ventas.cantidad, ventas.precio_unitario FROM ventas INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id ORDER BY ventas.id ASC;",
-    "pistas": [
-      "INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id ORDER BY ventas.id ASC;"
-    ],
-    "explicacion": "Conecta transacciones monetarias con el catálogo de productos."
-  },
-  {
-    "id": 63,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "WHERE"
-    ],
-    "titulo": "63. Compras realizadas por clientes mexicanos",
-    "descripcion": "Muestra el <strong>ventas.id</strong>, <strong>clientes.nombre</strong>, <strong>clientes.pais</strong> y <strong>ventas.precio_unitario</strong> de todas las ventas hechas a clientes de 'México'.",
-    "queryEsperada": "SELECT ventas.id, clientes.nombre, clientes.pais, ventas.precio_unitario FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id WHERE clientes.pais = 'México';",
-    "pistas": [
-      "Combina INNER JOIN con WHERE clientes.pais = 'México'."
-    ],
-    "explicacion": "Permite filtrar relaciones cruzadas basadas en atributos de cualquiera de las tablas."
-  },
-  {
-    "id": 64,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "WHERE"
-    ],
-    "titulo": "64. Ventas de títulos para Switch",
-    "descripcion": "Obtén el <strong>ventas.id</strong>, <strong>videojuegos.titulo</strong>, <strong>videojuegos.consola</strong> y <strong>ventas.fecha_venta</strong> de juegos vendidos para la consola 'Nintendo Switch'.",
-    "queryEsperada": "SELECT ventas.id, videojuegos.titulo, videojuegos.consola, ventas.fecha_venta FROM ventas INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id WHERE videojuegos.consola = 'Nintendo Switch';",
-    "pistas": [
-      "WHERE videojuegos.consola = 'Nintendo Switch'."
-    ],
-    "explicacion": "Relaciona ventas filtrando por características del producto adquirido."
-  },
-  {
-    "id": 65,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "GROUP BY",
-      "SUM"
-    ],
-    "titulo": "65. Total de copias vendidas por juego",
-    "descripcion": "Muestra el <strong>videojuegos.titulo</strong> y la suma total de unidades vendidas (alias <code>total_vendido</code>) ordenado de mayor a menor venta.",
-    "queryEsperada": "SELECT videojuegos.titulo, SUM(ventas.cantidad) AS total_vendido FROM ventas INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id GROUP BY videojuegos.titulo ORDER BY total_vendido DESC;",
-    "pistas": [
-      "GROUP BY videojuegos.titulo con SUM(ventas.cantidad)."
-    ],
-    "explicacion": "Agrega ventas individuales para calcular el volumen total de cada producto."
-  },
-  {
-    "id": 66,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "GROUP BY",
-      "SUM"
-    ],
-    "titulo": "66. Gasto acumulado por cliente",
-    "descripcion": "Muestra el <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong> y el importe total gastado redondeado a 2 decimales (alias <code>total_gastado</code>) ordenado descendentemente.",
-    "queryEsperada": "SELECT clientes.nombre, clientes.apellido, ROUND(SUM(ventas.cantidad * ventas.precio_unitario), 2) AS total_gastado FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id GROUP BY clientes.id ORDER BY total_gastado DESC;",
-    "pistas": [
-      "GROUP BY clientes.id con SUM(ventas.cantidad * ventas.precio_unitario)."
-    ],
-    "explicacion": "Métrica fundamental de Customer Lifetime Value (CLV)."
-  },
-  {
-    "id": 67,
-    "modulo": "Módulo 10: Relaciones (INNER JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "GROUP BY",
-      "HAVING"
-    ],
-    "titulo": "67. Clientes VIP con gasto superior a $100",
-    "descripcion": "Lista el <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong> y el <strong>total_gastado</strong> (redondeado a 2 decimales) de clientes que hayan comprado más de $100 en total.",
-    "queryEsperada": "SELECT clientes.nombre, clientes.apellido, ROUND(SUM(ventas.cantidad * ventas.precio_unitario), 2) AS total_gastado FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id GROUP BY clientes.id HAVING SUM(ventas.cantidad * ventas.precio_unitario) > 100;",
-    "pistas": [
-      "Añade HAVING SUM(ventas.cantidad * ventas.precio_unitario) > 100;"
-    ],
-    "explicacion": "Filtra agregados relacionales para segmentar a los mejores compradores."
-  },
-  {
-    "id": 68,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "TRIPLE JOIN"
-    ],
-    "titulo": "68. Registro maestro integral de transacciones",
-    "descripcion": "Combina las 3 tablas para mostrar: <strong>ventas.id</strong>, <strong>clientes.nombre</strong>, <strong>videojuegos.titulo</strong>, <strong>ventas.cantidad</strong> y <strong>ventas.precio_unitario</strong> ordenado por <code>ventas.id</code> ascendente.",
-    "queryEsperada": "SELECT ventas.id, clientes.nombre, videojuegos.titulo, ventas.cantidad, ventas.precio_unitario FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id ORDER BY ventas.id ASC;",
-    "pistas": [
-      "Encadena dos cláusulas INNER JOIN: clientes y videojuegos."
-    ],
-    "explicacion": "Reconstruye la vista consolidada de la transacción normalizada."
-  },
-  {
-    "id": 69,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "WHERE"
-    ],
-    "titulo": "69. Compras con tarjeta con cliente y juego",
-    "descripcion": "Muestra el <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong>, <strong>videojuegos.titulo</strong> y <strong>ventas.metodo_pago</strong> de ventas abonadas con 'Tarjeta'.",
-    "queryEsperada": "SELECT clientes.nombre, clientes.apellido, videojuegos.titulo, ventas.metodo_pago FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id WHERE ventas.metodo_pago = 'Tarjeta';",
-    "pistas": [
-      "WHERE ventas.metodo_pago = 'Tarjeta'."
-    ],
-    "explicacion": "Filtra la transacción consolidada por canal de pago."
-  },
-  {
-    "id": 70,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "SUM",
-      "GROUP BY"
-    ],
-    "titulo": "70. Facturación por desarrollador",
-    "descripcion": "Calcula el total de ingresos generados (alias <code>ingresos_totales</code> redondeado a 2 decimales) agrupado por <strong>videojuegos.desarrollador</strong>, ordenado descendentemente.",
-    "queryEsperada": "SELECT videojuegos.desarrollador, ROUND(SUM(ventas.cantidad * ventas.precio_unitario), 2) AS ingresos_totales FROM ventas INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id GROUP BY videojuegos.desarrollador ORDER BY ingresos_totales DESC;",
-    "pistas": [
-      "GROUP BY videojuegos.desarrollador con SUM(ventas.cantidad * ventas.precio_unitario)."
-    ],
-    "explicacion": "Permite liquidar regalías y comisiones a proveedores."
-  },
-  {
-    "id": 71,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "DISTINCT"
-    ],
-    "titulo": "71. Clientes fanáticos de Acción RPG",
-    "descripcion": "Obtén una lista única (DISTINCT) de <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong> y <strong>videojuegos.genero</strong> de usuarios que hayan comprado algún juego de 'Acción RPG'.",
-    "queryEsperada": "SELECT DISTINCT clientes.nombre, clientes.apellido, videojuegos.genero FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id WHERE videojuegos.genero = 'Acción RPG';",
-    "pistas": [
-      "SELECT DISTINCT ... WHERE videojuegos.genero = 'Acción RPG'."
-    ],
-    "explicacion": "Identifica audiencias por afinidad de género para campañas dirigidas."
-  },
-  {
-    "id": 72,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "LIKE"
-    ],
-    "titulo": "72. Auditoría de ventas del año 2023",
-    "descripcion": "Muestra <strong>ventas.id</strong>, <strong>clientes.nombre</strong>, <strong>videojuegos.titulo</strong> y <strong>ventas.fecha_venta</strong> de transacciones hechas en 2023, ordenadas por fecha.",
-    "queryEsperada": "SELECT ventas.id, clientes.nombre, videojuegos.titulo, ventas.fecha_venta FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id WHERE ventas.fecha_venta LIKE '2023%' ORDER BY ventas.fecha_venta ASC;",
-    "pistas": [
-      "WHERE ventas.fecha_venta LIKE '2023%' ORDER BY ventas.fecha_venta ASC;"
-    ],
-    "explicacion": "Filtra transacciones por año calendario en datos normalizados."
-  },
-  {
-    "id": 73,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "GROUP BY",
+      "DISTINCT",
+      "CASE WHEN",
+      "BETWEEN",
+      "IN",
       "LIMIT"
     ],
-    "titulo": "73. Género rey en unidades vendidas",
-    "descripcion": "Obtén el <strong>videojuegos.genero</strong> y la suma de unidades vendidas (alias <code>unidades_vendidas</code>) del género más vendido de toda la tienda (LIMIT 1).",
-    "queryEsperada": "SELECT videojuegos.genero, SUM(ventas.cantidad) AS unidades_vendidas FROM ventas INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id GROUP BY videojuegos.genero ORDER BY unidades_vendidas DESC LIMIT 1;",
+    "titulo": "60. El Gran Desafío: Informe Maestro de Catálogo",
+    "descripcion": "Genera un reporte maestro con registros únicos (<code>DISTINCT</code>) que proyecte: <strong>titulo</strong>, <strong>consola</strong>, <strong>genero</strong>, <strong>precio</strong>, <strong>stock</strong> y una <code>etiqueta_comercial</code> generada con <code>CASE</code> ('AGOTADO' si stock = 0, 'JOYA PREMIUM' si precio >= 60.0 y calificacion >= 9.5, 'OFERTA' si precio < 20.0 y 'REGULAR' para el resto).<br><br>Aplica los siguientes filtros combinados:<br>• Consola en 'PlayStation 5', 'Nintendo Switch' o 'PC'.<br>• Precio entre 10.0 y 70.0.<br>• Género que no contenga 'Deportes'.<br>• Excluir explícitamente juegos que estén agotados con calificación menor a 9.0 con <code>NOT (stock = 0 AND calificacion < 9.0)</code>.<br><br>Ordena por <strong>precio DESC, stock ASC</strong> y limita el reporte a <strong>15</strong> registros.",
+    "queryEsperada": "SELECT DISTINCT\n  titulo,\n  consola,\n  genero,\n  precio,\n  stock,\n  CASE\n    WHEN stock = 0 THEN 'AGOTADO'\n    WHEN precio >= 60.0 AND calificacion >= 9.5 THEN 'JOYA PREMIUM'\n    WHEN precio < 20.0 THEN 'OFERTA'\n    ELSE 'REGULAR'\n  END AS etiqueta_comercial\nFROM videojuegos\nWHERE (consola IN ('PlayStation 5', 'Nintendo Switch', 'PC'))\n  AND (precio BETWEEN 10.0 AND 70.0)\n  AND (genero NOT LIKE '%Deportes%')\n  AND NOT (stock = 0 AND calificacion < 9.0)\nORDER BY precio DESC, stock ASC\nLIMIT 15;",
     "pistas": [
-      "GROUP BY videojuegos.genero ORDER BY unidades_vendidas DESC LIMIT 1;"
+      "Inicia con SELECT DISTINCT titulo, consola, genero, precio, stock, CASE ... END AS etiqueta_comercial.",
+      "En el WHERE enlaza las 4 condiciones con AND: IN, BETWEEN, NOT LIKE y NOT (...).",
+      "Finaliza con ORDER BY precio DESC, stock ASC LIMIT 15;"
     ],
-    "explicacion": "Determina la categoría más exitosa del negocio."
-  },
-  {
-    "id": 74,
-    "modulo": "Módulo 11: Joins Múltiples y Relaciones N:M",
-    "nivel": "Avanzado",
-    "tags": [
-      "INNER JOIN",
-      "DISTINCT"
-    ],
-    "titulo": "74. Compradores de títulos de Nintendo",
-    "descripcion": "Muestra sin duplicados el <strong>clientes.nombre</strong> y <strong>clientes.apellido</strong> de los clientes que hayan comprado al menos un título desarrollado por 'Nintendo'.",
-    "queryEsperada": "SELECT DISTINCT clientes.nombre, clientes.apellido FROM ventas INNER JOIN clientes ON ventas.cliente_id = clientes.id INNER JOIN videojuegos ON ventas.videojuego_id = videojuegos.id WHERE videojuegos.desarrollador = 'Nintendo';",
-    "pistas": [
-      "WHERE videojuegos.desarrollador = 'Nintendo'."
-    ],
-    "explicacion": "Segmenta compradores fieles a un publisher específico."
-  },
-  {
-    "id": 75,
-    "modulo": "Módulo 12: Coincidencias y Faltantes (LEFT JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "LEFT JOIN",
-      "IS NULL"
-    ],
-    "titulo": "75. Videojuegos sin ventas registradas",
-    "descripcion": "Obtén el <strong>videojuegos.id</strong> y <strong>videojuegos.titulo</strong> de aquellos juegos que jamás han tenido una venta en la tienda.",
-    "queryEsperada": "SELECT videojuegos.id, videojuegos.titulo FROM videojuegos LEFT JOIN ventas ON videojuegos.id = ventas.videojuego_id WHERE ventas.id IS NULL;",
-    "pistas": [
-      "LEFT JOIN ventas ON videojuegos.id = ventas.videojuego_id WHERE ventas.id IS NULL;"
-    ],
-    "explicacion": "El patrón LEFT JOIN ... WHERE right.id IS NULL detecta registros huérfanos o sin interacción."
-  },
-  {
-    "id": 76,
-    "modulo": "Módulo 12: Coincidencias y Faltantes (LEFT JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "LEFT JOIN",
-      "IS NULL"
-    ],
-    "titulo": "76. Clientes inactivos sin compras",
-    "descripcion": "Muestra el <strong>clientes.id</strong>, <strong>clientes.nombre</strong> y <strong>clientes.apellido</strong> de los clientes registrados que nunca han realizado una compra.",
-    "queryEsperada": "SELECT clientes.id, clientes.nombre, clientes.apellido FROM clientes LEFT JOIN ventas ON clientes.id = ventas.cliente_id WHERE ventas.id IS NULL;",
-    "pistas": [
-      "LEFT JOIN ventas ON clientes.id = ventas.cliente_id WHERE ventas.id IS NULL;"
-    ],
-    "explicacion": "Permite a mercadotecnia reactivar usuarios que crearon cuenta pero no compraron."
-  },
-  {
-    "id": 77,
-    "modulo": "Módulo 12: Coincidencias y Faltantes (LEFT JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "LEFT JOIN",
-      "GROUP BY"
-    ],
-    "titulo": "77. Historial de compras por cliente (incluyendo 0)",
-    "descripcion": "Obtén <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong> y el total de transacciones (alias <code>total_compras</code>), incluyendo a quienes no tienen compras (0). Ordena descendentemente.",
-    "queryEsperada": "SELECT clientes.nombre, clientes.apellido, COUNT(ventas.id) AS total_compras FROM clientes LEFT JOIN ventas ON clientes.id = ventas.cliente_id GROUP BY clientes.id ORDER BY total_compras DESC;",
-    "pistas": [
-      "Usa COUNT(ventas.id) en vez de COUNT(*) para que devuelva 0 si es NULL."
-    ],
-    "explicacion": "COUNT(columna) ignora nulos, permitiendo contar ceros correctamente en LEFT JOIN."
-  },
-  {
-    "id": 78,
-    "modulo": "Módulo 12: Coincidencias y Faltantes (LEFT JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "LEFT JOIN",
-      "COALESCE"
-    ],
-    "titulo": "78. Total de unidades vendidas por juego con COALESCE",
-    "descripcion": "Muestra el <strong>videojuegos.titulo</strong> y las unidades totales vendidas (alias <code>unidades_totales</code>) reemplazando nulos con 0 usando <code>COALESCE</code>, ordenado descendentemente.",
-    "queryEsperada": "SELECT videojuegos.titulo, COALESCE(SUM(ventas.cantidad), 0) AS unidades_totales FROM videojuegos LEFT JOIN ventas ON videojuegos.id = ventas.videojuego_id GROUP BY videojuegos.id ORDER BY unidades_totales DESC;",
-    "pistas": [
-      "COALESCE(SUM(ventas.cantidad), 0) AS unidades_totales."
-    ],
-    "explicacion": "COALESCE devuelve el primer valor no nulo de la lista de argumentos."
-  },
-  {
-    "id": 79,
-    "modulo": "Módulo 12: Coincidencias y Faltantes (LEFT JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "LEFT JOIN",
-      "AND"
-    ],
-    "titulo": "79. Clientes activos listos para primera compra",
-    "descripcion": "Muestra el <strong>clientes.nombre</strong> y <strong>clientes.email</strong> de clientes con cuenta activa (<code>activo = 1</code>) que todavía no han comprado nada.",
-    "queryEsperada": "SELECT clientes.nombre, clientes.email FROM clientes LEFT JOIN ventas ON clientes.id = ventas.cliente_id WHERE ventas.id IS NULL AND clientes.activo = 1;",
-    "pistas": [
-      "WHERE ventas.id IS NULL AND clientes.activo = 1;"
-    ],
-    "explicacion": "Público objetivo clave para cupones de primera compra."
-  },
-  {
-    "id": 80,
-    "modulo": "Módulo 12: Coincidencias y Faltantes (LEFT JOIN)",
-    "nivel": "Avanzado",
-    "tags": [
-      "LEFT JOIN",
-      "GROUP BY"
-    ],
-    "titulo": "80. Consolas y su total de transacciones",
-    "descripcion": "Muestra la <strong>videojuegos.consola</strong> y el número total de ventas registradas (alias <code>total_ventas</code>) ordenado de mayor a menor.",
-    "queryEsperada": "SELECT videojuegos.consola, COUNT(ventas.id) AS total_ventas FROM videojuegos LEFT JOIN ventas ON videojuegos.id = ventas.videojuego_id GROUP BY videojuegos.consola ORDER BY total_ventas DESC;",
-    "pistas": [
-      "GROUP BY videojuegos.consola ORDER BY total_ventas DESC;"
-    ],
-    "explicacion": "Evalúa el volumen comercial absorbido por cada plataforma."
-  },
-  {
-    "id": 81,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "SUBCONSULTA",
-      "AVG"
-    ],
-    "titulo": "81. Títulos con precio superior al promedio",
-    "descripcion": "Muestra el <strong>titulo</strong> y <strong>precio</strong> de los videojuegos cuyo precio sea mayor al precio promedio de todo el catálogo, ordenados de mayor a menor.",
-    "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio > (SELECT AVG(precio) FROM videojuegos) ORDER BY precio DESC;",
-    "pistas": [
-      "Subconsulta: (SELECT AVG(precio) FROM videojuegos)."
-    ],
-    "explicacion": "Una subconsulta escalar calcula dinámicamente el promedio para la comparación."
-  },
-  {
-    "id": 82,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "SUBCONSULTA",
-      "IN"
-    ],
-    "titulo": "82. Clientes con pagos en Criptomonedas (IN)",
-    "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de clientes cuyo id aparezca en la subconsulta de ventas con pago 'Cripto'.",
-    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes WHERE id IN (SELECT cliente_id FROM ventas WHERE metodo_pago = 'Cripto');",
-    "pistas": [
-      "WHERE id IN (SELECT cliente_id FROM ventas WHERE metodo_pago = 'Cripto')."
-    ],
-    "explicacion": "El operador IN con subconsulta filtra según el conjunto generado."
-  },
-  {
-    "id": 83,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "SUBCONSULTA CORRELACIONADA"
-    ],
-    "titulo": "83. Juegos destacados sobre la media de su consola",
-    "descripcion": "Muestra <strong>v1.titulo</strong>, <strong>v1.consola</strong> y <strong>v1.calificacion</strong> de los juegos cuya calificación sea mayor o igual a la calificación promedio de su propia consola.",
-    "queryEsperada": "SELECT v1.titulo, v1.consola, v1.calificacion FROM videojuegos v1 WHERE v1.calificacion >= (SELECT AVG(v2.calificacion) FROM videojuegos v2 WHERE v2.consola = v1.consola) ORDER BY v1.consola, v1.calificacion DESC;",
-    "pistas": [
-      "Subconsulta correlacionada: WHERE v2.consola = v1.consola."
-    ],
-    "explicacion": "Una subconsulta correlacionada se evalúa una vez por cada fila de la consulta externa."
-  },
-  {
-    "id": 84,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "SUBCONSULTA",
-      "AVG"
-    ],
-    "titulo": "84. Clientes con saldo sobre la media",
-    "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de clientes con saldo superior a la media de todos los clientes, ordenados de mayor a menor saldo.",
-    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes WHERE saldo_cuenta > (SELECT AVG(saldo_cuenta) FROM clientes) ORDER BY saldo_cuenta DESC;",
-    "pistas": [
-      "WHERE saldo_cuenta > (SELECT AVG(saldo_cuenta) FROM clientes)."
-    ],
-    "explicacion": "Identifica a usuarios con saldo por encima del comportamiento medio."
-  },
-  {
-    "id": 85,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "EXISTS"
-    ],
-    "titulo": "85. Videojuegos comprados al menos una vez (EXISTS)",
-    "descripcion": "Muestra el <strong>titulo</strong> de los videojuegos para los cuales existe al menos un registro en la tabla <code>ventas</code> utilizando la cláusula <code>EXISTS</code>.",
-    "queryEsperada": "SELECT titulo FROM videojuegos WHERE EXISTS (SELECT 1 FROM ventas WHERE ventas.videojuego_id = videojuegos.id);",
-    "pistas": [
-      "WHERE EXISTS (SELECT 1 FROM ventas WHERE ventas.videojuego_id = videojuegos.id)."
-    ],
-    "explicacion": "EXISTS devuelve TRUE tan pronto como encuentra la primera coincidencia, siendo altamente eficiente."
-  },
-  {
-    "id": 86,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "NOT EXISTS"
-    ],
-    "titulo": "86. Clientes sin transacciones usando NOT EXISTS",
-    "descripcion": "Obtén el <strong>nombre</strong> y <strong>apellido</strong> de los clientes para los cuales NO existe ninguna venta registrada en <code>ventas</code> usando <code>NOT EXISTS</code>.",
-    "queryEsperada": "SELECT nombre, apellido FROM clientes WHERE NOT EXISTS (SELECT 1 FROM ventas WHERE ventas.cliente_id = clientes.id);",
-    "pistas": [
-      "WHERE NOT EXISTS (SELECT 1 FROM ventas WHERE ventas.cliente_id = clientes.id)."
-    ],
-    "explicacion": "NOT EXISTS es una alternativa óptima a LEFT JOIN ... IS NULL."
-  },
-  {
-    "id": 87,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "CASE WHEN"
-    ],
-    "titulo": "87. Segmentación de precios con CASE WHEN",
-    "descripcion": "Muestra el <strong>titulo</strong>, <strong>precio</strong> y una columna calculada llamada <code>categoria_precio</code> que devuelva: 'Premium' si el precio es >= 50, 'Estándar' si es >= 25, y 'Económico' en otro caso.",
-    "queryEsperada": "SELECT titulo, precio, CASE WHEN precio >= 50 THEN 'Premium' WHEN precio >= 25 THEN 'Estándar' ELSE 'Económico' END AS categoria_precio FROM videojuegos ORDER BY precio DESC;",
-    "pistas": [
-      "Usa CASE WHEN precio >= 50 THEN ... END AS categoria_precio."
-    ],
-    "explicacion": "CASE WHEN evalúa lógica condicional if/else directamente en la proyección de columnas."
-  },
-  {
-    "id": 88,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "CASE WHEN"
-    ],
-    "titulo": "88. Estado de solvencia del cliente con CASE",
-    "descripcion": "Muestra <strong>nombre</strong>, <strong>apellido</strong>, <strong>saldo_cuenta</strong> y una columna <code>estado_saldo</code>: 'Alto' si saldo > 100, 'Positivo' si saldo > 0, y 'Sin Saldo' si es 0.",
-    "queryEsperada": "SELECT nombre, apellido, saldo_cuenta, CASE WHEN saldo_cuenta > 100 THEN 'Alto' WHEN saldo_cuenta > 0 THEN 'Positivo' ELSE 'Sin Saldo' END AS estado_saldo FROM clientes;",
-    "pistas": [
-      "CASE WHEN saldo_cuenta > 100 THEN 'Alto' WHEN saldo_cuenta > 0 THEN 'Positivo' ELSE 'Sin Saldo' END."
-    ],
-    "explicacion": "Permite clasificar cualitativamente métricas numéricas."
-  },
-  {
-    "id": 89,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "SUBCONSULTA",
-      "MAX",
-      "INNER JOIN"
-    ],
-    "titulo": "89. Comprador del ticket unitario más alto",
-    "descripcion": "Obtén el <strong>clientes.nombre</strong>, <strong>clientes.apellido</strong> y <strong>ventas.precio_unitario</strong> del cliente cuya venta haya tenido el precio unitario máximo de toda la tabla ventas.",
-    "queryEsperada": "SELECT clientes.nombre, clientes.apellido, ventas.precio_unitario FROM clientes INNER JOIN ventas ON clientes.id = ventas.cliente_id WHERE ventas.precio_unitario = (SELECT MAX(precio_unitario) FROM ventas);",
-    "pistas": [
-      "WHERE ventas.precio_unitario = (SELECT MAX(precio_unitario) FROM ventas)."
-    ],
-    "explicacion": "Combina JOIN con una subconsulta para aislar el registro que empata con el valor tope."
-  },
-  {
-    "id": 90,
-    "modulo": "Módulo 13: Subconsultas y Lógica Condicional",
-    "nivel": "Avanzado",
-    "tags": [
-      "SUBCONSULTA",
-      "AVG",
-      "DISTINCT"
-    ],
-    "titulo": "90. Títulos comprados en volumen sobre la media",
-    "descripcion": "Muestra sin duplicados el <strong>videojuegos.titulo</strong> de aquellos juegos cuya cantidad vendida en alguna transacción fue estrictamente mayor que la cantidad promedio vendida en toda la tienda.",
-    "queryEsperada": "SELECT DISTINCT videojuegos.titulo FROM videojuegos INNER JOIN ventas ON videojuegos.id = ventas.videojuego_id WHERE ventas.cantidad > (SELECT AVG(cantidad) FROM ventas);",
-    "pistas": [
-      "WHERE ventas.cantidad > (SELECT AVG(cantidad) FROM ventas)."
-    ],
-    "explicacion": "Filtra entidades mediante comparación con promedios globales de la tabla relacional."
+    "explicacion": "El reto definitivo de la Sección 1: combina proyección única, lógica condicional por prioridades, filtros complejos de conjunto, rango y exclusión lógica, ordenación compuesta y truncamiento con límite."
   }
 ];
+
+const EXAMEN_SECCION_1 = {
+  "seccionId": 1,
+  "titulo": "Examen de Certificación - Sección 1: Consultas SELECT y Filtrado",
+  "subtitulo": "Evaluación Teórico-Práctica de Razonamiento en SQL",
+  "descripcion": "Este examen evalúa tu comprensión profunda de las cláusulas y operadores de la Sección 1. Consta de 8 preguntas conceptuales no triviales (40 pts) y 4 retos prácticos en tiempo real (60 pts). Puntuación mínima para aprobar: 70%.",
+  "preguntasTeoricas": [
+    {
+      "id": "t1",
+      "titulo": "Precedencia de Operadores Lógicos",
+      "pregunta": "En una consulta SQL con la cláusula:\n\nWHERE categoria = 'Electrónica' OR stock > 0 AND precio < 50;\n\n¿Cuál es el orden de evaluación del motor en ausencia de paréntesis?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Se evalúa estrictamente de izquierda a derecha: primero (categoria = 'Electrónica' OR stock > 0) y el resultado se une con AND precio < 50."
+        },
+        {
+          "id": "B",
+          "texto": "El operador AND tiene mayor precedencia natural que OR, evaluándose como: categoria = 'Electrónica' OR (stock > 0 AND precio < 50)."
+        },
+        {
+          "id": "C",
+          "texto": "El operador OR siempre se evalúa antes que AND por cortesía en consultas de selección."
+        },
+        {
+          "id": "D",
+          "texto": "Provoca un error de sintaxis en el motor porque el estándar SQL prohíbe mezclar AND y OR sin paréntesis."
+        }
+      ],
+      "correcta": "B",
+      "puntos": 5,
+      "explicacion": "En el estándar ANSI SQL (y en SQLite), el operador lógico AND tiene una jerarquía de precedencia superior a OR. Por tanto, el motor evalúa primero la condición combinada por AND. Si el desarrollador deseaba que el OR se evaluara primero, debe usar paréntesis explícitos."
+    },
+    {
+      "id": "t2",
+      "titulo": "Lógica Trivalente y Tratamiento de Valores NULL",
+      "pregunta": "Si un registro posee comision = NULL, ¿qué resultado produce la condición 'WHERE comision = NULL' y qué sucede con la fila?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Produce TRUE porque el valor en la celda es efectivamente NULL."
+        },
+        {
+          "id": "B",
+          "texto": "Produce FALSE porque NULL no es comparable con números."
+        },
+        {
+          "id": "C",
+          "texto": "Produce UNKNOWN (Desconocido), haciendo que la fila sea descartada ya que WHERE solo acepta registros evaluados a TRUE."
+        },
+        {
+          "id": "D",
+          "texto": "Genera una excepción de puntero nulo (NullPointerException) deteniendo la consulta."
+        }
+      ],
+      "correcta": "C",
+      "puntos": 5,
+      "explicacion": "SQL utiliza lógica trivalente (TRUE, FALSE, UNKNOWN). Toda comparación directa de igualdad (=) o desigualdad (<>) contra NULL resulta en UNKNOWN. La cláusula WHERE descarta tanto FALSE como UNKNOWN. La única forma válida de evaluar nulos es mediante 'IS NULL' o 'IS NOT NULL'."
+    },
+    {
+      "id": "t3",
+      "titulo": "La Trampa de NOT IN con Elementos NULL",
+      "pregunta": "¿Por qué la sentencia 'SELECT * FROM clientes WHERE pais NOT IN ('México', 'España', NULL);' devuelve 0 filas (conjunto vacío) sin importar los datos existentes?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Porque la sintaxis de IN no tolera literales NULL y SQLite aborta la búsqueda."
+        },
+        {
+          "id": "B",
+          "texto": "Porque NOT IN (a, b, NULL) se traduce lógicamente como (pais <> 'México') AND (pais <> 'España') AND (pais <> NULL). Al ser (pais <> NULL) siempre UNKNOWN, la conjunción AND nunca puede ser TRUE."
+        },
+        {
+          "id": "C",
+          "texto": "Porque el valor NULL al final invalida la memoria caché del motor de base de datos."
+        },
+        {
+          "id": "D",
+          "texto": "Porque la presencia de NULL convierte automáticamente la consulta en una agregación de conteo."
+        }
+      ],
+      "correcta": "B",
+      "puntos": 5,
+      "explicacion": "En SQL, 'x NOT IN (a, b, NULL)' equivale a '(x <> a) AND (x <> b) AND (x <> NULL)'. Dado que '(x <> NULL)' evalúa a UNKNOWN, bajo las reglas de la lógica booleana 'TRUE AND UNKNOWN' es UNKNOWN, impidiendo que cualquier fila califique."
+    },
+    {
+      "id": "t4",
+      "titulo": "Ciclo de Vida y Orden de Ejecución en SQL",
+      "pregunta": "¿Por qué la consulta 'SELECT nombre, (saldo * 1.15) AS saldo_con_interes FROM clientes WHERE saldo_con_interes > 500;' arroja un error de columna inexistente?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Los alias generados con AS solo son válidos para renombrar tablas en cláusulas JOIN."
+        },
+        {
+          "id": "B",
+          "texto": "El ciclo de ejecución lógica de SQL procesa FROM y WHERE antes que la fase de proyección SELECT, por lo que el alias saldo_con_interes aún no existe cuando el motor evalúa el filtro."
+        },
+        {
+          "id": "C",
+          "texto": "En SQL no se pueden realizar operaciones aritméticas de multiplicación decimal en consultas simples."
+        },
+        {
+          "id": "D",
+          "texto": "La cláusula WHERE únicamente acepta columnas que cuenten con índices B-Tree creados."
+        }
+      ],
+      "correcta": "B",
+      "puntos": 5,
+      "explicacion": "El orden de ejecución conceptual de SQL es: FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> DISTINCT -> ORDER BY -> LIMIT. La cláusula WHERE filtra las filas antes de que SELECT construya la proyección y asigne alias."
+    },
+    {
+      "id": "t5",
+      "titulo": "Límites Inclusivos en BETWEEN con Cadenas de Texto",
+      "pregunta": "Si ejecutas 'SELECT * FROM clientes WHERE apellido BETWEEN 'A' AND 'C';', ¿aparecerá un cliente cuyo apellido sea 'Castro'?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Sí, porque la primera letra de 'Castro' coincide con la letra 'C' del límite superior."
+        },
+        {
+          "id": "B",
+          "texto": "No, porque en orden lexicográfico alfabético, cualquier cadena que comience con 'C' y tenga letras posteriores (como 'Ca...') es estrictamente mayor que el carácter individual 'C'."
+        },
+        {
+          "id": "C",
+          "texto": "Solo aparecerá si la base de datos está configurada con cotejamiento CASE_INSENSITIVE."
+        },
+        {
+          "id": "D",
+          "texto": "Sí, porque BETWEEN expande automáticamente el límite superior como comodín 'C%'."
+        }
+      ],
+      "correcta": "B",
+      "puntos": 5,
+      "explicacion": "En comparaciones alfabéticas, 'C' es un punto de corte exacto. La palabra 'Castro' es lexicográficamente mayor que 'C' (así como 3.01 es mayor que 3.0). Para incluir todos los apellidos que comiencen por C, el límite superior debe ser 'Czz' o 'D'."
+    },
+    {
+      "id": "t6",
+      "titulo": "Diferencia entre Comodines LIKE ('_' vs '%')",
+      "pregunta": "¿Cuál es la diferencia exacta entre los comodines '_' y '%' en la cláusula LIKE?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "'_' exige exactamente un único carácter en esa posición, mientras que '%' representa cero, uno o múltiples caracteres arbitrarios."
+        },
+        {
+          "id": "B",
+          "texto": "'_' busca solo caracteres numéricos, mientras que '%' busca letras alfabéticas."
+        },
+        {
+          "id": "C",
+          "texto": "'%' exige un carácter obligatorio y '_' representa una longitud variable indefinida."
+        },
+        {
+          "id": "D",
+          "texto": "Son sinónimos intercambiables según el estándar ANSI SQL."
+        }
+      ],
+      "correcta": "A",
+      "puntos": 5,
+      "explicacion": "El guion bajo '_' es un comodín posicional de longitud fija (exactamente 1 carácter). El porcentaje '%' es de longitud variable y puede coincidir con cualquier secuencia de longitud cero o más."
+    },
+    {
+      "id": "t7",
+      "titulo": "Comportamiento de DISTINCT Multicolumna",
+      "pregunta": "En la consulta 'SELECT DISTINCT consola, genero FROM videojuegos;', ¿cuándo descarta una fila el motor?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Cuando el valor de la consola ya apareció previamente en otra fila."
+        },
+        {
+          "id": "B",
+          "texto": "Cuando el valor del género ya apareció previamente en otra fila."
+        },
+        {
+          "id": "C",
+          "texto": "Únicamente cuando la combinación conjunta (la tupla entera 'consola + genero') sea exactamente idéntica a otra fila ya proyectada."
+        },
+        {
+          "id": "D",
+          "texto": "Descarta todas las filas excepto la primera si comparten la misma clave primaria."
+        }
+      ],
+      "correcta": "C",
+      "puntos": 5,
+      "explicacion": "La cláusula DISTINCT opera sobre la totalidad de la lista de proyección, no sobre columnas aisladas. Evalúa la unicidad del conjunto de atributos combinados."
+    },
+    {
+      "id": "t8",
+      "titulo": "Mecánica de Paginación con LIMIT y OFFSET",
+      "pregunta": "En una tabla con 20 filas ordenadas con 'ORDER BY id ASC', ¿qué registros específicos entrega 'LIMIT 5 OFFSET 10'?",
+      "opciones": [
+        {
+          "id": "A",
+          "texto": "Las filas del 1 al 5."
+        },
+        {
+          "id": "B",
+          "texto": "Las filas de la posición 5 a la 10."
+        },
+        {
+          "id": "C",
+          "texto": "Omite las primeras 10 filas (ids 1 al 10) y retorna las siguientes 5 filas (ids 11 al 15)."
+        },
+        {
+          "id": "D",
+          "texto": "Omite 5 filas y retorna las siguientes 10 filas (ids 6 al 15)."
+        }
+      ],
+      "correcta": "C",
+      "puntos": 5,
+      "explicacion": "OFFSET indica el número de filas a omitir desde el inicio del resultado ordenado. LIMIT indica la cantidad máxima de filas a entregar a continuación."
+    }
+  ],
+  "desafiosPracticos": [
+    {
+      "id": "p1",
+      "titulo": "Reto Práctico 1: Clientes Activos y Solvencia en Mercados Seleccionados",
+      "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de todos los clientes activos (<code>activo = 1</code>) cuyo país sea <code>'México'</code> o <code>'Colombia'</code> y que posean un saldo estrictamente mayor a <code>20.0</code>. Ordena el resultado por <strong>saldo_cuenta</strong> de forma descendente.",
+      "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes WHERE activo = 1 AND (pais = 'México' OR pais = 'Colombia') AND saldo_cuenta > 20.0 ORDER BY saldo_cuenta DESC;",
+      "puntos": 15
+    },
+    {
+      "id": "p2",
+      "titulo": "Reto Práctico 2: Filtro de Precios y Stock sin PlayStation 4",
+      "descripcion": "Muestra el <strong>titulo</strong>, <strong>consola</strong>, <strong>precio</strong> y <strong>stock</strong> de los videojuegos cuyo precio esté entre <code>15.0</code> y <code>65.0</code> (usando <code>BETWEEN</code>), cuya consola sea diferente a <code>'PlayStation 4'</code> (<code>consola <> 'PlayStation 4'</code>) y que cuenten con existencias (<code>stock > 0</code>). Ordena por <strong>precio</strong> descendente y limita la consulta a los <strong>4</strong> títulos más caros.",
+      "queryEsperada": "SELECT titulo, consola, precio, stock FROM videojuegos WHERE precio BETWEEN 15.0 AND 65.0 AND consola <> 'PlayStation 4' AND stock > 0 ORDER BY precio DESC LIMIT 4;",
+      "puntos": 15
+    },
+    {
+      "id": "p3",
+      "titulo": "Reto Práctico 3: Búsqueda de Género con Exclusión de Desarrollador",
+      "descripcion": "Consulta el <strong>titulo</strong>, <strong>genero</strong> y <strong>desarrollador</strong> de todos los videojuegos cuyo género contenga la palabra <code>'Acción'</code> (usando <code>LIKE '%Acción%'</code>), pero cuyo desarrollador no comience con <code>'Rockstar'</code> (usando <code>NOT LIKE 'Rockstar%'</code>). Ordena los resultados alfabéticamente por <strong>titulo</strong> de forma ascendente.",
+      "queryEsperada": "SELECT titulo, genero, desarrollador FROM videojuegos WHERE genero LIKE '%Acción%' AND desarrollador NOT LIKE 'Rockstar%' ORDER BY titulo ASC;",
+      "puntos": 15
+    },
+    {
+      "id": "p4",
+      "titulo": "Reto Práctico 4: Paginación y Categorización de Precios con CASE",
+      "descripcion": "Genera una consulta sobre videojuegos para <code>'PC'</code> o <code>'Nintendo Switch'</code> (usando <code>IN</code>) que proyecte el <strong>titulo</strong>, <strong>precio</strong> y una columna calculada llamada <code>clasificacion_precio</code> mediante <code>CASE</code>: si el precio es menor a <code>20.0</code> devolverá <code>'Económico'</code>, si está entre <code>20.0</code> y <code>50.0</code> (inclusive) devolverá <code>'Medio'</code>, y en cualquier otro caso devolverá <code>'Alto'</code>. Ordena por <strong>precio</strong> descendente y aplica paginación para obtener únicamente los <strong>5</strong> registros de la segunda página (saltando 5 con <code>OFFSET</code>).",
+      "queryEsperada": "SELECT titulo, precio, CASE WHEN precio < 20.0 THEN 'Económico' WHEN precio BETWEEN 20.0 AND 50.0 THEN 'Medio' ELSE 'Alto' END AS clasificacion_precio FROM videojuegos WHERE consola IN ('PC', 'Nintendo Switch') ORDER BY precio DESC LIMIT 5 OFFSET 5;",
+      "puntos": 15
+    }
+  ]
+};
+
+if (typeof window !== "undefined") {
+  window.SECCIONES_CATALOGO = SECCIONES_CATALOGO;
+  window.BANCO_EJERCICIOS = BANCO_EJERCICIOS;
+  window.EXAMEN_SECCION_1 = EXAMEN_SECCION_1;
+}

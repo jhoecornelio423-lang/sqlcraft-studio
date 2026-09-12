@@ -51,7 +51,10 @@
     <!-- Selector de Modo de Trabajo -->
     <div class="mode-switch-group">
       <button class="mode-btn active" id="btn-mode-practice" title="Modo de Ejercicios Guiados">
-        <span>🎯</span> Desafíos (<span id="mode-solved-counter">0/90</span>)
+        <span>🎯</span> Desafíos (<span id="mode-solved-counter">0/60</span>)
+      </button>
+      <button class="mode-btn" id="btn-mode-exam" title="Examen de Certificación de la Sección 1">
+        <span>📝</span> Examen Sección 1
       </button>
       <button class="mode-btn" id="btn-mode-sandbox" title="Modo Libre para explorar la Base de Datos">
         <span>🧪</span> Sandbox Libre
@@ -118,6 +121,13 @@
           <span class="sidebar-title">📚 Banco de Retos</span>
           <button class="btn-icon-subtle" id="btn-reset-progress" title="Reiniciar progreso guardado">↺</button>
         </div>
+
+        <!-- Banner de Sección Actual -->
+        <div class="section-selector-banner">
+          <div class="section-badge-pill">SECCIÓN 1</div>
+          <div class="section-banner-title">Consultas SELECT y Filtrado</div>
+          <div class="section-banner-meta">60 Retos • Básico, Intermedio y Avanzado</div>
+        </div>
         
         <!-- Buscador de ejercicios -->
         <div class="search-box">
@@ -134,10 +144,10 @@
         </div>
 
         <div class="filter-chips-row level-filter-row">
-          <button class="level-chip active" data-level="all">Todos (90)</button>
-          <button class="level-chip chip-basico" data-level="Básico">Básico (30)</button>
-          <button class="level-chip chip-intermedio" data-level="Intermedio">Intermedio (30)</button>
-          <button class="level-chip chip-avanzado" data-level="Avanzado">Avanzado (30)</button>
+          <button class="level-chip active" data-level="all" id="level-chip-all">Todos (60)</button>
+          <button class="level-chip chip-basico" data-level="Básico" id="level-chip-basico">Básico (20)</button>
+          <button class="level-chip chip-intermedio" data-level="Intermedio" id="level-chip-intermedio">Intermedio (20)</button>
+          <button class="level-chip chip-avanzado" data-level="Avanzado" id="level-chip-avanzado">Avanzado (20)</button>
         </div>
       </div>
 
@@ -145,8 +155,16 @@
         <!-- Renderizado dinámico desde js/app.js -->
       </div>
 
+      <!-- Tarjeta de Acceso al Examen de Sección -->
+      <div class="sidebar-exam-trigger-card" id="sidebar-exam-card">
+        <div class="sidebar-exam-badge">EVALUACIÓN FINAL</div>
+        <div class="sidebar-exam-title">📝 Examen de Sección 1</div>
+        <div class="sidebar-exam-desc">8 Preguntas Teóricas • 4 Retos Prácticos</div>
+        <button class="btn-sidebar-exam" id="btn-sidebar-exam-trigger">Iniciar Examen (100 pts)</button>
+      </div>
+
       <div class="sidebar-footer">
-        <span id="showing-exercises-count">Mostrando 90 ejercicios</span>
+        <span id="showing-exercises-count">Mostrando 60 ejercicios</span>
       </div>
     </aside>
 
@@ -245,6 +263,66 @@
                 <span>Puedes restaurar el catálogo y clientes a su estado de fábrica en un clic.</span>
               </div>
               <button class="btn btn-warning btn-sm" id="btn-reset-db">Restaurar DB Original</button>
+            </div>
+          </div>
+
+          <!-- Modo Examen: Evaluación Teórico-Práctica de la Sección 1 -->
+          <div id="exam-content-view" style="display: none;">
+            <div class="exam-header-banner">
+              <div class="exam-badge-row">
+                <span class="exam-badge-pill">📝 CERTIFICACIÓN OFICIAL</span>
+                <span class="exam-score-pill" id="exam-live-score-pill">Puntaje: 0 / 100 pts</span>
+              </div>
+              <h2 class="exam-main-title" id="exam-title-display">Examen: Consultas SELECT y Filtrado</h2>
+              <p class="exam-main-desc">
+                Evaluación integral de <strong>8 preguntas conceptuales (40 pts)</strong> y <strong>4 retos prácticos (60 pts)</strong>. Diseñado para razonar casos límite sin respuestas obvias. Aprobación: <strong>70%</strong>.
+              </p>
+            </div>
+
+            <!-- Pestañas internas del Examen -->
+            <div class="exam-nav-tabs">
+              <button class="exam-tab-btn active" id="btn-exam-tab-teoria" type="button">
+                <span>🧠</span> Teoría Conceptual (8)
+              </button>
+              <button class="exam-tab-btn" id="btn-exam-tab-practica" type="button">
+                <span>💻</span> Retos Prácticos (4)
+              </button>
+              <button class="exam-tab-btn" id="btn-exam-tab-resultado" type="button" style="display: none;">
+                <span>🏆</span> Calificación & Explicaciones
+              </button>
+            </div>
+
+            <!-- Panel 1: Teoría -->
+            <div class="exam-panel-body" id="exam-teoria-container">
+              <!-- Renderizado dinámico desde app.js -->
+            </div>
+
+            <!-- Panel 2: Práctica -->
+            <div class="exam-panel-body" id="exam-practica-container" style="display: none;">
+              <div class="exam-practical-selector" id="exam-practical-selector">
+                <!-- Selectores de Reto 1 al 4 dinámicos -->
+              </div>
+              <div class="exam-practical-detail" id="exam-practical-detail">
+                <!-- Enunciado e instrucciones del reto práctico activo -->
+              </div>
+            </div>
+
+            <!-- Panel 3: Resultados -->
+            <div class="exam-panel-body" id="exam-resultado-container" style="display: none;">
+              <!-- Informe y desglose de respuestas -->
+            </div>
+
+            <!-- Footer de Acciones del Examen -->
+            <div class="exam-actions-footer">
+              <button class="btn btn-secondary btn-sm" id="btn-exam-prev-step" type="button" style="display: none;">
+                ◀ Volver a Teoría
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-exam-next-step" type="button">
+                Ir a Retos Prácticos ▶
+              </button>
+              <button class="btn btn-success" id="btn-finalizar-examen" type="button">
+                🎯 Finalizar y Calificar Examen
+              </button>
             </div>
           </div>
         </article>
