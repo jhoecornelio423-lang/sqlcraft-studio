@@ -14,6 +14,8 @@ sqlite_mcp_server.db
 node_modules/
 .vscode/
 .idea/
+__pycache__/
+*.pyc
 
 # Archivos del sistema operativo
 Thumbs.db

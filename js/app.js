@@ -4,6 +4,7 @@
  */
 
 // Estado global de la aplicación
+let seccionActualId = 1; // 1: Consultas SELECT y Filtrado | 2: Combinación de Tablas (JOINs)
 let ejercicioActualIndex = 0;
 let ejerciciosResueltos = new Set();
 let ejerciciosAyudados = new Set(); // Retos donde se consultó la solución oficial
@@ -83,6 +84,9 @@ function reproducirSonido(tipo) {
 // Persistencia en LocalStorage
 function cargarConfiguraciones() {
   try {
+    const savedSection = localStorage.getItem("sqlcraft_active_section");
+    if (savedSection) seccionActualId = parseInt(savedSection, 10) || 1;
+
     const resueltos = localStorage.getItem("sqlcraft_resueltos");
     if (resueltos) ejerciciosResueltos = new Set(JSON.parse(resueltos));
 
@@ -174,14 +178,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     mostrarBanner("error", `Error al inicializar SQLite: ${dbInitResult.error}`);
   }
 
-  // Renderizar componentes
-  renderizarListaEjercicios();
-  cargarEjercicio(0);
-  actualizarEstadisticas();
-  inicializarExamenSeccion();
+  // Inicializar componentes y sección activa
   configurarEventosUI();
   inicializarPanelesRedimensionables();
   renderizarVisorEsquema();
+  cambiarSeccion(seccionActualId);
 });
 
 // Configuración del Editor Profesional CodeMirror 5
@@ -228,8 +229,9 @@ function inicializarEditorCodeMirror() {
       const ejercicio = BANCO_EJERCICIOS[ejercicioActualIndex];
       guardarCodigoEjercicio(ejercicio.id, editorCM.getValue());
     } else if (modoActual === "exam") {
-      if (window.EXAMEN_SECCION_1 && window.EXAMEN_SECCION_1.desafiosPracticos[examenRetoPracticoIndex]) {
-        const reto = window.EXAMEN_SECCION_1.desafiosPracticos[examenRetoPracticoIndex];
+      const examData = obtenerExamenActivo();
+      if (examData && examData.desafiosPracticos && examData.desafiosPracticos[examenRetoPracticoIndex]) {
+        const reto = examData.desafiosPracticos[examenRetoPracticoIndex];
         examenCodigosPracticos[reto.id] = editorCM.getValue();
         guardarProgresoExamenLocal();
       }
@@ -265,10 +267,13 @@ function renderizarListaEjercicios() {
   const q = filtroTexto.toLowerCase().trim();
   let countVisibles = 0;
 
+  // Filtrar banco por sección activa
+  const ejerciciosDeSeccion = BANCO_EJERCICIOS.filter(e => !e.seccionId || e.seccionId === seccionActualId);
+
   // Agrupamiento por módulo
   let moduloActual = "";
 
-  BANCO_EJERCICIOS.forEach((ejercicio, index) => {
+  ejerciciosDeSeccion.forEach((ejercicio) => {
     // Filtro por estado
     const isCompleted = ejerciciosResueltos.has(ejercicio.id);
     if (filtroEstado === "pending" && isCompleted) return;
@@ -328,12 +333,15 @@ function renderizarListaEjercicios() {
       statusPillHtml = `<span class="nav-status-pill pill-pending">Pendiente</span>`;
     }
 
+    // Índice global dentro de BANCO_EJERCICIOS
+    const globalIdx = BANCO_EJERCICIOS.findIndex(e => e.id === ejercicio.id);
+
     const btn = document.createElement("button");
-    btn.className = `exercise-nav-btn ${index === ejercicioActualIndex ? "active" : ""} ${statusCardClass}`;
-    btn.id = `nav-ejercicio-${index}`;
+    btn.className = `exercise-nav-btn ${globalIdx === ejercicioActualIndex ? "active" : ""} ${statusCardClass}`;
+    btn.id = `nav-ejercicio-${globalIdx}`;
     btn.onclick = () => {
       reproducirSonido("click");
-      cargarEjercicio(index);
+      cargarEjercicio(globalIdx);
     };
 
     const badgeClass = `badge-${ejercicio.nivel.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`;
@@ -354,7 +362,7 @@ function renderizarListaEjercicios() {
 
   const countBadge = document.getElementById("showing-exercises-count");
   if (countBadge) {
-    countBadge.textContent = `Mostrando ${countVisibles} de ${BANCO_EJERCICIOS.length} retos`;
+    countBadge.textContent = `Mostrando ${countVisibles} de ${ejerciciosDeSeccion.length} retos`;
   }
 
   if (countVisibles === 0) {
@@ -372,20 +380,34 @@ function cargarEjercicio(index) {
   ejercicioActualIndex = index;
   const ejercicio = BANCO_EJERCICIOS[index];
 
+  // Si el ejercicio pertenece a otra sección, sincronizar seccionActualId
+  if (ejercicio.seccionId && ejercicio.seccionId !== seccionActualId) {
+    seccionActualId = ejercicio.seccionId;
+    const tab1 = document.getElementById("tab-section-1");
+    const tab2 = document.getElementById("tab-section-2");
+    if (tab1) tab1.classList.toggle("active", seccionActualId === 1);
+    if (tab2) tab2.classList.toggle("active", seccionActualId === 2);
+  }
+
   // Si estamos en modo sandbox, cambiar a práctica
   if (modoActual === "sandbox") {
     activarModo("practice");
   }
 
   // Actualizar estado en sidebar
-  document.querySelectorAll(".exercise-nav-btn").forEach((btn, idx) => {
-    btn.classList.toggle("active", idx === index);
+  document.querySelectorAll(".exercise-nav-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.id === `nav-ejercicio-${index}`);
   });
 
   // Datos del problema
   document.getElementById("problem-title").textContent = ejercicio.titulo;
   document.getElementById("problem-desc").innerHTML = ejercicio.descripcion;
-  document.getElementById("exercise-step-indicator").textContent = `${index + 1} / ${BANCO_EJERCICIOS.length}`;
+
+  // Indicador de paso en la sección actual
+  const ejerciciosDeSeccion = BANCO_EJERCICIOS.filter(e => !e.seccionId || e.seccionId === seccionActualId);
+  const posEnSeccion = ejerciciosDeSeccion.findIndex(e => e.id === ejercicio.id);
+  const stepText = posEnSeccion !== -1 ? `${posEnSeccion + 1} / ${ejerciciosDeSeccion.length}` : `${index + 1} / ${BANCO_EJERCICIOS.length}`;
+  document.getElementById("exercise-step-indicator").textContent = stepText;
 
   // Tags
   const tagsContainer = document.getElementById("problem-tags");
@@ -429,49 +451,136 @@ function cargarEjercicio(index) {
   actualizarInsigniasFilas(0, 0);
 }
 
-// Navegación rápida (Anterior / Siguiente)
+// Cambiar la sección activa (Sección 1: SELECT / Sección 2: JOINs)
+function cambiarSeccion(seccionId) {
+  seccionActualId = Number(seccionId) || 1;
+  localStorage.setItem("sqlcraft_active_section", seccionActualId);
+
+  // Actualizar pestañas de sección en el sidebar
+  const tab1 = document.getElementById("tab-section-1");
+  const tab2 = document.getElementById("tab-section-2");
+  if (tab1) tab1.classList.toggle("active", seccionActualId === 1);
+  if (tab2) tab2.classList.toggle("active", seccionActualId === 2);
+
+  // Actualizar banner dinámico del sidebar
+  const badgeEl = document.getElementById("sidebar-section-badge");
+  const titleEl = document.getElementById("sidebar-section-title");
+  const metaEl = document.getElementById("sidebar-section-meta");
+  if (badgeEl) badgeEl.textContent = `SECCIÓN ${seccionActualId}`;
+  if (titleEl) {
+    titleEl.textContent = seccionActualId === 1
+      ? "Fundamentos de Consulta (SELECT)"
+      : "Combinación de Tablas (JOINs) y NULL";
+  }
+  if (metaEl) {
+    metaEl.textContent = seccionActualId === 1
+      ? "60 Retos • 3 Niveles • Examen Certificación"
+      : "60 Retos • INNER, OUTER & NULL • Examen Certificación";
+  }
+
+  // Actualizar botón de examen en header y tarjeta de examen en sidebar
+  const headerExamBtnText = document.getElementById("header-exam-btn-text");
+  if (headerExamBtnText) {
+    headerExamBtnText.textContent = `Examen Sección ${seccionActualId}`;
+  }
+  const sidebarExamTitle = document.getElementById("sidebar-exam-title");
+  if (sidebarExamTitle) {
+    sidebarExamTitle.textContent = `Examen de Certificación - Sección ${seccionActualId}`;
+  }
+  const sidebarExamDesc = document.getElementById("sidebar-exam-desc");
+  if (sidebarExamDesc) {
+    sidebarExamDesc.textContent = seccionActualId === 1
+      ? "8 preguntas teóricas de precisión y 4 retos prácticos en vivo sobre SELECT y filtrado."
+      : "8 preguntas teóricas rigurosas y 4 retos prácticos sobre INNER, LEFT, RIGHT, FULL OUTER y NULL.";
+  }
+
+  // Si estamos en modo examen, actualizar el título del editor y recargar examen
+  if (modoActual === "exam") {
+    const titleText = document.getElementById("editor-title-text");
+    const examData = obtenerExamenActivo();
+    if (titleText) titleText.textContent = `Editor SQL (${examData ? examData.titulo : "Examen de Sección"})`;
+    inicializarExamenSeccion();
+    cambiarTabExamen("teoria");
+  } else {
+    cargarProgresoExamenLocal();
+  }
+
+  // Re-renderizar lista de ejercicios filtrados por esta sección
+  renderizarListaEjercicios();
+
+  // Cargar el primer ejercicio de esta sección
+  const primerEjIdx = BANCO_EJERCICIOS.findIndex(e => e.seccionId === seccionActualId);
+  if (primerEjIdx !== -1) {
+    cargarEjercicio(primerEjIdx);
+  }
+
+  actualizarEstadisticas();
+}
+
+// Navegación rápida (Anterior / Siguiente) dentro de la sección activa
 function navegarEjercicio(offset) {
-  const nuevoIdx = ejercicioActualIndex + offset;
-  if (nuevoIdx >= 0 && nuevoIdx < BANCO_EJERCICIOS.length) {
-    cargarEjercicio(nuevoIdx);
+  const ejerciciosDeSeccion = BANCO_EJERCICIOS.filter(e => !e.seccionId || e.seccionId === seccionActualId);
+  const currentPos = ejerciciosDeSeccion.findIndex(e => e.id === BANCO_EJERCICIOS[ejercicioActualIndex]?.id);
+  if (currentPos !== -1) {
+    const nextPos = currentPos + offset;
+    if (nextPos >= 0 && nextPos < ejerciciosDeSeccion.length) {
+      const globalIdx = BANCO_EJERCICIOS.findIndex(e => e.id === ejerciciosDeSeccion[nextPos].id);
+      if (globalIdx !== -1) {
+        cargarEjercicio(globalIdx);
+      }
+    }
   }
 }
 
-// Actualizar barra de estadísticas, nivel y progreso
+// Actualizar barra de estadísticas, nivel y progreso para la sección activa
 function actualizarEstadisticas() {
-  const total = BANCO_EJERCICIOS.length;
-  const resueltos = ejerciciosResueltos.size;
-  let limpios = 0;
-  let ayudados = 0;
-  ejerciciosResueltos.forEach(id => {
-    if (ejerciciosAyudados.has(id)) ayudados++;
-    else limpios++;
+  const ejerciciosDeSeccion = BANCO_EJERCICIOS.filter(e => !e.seccionId || e.seccionId === seccionActualId);
+  const totalSeccion = ejerciciosDeSeccion.length || 60;
+
+  let resueltosSeccion = 0;
+  let limpiosSeccion = 0;
+  let ayudadosSeccion = 0;
+
+  ejerciciosDeSeccion.forEach(ej => {
+    if (ejerciciosResueltos.has(ej.id)) {
+      resueltosSeccion++;
+      if (ejerciciosAyudados.has(ej.id)) ayudadosSeccion++;
+      else limpiosSeccion++;
+    }
   });
 
-  const porcentaje = Math.round((resueltos / total) * 100);
+  const porcentaje = Math.round((resueltosSeccion / totalSeccion) * 100);
 
   const solvedBadge = document.getElementById("mode-solved-counter");
   if (solvedBadge) {
-    if (ayudados > 0) {
-      solvedBadge.innerHTML = `${resueltos}/${total} <span class="stats-mini-detail">(${limpios} ✅ | ${ayudados} ❌)</span>`;
+    if (ayudadosSeccion > 0) {
+      solvedBadge.innerHTML = `${resueltosSeccion}/${totalSeccion} <span class="stats-mini-detail">(${limpiosSeccion} ✅ | ${ayudadosSeccion} ❌)</span>`;
     } else {
-      solvedBadge.textContent = `${resueltos}/${total}`;
+      solvedBadge.textContent = `${resueltosSeccion}/${totalSeccion}`;
     }
   }
 
-  document.getElementById("stats-progress-percent").textContent = `${porcentaje}%`;
-  document.getElementById("progress-fill-bar").style.width = `${porcentaje}%`;
+  const percentEl = document.getElementById("stats-progress-percent");
+  if (percentEl) percentEl.textContent = `${porcentaje}%`;
+
+  const fillBar = document.getElementById("progress-fill-bar");
+  if (fillBar) fillBar.style.width = `${porcentaje}%`;
 
   // Insignia de Nivel
   const levelEl = document.getElementById("user-level-badge");
   if (levelEl) {
-    if (resueltos === total) {
+    const totalGlobal = BANCO_EJERCICIOS.length;
+    const resueltosGlobal = ejerciciosResueltos.size;
+    if (resueltosGlobal === totalGlobal) {
       levelEl.innerHTML = `<span>👑 Gran Arquitecto SQL</span>`;
       levelEl.className = "level-capsule rank-master";
-    } else if (resueltos >= 40) {
+    } else if (resueltosGlobal >= 80) {
+      levelEl.innerHTML = `<span>🟣 Especialista SQL Maestro</span>`;
+      levelEl.className = "level-capsule rank-advanced";
+    } else if (resueltosGlobal >= 40) {
       levelEl.innerHTML = `<span>🟣 Especialista SQL</span>`;
       levelEl.className = "level-capsule rank-advanced";
-    } else if (resueltos >= 20) {
+    } else if (resueltosGlobal >= 20) {
       levelEl.innerHTML = `<span>🔵 Analista de Datos</span>`;
       levelEl.className = "level-capsule rank-intermediate";
     } else {
@@ -480,8 +589,8 @@ function actualizarEstadisticas() {
     }
   }
 
-  // Si llegó al 100%, abrir modal de celebración
-  if (resueltos === total && total > 0) {
+  // Si llegó al 100% de la sección activa, abrir modal de celebración
+  if (resueltosSeccion === totalSeccion && totalSeccion > 0) {
     abrirModal("completion-modal");
   }
 }
@@ -863,7 +972,8 @@ function activarModo(modo) {
       editorCM.setValue(guardado || `-- Escribe tu consulta SQL para el reto ${ej.id}:\n`);
     }
   } else if (modo === "exam") {
-    if (titleText) titleText.textContent = "Editor SQL (Examen de Sección 1)";
+    const examData = obtenerExamenActivo();
+    if (titleText) titleText.textContent = `Editor SQL (${examData ? examData.titulo : "Examen de Sección"})`;
     inicializarExamenSeccion();
     if (examenTabActiva === "practica") {
       cargarRetoPracticoExamenEnEditor(examenRetoPracticoIndex);
@@ -882,40 +992,72 @@ function activarModo(modo) {
 }
 
 // -------------------------------------------------------------------
-// MÓDULO: EXAMEN DE CERTIFICACIÓN - SECCIÓN 1
+// MÓDULO: EXAMEN DE CERTIFICACIÓN MULTISECCIÓN
 // -------------------------------------------------------------------
+
+function obtenerExamenActivo() {
+  if (typeof window !== "undefined" && window.EXAMENES_CATALOGO && window.EXAMENES_CATALOGO[seccionActualId]) {
+    return window.EXAMENES_CATALOGO[seccionActualId];
+  }
+  if (typeof window !== "undefined" && window.EXAMEN_SECCION_2 && seccionActualId === 2) {
+    return window.EXAMEN_SECCION_2;
+  }
+  if (typeof window !== "undefined" && window.EXAMEN_SECCION_1) {
+    return window.EXAMEN_SECCION_1;
+  }
+  return null;
+}
 
 function guardarProgresoExamenLocal() {
   try {
-    localStorage.setItem("sqlcraft_exam_s1_theory", JSON.stringify(examenRespuestasTeoria));
-    localStorage.setItem("sqlcraft_exam_s1_practical", JSON.stringify([...examenRetosResueltos]));
-    localStorage.setItem("sqlcraft_exam_s1_codes", JSON.stringify(examenCodigosPracticos));
-    localStorage.setItem("sqlcraft_exam_s1_graded", JSON.stringify(examenCalificado));
+    localStorage.setItem(`sqlcraft_exam_s${seccionActualId}_theory`, JSON.stringify(examenRespuestasTeoria));
+    localStorage.setItem(`sqlcraft_exam_s${seccionActualId}_practical`, JSON.stringify([...examenRetosResueltos]));
+    localStorage.setItem(`sqlcraft_exam_s${seccionActualId}_codes`, JSON.stringify(examenCodigosPracticos));
+    localStorage.setItem(`sqlcraft_exam_s${seccionActualId}_graded`, JSON.stringify(examenCalificado));
   } catch (e) {}
 }
 
 function cargarProgresoExamenLocal() {
   try {
-    const th = localStorage.getItem("sqlcraft_exam_s1_theory");
+    examenRespuestasTeoria = {};
+    examenRetosResueltos = new Set();
+    examenCodigosPracticos = {};
+    examenCalificado = false;
+
+    const th = localStorage.getItem(`sqlcraft_exam_s${seccionActualId}_theory`);
     if (th) examenRespuestasTeoria = JSON.parse(th);
-    const pr = localStorage.getItem("sqlcraft_exam_s1_practical");
+    const pr = localStorage.getItem(`sqlcraft_exam_s${seccionActualId}_practical`);
     if (pr) examenRetosResueltos = new Set(JSON.parse(pr));
-    const cd = localStorage.getItem("sqlcraft_exam_s1_codes");
+    const cd = localStorage.getItem(`sqlcraft_exam_s${seccionActualId}_codes`);
     if (cd) examenCodigosPracticos = JSON.parse(cd);
-    const gr = localStorage.getItem("sqlcraft_exam_s1_graded");
+    const gr = localStorage.getItem(`sqlcraft_exam_s${seccionActualId}_graded`);
     if (gr !== null) examenCalificado = JSON.parse(gr);
   } catch (e) {}
 }
 
 function inicializarExamenSeccion() {
   cargarProgresoExamenLocal();
+
+  const examData = obtenerExamenActivo();
+  const titleEl = document.getElementById("exam-title-display");
+  if (titleEl && examData) {
+    titleEl.textContent = examData.titulo;
+  }
+  const descEl = document.getElementById("exam-desc-display");
+  if (descEl && examData) {
+    descEl.innerHTML = examData.descripcion;
+  }
+
   renderizarExamenTeoria();
   renderizarExamenPractica();
   actualizarPuntajeEnVivoExamen();
 
+  const btnRes = document.getElementById("btn-exam-tab-resultado");
+  if (btnRes) {
+    btnRes.style.display = examenCalificado ? "inline-flex" : "none";
+  }
+
   if (examenCalificado) {
-    const btnRes = document.getElementById("btn-exam-tab-resultado");
-    if (btnRes) btnRes.style.display = "inline-flex";
     renderizarExamenResultados();
   }
 }
@@ -974,9 +1116,9 @@ function cambiarTabExamen(tab) {
 
 function renderizarExamenTeoria() {
   const container = document.getElementById("exam-teoria-container");
-  if (!container || !window.EXAMEN_SECCION_1) return;
+  const examData = obtenerExamenActivo();
+  if (!container || !examData || !examData.preguntasTeoricas) return;
 
-  const examData = window.EXAMEN_SECCION_1;
   let html = "";
 
   examData.preguntasTeoricas.forEach((q, idx) => {
@@ -1050,9 +1192,10 @@ function seleccionarOpcionTeorica(preguntaId, opcionId) {
 function renderizarExamenPractica() {
   const selectorContainer = document.getElementById("exam-practical-selector");
   const detailContainer = document.getElementById("exam-practical-detail");
-  if (!selectorContainer || !detailContainer || !window.EXAMEN_SECCION_1) return;
+  const examData = obtenerExamenActivo();
+  if (!selectorContainer || !detailContainer || !examData || !examData.desafiosPracticos) return;
 
-  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  const retos = examData.desafiosPracticos;
 
   let selectorHtml = "";
   retos.forEach((reto, idx) => {
@@ -1102,8 +1245,9 @@ function renderizarExamenPractica() {
 }
 
 function seleccionarRetoPracticoExamen(idx) {
-  if (!window.EXAMEN_SECCION_1) return;
-  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  const examData = obtenerExamenActivo();
+  if (!examData || !examData.desafiosPracticos) return;
+  const retos = examData.desafiosPracticos;
   if (idx < 0 || idx >= retos.length) return;
 
   if (editorCM && retos[examenRetoPracticoIndex]) {
@@ -1117,21 +1261,23 @@ function seleccionarRetoPracticoExamen(idx) {
 }
 
 function cargarRetoPracticoExamenEnEditor(idx) {
-  if (!editorCM || !window.EXAMEN_SECCION_1) return;
-  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  const examData = obtenerExamenActivo();
+  if (!editorCM || !examData || !examData.desafiosPracticos) return;
+  const retos = examData.desafiosPracticos;
   const reto = retos[idx];
   if (!reto) return;
 
   const codigoGuardado = examenCodigosPracticos[reto.id];
-  const plantilla = codigoGuardado || `-- Examen Sección 1 - Reto Práctico ${idx + 1}: ${reto.titulo}\n-- Escribe tu consulta SQL a continuación:\n`;
+  const plantilla = codigoGuardado || `-- ${examData.titulo} - Reto Práctico ${idx + 1}: ${reto.titulo}\n-- Escribe tu consulta SQL a continuación:\n`;
 
   editorCM.setValue(plantilla);
   setTimeout(() => editorCM.refresh(), 50);
 }
 
 function validarRetoPracticoActivo() {
-  if (!window.EXAMEN_SECCION_1) return;
-  const retos = window.EXAMEN_SECCION_1.desafiosPracticos;
+  const examData = obtenerExamenActivo();
+  if (!examData || !examData.desafiosPracticos) return;
+  const retos = examData.desafiosPracticos;
   const reto = retos[examenRetoPracticoIndex];
   if (!reto) return;
 
@@ -1162,9 +1308,8 @@ function validarRetoPracticoActivo() {
 
 function actualizarPuntajeEnVivoExamen() {
   const pill = document.getElementById("exam-live-score-pill");
-  if (!pill || !window.EXAMEN_SECCION_1) return;
-
-  const examData = window.EXAMEN_SECCION_1;
+  const examData = obtenerExamenActivo();
+  if (!pill || !examData) return;
 
   if (examenCalificado) {
     let puntosTeoria = 0;
@@ -1182,19 +1327,21 @@ function actualizarPuntajeEnVivoExamen() {
   } else {
     const numTeoria = Object.keys(examenRespuestasTeoria).length;
     const numPractica = examenRetosResueltos.size;
-    pill.textContent = `Avance: ${numTeoria}/8 Teoría • ${numPractica}/4 Práctica`;
+    const totalTeoria = examData.preguntasTeoricas ? examData.preguntasTeoricas.length : 8;
+    const totalPractica = examData.desafiosPracticos ? examData.desafiosPracticos.length : 4;
+    pill.textContent = `Avance: ${numTeoria}/${totalTeoria} Teoría • ${numPractica}/${totalPractica} Práctica`;
     pill.className = "exam-score-pill in-progress";
   }
 }
 
 function calificarExamenSeccion() {
-  if (!window.EXAMEN_SECCION_1) return;
-  const examData = window.EXAMEN_SECCION_1;
+  const examData = obtenerExamenActivo();
+  if (!examData) return;
 
   const respondidasTeoria = Object.keys(examenRespuestasTeoria).length;
-  const totalTeoria = examData.preguntasTeoricas.length;
+  const totalTeoria = examData.preguntasTeoricas ? examData.preguntasTeoricas.length : 8;
   const resueltosPractica = examenRetosResueltos.size;
-  const totalPractica = examData.desafiosPracticos.length;
+  const totalPractica = examData.desafiosPracticos ? examData.desafiosPracticos.length : 4;
 
   const faltanTeoria = totalTeoria - respondidasTeoria;
   const faltanPractica = totalPractica - resueltosPractica;
@@ -1244,7 +1391,7 @@ function calificarExamenSeccion() {
   if (aprobado) {
     reproducirSonido("success");
     lanzarConfeti();
-    mostrarBanner("success", `🏆 ¡Felicidades! Has APROBADO el Examen de la Sección 1 con ${puntajeTotal}/100 puntos.`);
+    mostrarBanner("success", `🏆 ¡Felicidades! Has APROBADO el ${examData.titulo} con ${puntajeTotal}/100 puntos.`);
   } else {
     reproducirSonido("error");
     mostrarBanner("error", `⚠️ Has obtenido ${puntajeTotal}/100 puntos. Se requiere mínimo 70 puntos para certificar. ¡Revisa las justificaciones técnicas e inténtalo de nuevo!`);
@@ -1253,9 +1400,8 @@ function calificarExamenSeccion() {
 
 function renderizarExamenResultados() {
   const container = document.getElementById("exam-resultado-container");
-  if (!container || !window.EXAMEN_SECCION_1) return;
-
-  const examData = window.EXAMEN_SECCION_1;
+  const examData = obtenerExamenActivo();
+  if (!container || !examData) return;
 
   let puntosTeoria = 0;
   let aciertosTeoria = 0;
@@ -1278,16 +1424,19 @@ function renderizarExamenResultados() {
   const puntajeTotal = puntosTeoria + puntosPractica;
   const aprobado = puntajeTotal >= 70;
 
+  const feedbackAprobado = seccionActualId === 1
+    ? '¡Excelente dominio conceptual y técnico! Has demostrado una comprensión sólida del estándar ANSI SQL, precedencia lógica de operadores, filtrado avanzado, ordenamiento y expresiones condicionales CASE.'
+    : '¡Extraordinario dominio de JOINs y lógica relacional! Comprendes a la perfección la semántica entre ON y WHERE, relaciones muchos a muchos, preservación de registros en OUTER JOINs y manejo riguroso de valores NULL.';
+
+  const feedbackReprobado = 'Estás muy cerca de dominar todos los conceptos. Revisa las justificaciones teóricas en la pestaña de Teoría y asegúrate de validar todos los retos prácticos antes de volver a presentar el examen.';
+
   let html = `
     <div class="exam-results-card ${aprobado ? 'result-passed' : 'result-failed'}">
       <div class="results-badge-icon">${aprobado ? '🏆' : '📚'}</div>
       <h2 class="results-status-title">${aprobado ? '¡Certificación Aprobada!' : 'Evaluación Finalizada (Pendiente de Aprobación)'}</h2>
       <div class="results-score-display">${puntajeTotal} <span class="score-max">/ 100 pts</span></div>
       <p class="results-feedback-message">
-        ${aprobado
-          ? '¡Excelente dominio conceptual y técnico! Has demostrado una comprensión sólida del estándar ANSI SQL, precedencia lógica de operadores, filtrado avanzado, ordenamiento y expresiones condicionales CASE.'
-          : 'Estás muy cerca de dominar todos los conceptos. Revisa las justificaciones teóricas en la pestaña de Teoría y asegúrate de validar todos los retos prácticos antes de volver a presentar el examen.'
-        }
+        ${aprobado ? feedbackAprobado : feedbackReprobado}
       </p>
 
       <div class="results-breakdown-grid">
@@ -1315,7 +1464,7 @@ function renderizarExamenResultados() {
         <button class="btn btn-secondary" onclick="cambiarTabExamen('practica')">
           💻 Ver Consultas Prácticas
         </button>
-        <button class="btn btn-warning" onclick="reiniciarExamenSeccion()">
+        <button class="btn btn-warning" onclick="reiniciarExamenSeccion(true)">
           🔄 Reintentar Examen desde Cero
         </button>
       </div>
@@ -1325,23 +1474,24 @@ function renderizarExamenResultados() {
   container.innerHTML = html;
 }
 
-function reiniciarExamenSeccion() {
-  if (!confirm("¿Deseas reiniciar el examen? Se borrarán las respuestas seleccionadas y el puntaje actual para permitirte presentar una nueva evaluación limpia.")) {
-    return;
+function reiniciarExamenSeccion(confirmar = true) {
+  if (confirmar) {
+    if (!confirm("¿Deseas reiniciar este examen? Se borrarán las respuestas seleccionadas y el puntaje actual para permitirte presentar una nueva evaluación limpia.")) {
+      return;
+    }
   }
 
   examenRespuestasTeoria = {};
   examenRetosResueltos = new Set();
   examenCodigosPracticos = {};
   examenCalificado = false;
+  examenRetoPracticoIndex = 0;
   guardarProgresoExamenLocal();
 
   const btnResTab = document.getElementById("btn-exam-tab-resultado");
   if (btnResTab) btnResTab.style.display = "none";
 
-  renderizarExamenTeoria();
-  renderizarExamenPractica();
-  actualizarPuntajeEnVivoExamen();
+  inicializarExamenSeccion();
   cambiarTabExamen("teoria");
 
   mostrarBanner("info", "🔄 Examen reiniciado. ¡Mucho éxito en este nuevo intento!");
@@ -1355,6 +1505,7 @@ if (typeof window !== "undefined") {
   window.calificarExamenSeccion = calificarExamenSeccion;
   window.reiniciarExamenSeccion = reiniciarExamenSeccion;
   window.activarModo = activarModo;
+  window.cambiarSeccion = cambiarSeccion;
 }
 
 // Inserción de Snippets y Chuleta
@@ -1473,6 +1624,26 @@ function configurarEventosUI() {
   const btnFinalizarExamen = document.getElementById("btn-finalizar-examen");
   if (btnFinalizarExamen) btnFinalizarExamen.addEventListener("click", calificarExamenSeccion);
 
+  // Botones de reinicio del examen (cabecera y pie del examen)
+  const btnResetExamHeader = document.getElementById("btn-reset-exam-header");
+  if (btnResetExamHeader) {
+    btnResetExamHeader.addEventListener("click", () => reiniciarExamenSeccion(true));
+  }
+  const btnResetExamFooter = document.getElementById("btn-reset-exam-footer");
+  if (btnResetExamFooter) {
+    btnResetExamFooter.addEventListener("click", () => reiniciarExamenSeccion(true));
+  }
+
+  // Pestañas selectoras de Sección
+  const tabSec1 = document.getElementById("tab-section-1");
+  if (tabSec1) {
+    tabSec1.addEventListener("click", () => cambiarSeccion(1));
+  }
+  const tabSec2 = document.getElementById("tab-section-2");
+  if (tabSec2) {
+    tabSec2.addEventListener("click", () => cambiarSeccion(2));
+  }
+
   // Navegación
   document.getElementById("btn-nav-prev").addEventListener("click", () => navegarEjercicio(-1));
   document.getElementById("btn-nav-next").addEventListener("click", () => navegarEjercicio(1));
@@ -1589,11 +1760,19 @@ function configurarEventosUI() {
     reproducirSonido("click");
   });
 
-  // Reiniciar Progreso Total
+  // Reiniciar Progreso Total (Ejercicios y Exámenes de Todas las Secciones)
   document.getElementById("btn-reset-progress").addEventListener("click", () => {
-    if (confirm("¿Estás seguro de que deseas reiniciar todo el progreso a 0? Esta acción borrará todas las soluciones guardadas y restaurará la base de datos.")) {
+    if (confirm("¿Estás seguro de que deseas reiniciar todo el progreso a 0? Esta acción borrará todas las soluciones guardadas, las respuestas de los exámenes y restaurará la base de datos.")) {
       ejerciciosResueltos.clear();
       ejerciciosAyudados.clear();
+
+      // Resetear estado del examen en memoria
+      examenRespuestasTeoria = {};
+      examenRetosResueltos = new Set();
+      examenCodigosPracticos = {};
+      examenCalificado = false;
+      examenRetoPracticoIndex = 0;
+
       // Eliminar todas las claves de localStorage de SQLCraft
       try {
         const keysToRemove = [];
@@ -1610,7 +1789,14 @@ function configurarEventosUI() {
       renderizarListaEjercicios();
       actualizarEstadisticas();
       cargarEjercicio(0);
-      mostrarBanner("info", "🔄 Progreso reiniciado a 0. ¡Listo para comenzar desde el primer reto!");
+
+      // Re-inicializar examen
+      const btnResTab = document.getElementById("btn-exam-tab-resultado");
+      if (btnResTab) btnResTab.style.display = "none";
+      inicializarExamenSeccion();
+      cambiarTabExamen("teoria");
+
+      mostrarBanner("info", "🔄 Progreso y evaluaciones reiniciadas a 0. ¡Listo para comenzar desde el primer reto!");
     }
   });
 

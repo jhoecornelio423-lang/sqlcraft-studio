@@ -107,7 +107,9 @@ INSERT INTO ventas (cliente_id, videojuego_id, cantidad, precio_unitario, fecha_
 (15, 20, 1, 59.99, '2023-06-12', 'Tarjeta'),
 (1, 16, 1, 59.99, '2023-09-01', 'Tarjeta'),
 (2, 9, 1, 59.99, '2023-10-10', 'PayPal'),
-(5, 1, 1, 69.99, '2023-11-15', 'Tarjeta');
+(5, 1, 1, 69.99, '2023-11-15', 'Tarjeta'),
+(99, 1, 1, 69.99, '2023-11-05', 'Efectivo'),
+(1, 99, 1, 49.99, '2023-11-10', 'Transferencia');
 `;
 
 /**
@@ -137,9 +139,28 @@ async function inicializarBaseDeDatos() {
  * Restaura la base de datos al estado inicial
  */
 function restaurarBaseDeDatos() {
-  if (!db) return false;
   try {
+    if (db) {
+      try {
+        db.run(`
+          DROP TABLE IF EXISTS ventas;
+          DROP TABLE IF EXISTS clientes;
+          DROP TABLE IF EXISTS videojuegos;
+        `);
+      } catch (e) {
+        if (SQL) {
+          try { db.close(); } catch (err) {}
+          db = new SQL.Database();
+        }
+      }
+    } else if (SQL) {
+      db = new SQL.Database();
+    } else {
+      return false;
+    }
+
     db.run(INIT_SQL);
+    console.log("✅ Base de datos restaurada al estado original.");
     return true;
   } catch (err) {
     console.error("Error al restaurar base de datos:", err);

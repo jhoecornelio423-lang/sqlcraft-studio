@@ -53,8 +53,8 @@
       <button class="mode-btn active" id="btn-mode-practice" title="Modo de Ejercicios Guiados">
         <span>🎯</span> Desafíos (<span id="mode-solved-counter">0/60</span>)
       </button>
-      <button class="mode-btn" id="btn-mode-exam" title="Examen de Certificación de la Sección 1">
-        <span>📝</span> Examen Sección 1
+      <button class="mode-btn" id="btn-mode-exam" title="Examen de Certificación de la Sección Activa">
+        <span>📝</span> <span id="header-exam-btn-text">Examen Sección 1</span>
       </button>
       <button class="mode-btn" id="btn-mode-sandbox" title="Modo Libre para explorar la Base de Datos">
         <span>🧪</span> Sandbox Libre
@@ -122,11 +122,22 @@
           <button class="btn-icon-subtle" id="btn-reset-progress" title="Reiniciar progreso guardado">↺</button>
         </div>
 
-        <!-- Banner de Sección Actual -->
-        <div class="section-selector-banner">
-          <div class="section-badge-pill">SECCIÓN 1</div>
-          <div class="section-banner-title">Consultas SELECT y Filtrado</div>
-          <div class="section-banner-meta">60 Retos • Básico, Intermedio y Avanzado</div>
+        <!-- Selector y Banner de Sección Activa -->
+        <div class="section-switch-nav">
+          <div class="section-tab-pills">
+            <button class="section-tab-pill active" id="tab-section-1" data-section="1">
+              <span>⚡</span> Sec 1: SELECT
+            </button>
+            <button class="section-tab-pill" id="tab-section-2" data-section="2">
+              <span>🔗</span> Sec 2: JOINs
+            </button>
+          </div>
+        </div>
+
+        <div class="section-selector-banner" id="sidebar-section-banner">
+          <div class="section-badge-pill" id="sidebar-section-badge">SECCIÓN 1</div>
+          <div class="section-banner-title" id="sidebar-section-title">Consultas SELECT y Filtrado</div>
+          <div class="section-banner-meta" id="sidebar-section-meta">60 Retos • Básico, Intermedio y Avanzado</div>
         </div>
         
         <!-- Buscador de ejercicios -->
@@ -158,8 +169,8 @@
       <!-- Tarjeta de Acceso al Examen de Sección -->
       <div class="sidebar-exam-trigger-card" id="sidebar-exam-card">
         <div class="sidebar-exam-badge">EVALUACIÓN FINAL</div>
-        <div class="sidebar-exam-title">📝 Examen de Sección 1</div>
-        <div class="sidebar-exam-desc">8 Preguntas Teóricas • 4 Retos Prácticos</div>
+        <div class="sidebar-exam-title" id="sidebar-exam-title">📝 Examen de Sección 1</div>
+        <div class="sidebar-exam-desc" id="sidebar-exam-desc">8 Preguntas Teóricas • 4 Retos Prácticos</div>
         <button class="btn-sidebar-exam" id="btn-sidebar-exam-trigger">Iniciar Examen (100 pts)</button>
       </div>
 
@@ -270,11 +281,14 @@
           <div id="exam-content-view" style="display: none;">
             <div class="exam-header-banner">
               <div class="exam-badge-row">
-                <span class="exam-badge-pill">📝 CERTIFICACIÓN OFICIAL</span>
+                <span class="exam-badge-pill" id="exam-badge-pill">📝 CERTIFICACIÓN OFICIAL</span>
                 <span class="exam-score-pill" id="exam-live-score-pill">Puntaje: 0 / 100 pts</span>
+                <button class="btn-reset-exam-header" id="btn-reset-exam-header" title="Reiniciar evaluación de esta sección a 0 puntos">
+                  <span>🔄</span> Reiniciar Examen
+                </button>
               </div>
               <h2 class="exam-main-title" id="exam-title-display">Examen: Consultas SELECT y Filtrado</h2>
-              <p class="exam-main-desc">
+              <p class="exam-main-desc" id="exam-desc-display">
                 Evaluación integral de <strong>8 preguntas conceptuales (40 pts)</strong> y <strong>4 retos prácticos (60 pts)</strong>. Diseñado para razonar casos límite sin respuestas obvias. Aprobación: <strong>70%</strong>.
               </p>
             </div>
@@ -319,6 +333,9 @@
               </button>
               <button class="btn btn-primary btn-sm" id="btn-exam-next-step" type="button">
                 Ir a Retos Prácticos ▶
+              </button>
+              <button class="btn btn-warning btn-sm" id="btn-reset-exam-footer" type="button" title="Reiniciar este examen">
+                🔄 Reiniciar Examen
               </button>
               <button class="btn btn-success" id="btn-finalizar-examen" type="button">
                 🎯 Finalizar y Calificar Examen
@@ -775,9 +792,9 @@ WHERE id IN (SELECT cliente_id FROM ventas WHERE metodo_pago = 'Cripto');</code>
   </dialog>
 
   <!-- Scripts -->
-  <script src="js/db.js?v=5"></script>
-  <script src="js/ejercicios.js?v=5"></script>
-  <script src="js/auth.js?v=2"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/db.js?v=7"></script>
+  <script src="js/ejercicios.js?v=7"></script>
+  <script src="js/auth.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
 </body>
 </html>
