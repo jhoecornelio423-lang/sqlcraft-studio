@@ -32,8 +32,8 @@
   <!-- Supabase JS Client v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Estilos Principales -->
-  <link rel="stylesheet" href="index.css?v=9">
+  <!-- Arquitectura Modular de Estilos CSS -->
+  <link rel="stylesheet" href="css/main.css?v=10">
 </head>
 <body>
 
@@ -793,10 +793,20 @@ WHERE id IN (SELECT cliente_id FROM ventas WHERE metodo_pago = 'Cripto');</code>
     </div>
   </dialog>
 
-  <!-- Scripts -->
-  <script src="js/db.js?v=8"></script>
-  <script src="js/ejercicios.js?v=8"></script>
-  <script src="js/auth.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <!-- Capa de Datos y Motor SQLite WASM -->
+  <script src="js/db.js?v=10"></script>
+  <script src="js/ejercicios.js?v=10"></script>
+  <script src="js/auth.js?v=10"></script>
+
+  <!-- Módulos de Arquitectura de la Aplicación -->
+  <script src="js/modules/state.js?v=10"></script>
+  <script src="js/modules/ui.js?v=10"></script>
+  <script src="js/modules/editor.js?v=10"></script>
+  <script src="js/modules/results.js?v=10"></script>
+  <script src="js/modules/practice.js?v=10"></script>
+  <script src="js/modules/exam.js?v=10"></script>
+
+  <!-- Orquestador Principal de Inicialización y Eventos -->
+  <script src="js/app.js?v=10"></script>
 </body>
 </html>

@@ -1,0 +1,450 @@
+/* ====================================================================
+   SQLCraft Studio - Sidebar, Section Switcher & Exercise Cards
+   ==================================================================== */
+/* ====================================================================
+   Sidebar (Exercise Bank & Filters)
+   ==================================================================== */
+.sidebar {
+  width: 330px;
+  min-width: 220px;
+  max-width: 650px;
+  flex-shrink: 0;
+  background: var(--bg-dark);
+  border-right: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 0.9rem 1rem 0.65rem 1rem;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.sidebar-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.btn-icon-subtle {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: var(--transition-fast);
+}
+.btn-icon-subtle:hover {
+  color: var(--accent-rose);
+  background: rgba(244, 63, 94, 0.1);
+}
+
+/* Search Box */
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  padding: 0.35rem 0.65rem;
+  gap: 0.4rem;
+}
+
+.search-icon {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  width: 100%;
+  outline: none;
+}
+.search-box input::placeholder {
+  color: var(--text-dim);
+}
+
+.search-clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+.search-clear-btn:hover {
+  color: #fff;
+}
+
+/* Filter Chips */
+.filter-chips-row {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.filter-chip {
+  background: transparent;
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  padding: 3px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.filter-chip:hover {
+  background: var(--bg-surface);
+  color: #fff;
+}
+.filter-chip.active {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.level-filter-row {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.level-chip {
+  background: transparent;
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.level-chip:hover {
+  background: var(--bg-surface);
+  color: #fff;
+}
+
+.level-chip.active {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+.level-chip.chip-basico.active {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: #10b981;
+  color: #34d399;
+}
+
+.level-chip.chip-intermedio.active {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.level-chip.chip-avanzado.active {
+  background: rgba(139, 92, 246, 0.18);
+  border-color: #8b5cf6;
+  color: #c084fc;
+}
+
+/* Exercise List */
+.exercise-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.module-group-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin: 0.6rem 0.35rem 0.2rem 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.exercise-nav-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.65rem 0.8rem;
+  background: rgba(19, 28, 49, 0.5);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.exercise-nav-btn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateX(2px);
+}
+
+.exercise-nav-btn.active {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: var(--accent-cyan);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.16);
+}
+
+.exercise-nav-btn.completed-clean {
+  border-left: 3.5px solid #10b981;
+}
+
+.exercise-nav-btn.completed-assisted {
+  border-left: 3.5px solid #f43f5e;
+  background: rgba(244, 63, 94, 0.05);
+}
+
+.nav-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.nav-status-icon {
+  font-size: 0.9rem;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+.nav-title-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.nav-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding-left: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.nav-level-badge {
+  font-size: 0.64rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.badge-basico { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
+.badge-intermedio { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
+.badge-avanzado { background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.25); }
+
+.nav-status-pill {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pill-clean {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pill-assisted {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.pill-viewed {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.pill-pending {
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+
+.sidebar-footer {
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--border-glass);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.sidebar-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+
+
+/* ====================================================================
+   Diferenciación de Estados: Por Cuenta Propia (✅) vs Con Ayuda (❌)
+   ==================================================================== */
+.exercise-nav-btn.completed-clean {
+  border-left: 3px solid #10b981;
+}
+.exercise-nav-btn.completed-assisted {
+  border-left: 3px solid #f43f5e;
+  background: rgba(244, 63, 94, 0.07);
+}
+.exercise-nav-btn.completed-assisted:hover {
+  background: rgba(244, 63, 94, 0.12);
+}
+
+.nav-item-icon.status-clean {
+  color: #34d399;
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4));
+}
+.nav-item-icon.status-assisted {
+  color: #fb7185;
+  filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.4));
+}
+
+.nav-item-subbadge {
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin-left: 4px;
+}
+.badge-clean {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-assisted {
+  background: rgba(244, 63, 94, 0.18);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+}
+
+.stats-mini-detail {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  font-weight: 500;
+  margin-left: 0.3rem;
+}
+
+
+/* ====================================================================
+   Sección 1 & Módulo de Examen de Certificación
+   ==================================================================== */
+
+/* Banner de Sección en Sidebar */
+.section-selector-banner {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(139, 92, 246, 0.12));
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  margin-bottom: 0.75rem;
+}
+.section-badge-pill {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.2);
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+}
+.section-banner-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+}
+.section-banner-meta {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+}
+
+/* Tarjeta de Acceso al Examen en Sidebar */
+.sidebar-exam-trigger-card {
+  margin: 0.6rem 0.8rem;
+  padding: 0.75rem 0.85rem;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(6, 182, 212, 0.16));
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.sidebar-exam-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #c084fc;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.sidebar-exam-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.2rem 0;
+}
+.sidebar-exam-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-bottom: 0.55rem;
+}
+.btn-sidebar-exam {
+  width: 100%;
+  padding: 0.45rem 0.7rem;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+}
+.btn-sidebar-exam:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.45);
+}

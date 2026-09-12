@@ -1,0 +1,39 @@
+/* ====================================================================
+   SQLCraft Studio - Responsive Media Queries
+   ==================================================================== */
+/* ====================================================================
+   Responsive Media Queries
+   ==================================================================== */
+@media (max-width: 1080px) {
+  .app-layout {
+    grid-template-columns: 280px 1fr;
+  }
+  .top-workspace {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  body {
+    height: auto;
+    overflow: auto;
+  }
+  .app-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+  .sidebar {
+    max-height: 280px;
+  }
+  .top-workspace {
+    grid-template-columns: 1fr;
+  }
+  .workspace-container {
+    grid-template-rows: auto auto;
+    height: auto;
+  }
+  .CodeMirror {
+    height: 260px !important;
+  }
+}
