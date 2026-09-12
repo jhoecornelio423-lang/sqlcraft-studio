@@ -469,12 +469,12 @@ function cambiarSeccion(seccionId) {
   if (badgeEl) badgeEl.textContent = `SECCIÓN ${seccionActualId}`;
   if (titleEl) {
     titleEl.textContent = seccionActualId === 1
-      ? "Fundamentos de Consulta (SELECT)"
+      ? "Consultas SELECT, Alias (AS) y Filtrado"
       : "Combinación de Tablas (JOINs) y NULL";
   }
   if (metaEl) {
     metaEl.textContent = seccionActualId === 1
-      ? "60 Retos • 3 Niveles • Examen Certificación"
+      ? "60 Retos • SELECT, AS, WHERE, LIKE, ORDER BY • Examen Certificación"
       : "60 Retos • INNER, OUTER & NULL • Examen Certificación";
   }
 
@@ -490,7 +490,7 @@ function cambiarSeccion(seccionId) {
   const sidebarExamDesc = document.getElementById("sidebar-exam-desc");
   if (sidebarExamDesc) {
     sidebarExamDesc.textContent = seccionActualId === 1
-      ? "8 preguntas teóricas de precisión y 4 retos prácticos en vivo sobre SELECT y filtrado."
+      ? "8 preguntas teóricas de precisión y 4 retos prácticos en vivo sobre SELECT, AS y filtrado."
       : "8 preguntas teóricas rigurosas y 4 retos prácticos sobre INNER, LEFT, RIGHT, FULL OUTER y NULL.";
   }
 

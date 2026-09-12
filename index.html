@@ -126,7 +126,7 @@
         <div class="section-switch-nav">
           <div class="section-tab-pills">
             <button class="section-tab-pill active" id="tab-section-1" data-section="1">
-              <span>⚡</span> Sec 1: SELECT
+              <span>⚡</span> Sec 1: SELECT & AS
             </button>
             <button class="section-tab-pill" id="tab-section-2" data-section="2">
               <span>🔗</span> Sec 2: JOINs
@@ -136,8 +136,8 @@
 
         <div class="section-selector-banner" id="sidebar-section-banner">
           <div class="section-badge-pill" id="sidebar-section-badge">SECCIÓN 1</div>
-          <div class="section-banner-title" id="sidebar-section-title">Consultas SELECT y Filtrado</div>
-          <div class="section-banner-meta" id="sidebar-section-meta">60 Retos • Básico, Intermedio y Avanzado</div>
+          <div class="section-banner-title" id="sidebar-section-title">Consultas SELECT, Alias (AS) y Filtrado</div>
+          <div class="section-banner-meta" id="sidebar-section-meta">60 Retos • SELECT, AS, WHERE, LIKE, ORDER BY • Examen Certificación</div>
         </div>
         
         <!-- Buscador de ejercicios -->
@@ -549,11 +549,13 @@
 
       <div class="modal-body cheatsheet-content" id="cheatsheet-items-container">
         <!-- Tarjetas de referencia -->
-        <div class="cheat-card" data-keywords="select distinct from proyeccion">
-          <h4>1. Selección y Proyección (SELECT / DISTINCT)</h4>
-          <pre><code>SELECT columna1, columna2 FROM tabla;
-SELECT DISTINCT columna FROM tabla; -- Valores únicos</code></pre>
-          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT * FROM videojuegos LIMIT 5;')">Insertar Ejemplo</button>
+        <div class="cheat-card" data-keywords="select as alias proyeccion rename tabla distinct">
+          <h4>1. Selección, Proyección y Alias (SELECT / AS / DISTINCT)</h4>
+          <pre><code>SELECT columna1 AS nuevo_nombre, columna2 FROM tabla;
+SELECT (precio * 0.90) AS precio_oferta FROM videojuegos;
+SELECT c.nombre, c.email FROM clientes AS c; -- Alias de tabla
+SELECT DISTINCT genero FROM videojuegos;     -- Valores únicos</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT c.nombre AS cliente, c.email FROM clientes AS c LIMIT 5;')">Insertar Ejemplo</button>
         </div>
 
         <div class="cheat-card" data-keywords="where and or not operadores comparacion filtro">
@@ -792,9 +794,9 @@ WHERE id IN (SELECT cliente_id FROM ventas WHERE metodo_pago = 'Cripto');</code>
   </dialog>
 
   <!-- Scripts -->
-  <script src="js/db.js?v=7"></script>
-  <script src="js/ejercicios.js?v=7"></script>
-  <script src="js/auth.js?v=7"></script>
-  <script src="js/app.js?v=7"></script>
+  <script src="js/db.js?v=8"></script>
+  <script src="js/ejercicios.js?v=8"></script>
+  <script src="js/auth.js?v=8"></script>
+  <script src="js/app.js?v=8"></script>
 </body>
 </html>
