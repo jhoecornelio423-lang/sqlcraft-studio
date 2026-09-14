@@ -690,7 +690,7 @@ const BANCO_EJERCICIOS = [
       "OFFSET"
     ],
     "titulo": "35. Paginación de catálogo con OFFSET",
-    "descripcion": "Simula la <strong>segunda página</strong> de un catálogo web: obtén 5 videojuegos saltando los primeros 5 registros ordenados por <strong>id ASC</strong>.",
+    "descripcion": "Simula la <strong>segunda página</strong> de un catálogo web: obtén 5 videojuegos proyectando <code>id</code>, <code>titulo</code> y <code>precio</code>, saltando los primeros 5 registros ordenados por <strong>id ASC</strong>.",
     "queryEsperada": "SELECT id, titulo, precio FROM videojuegos ORDER BY id ASC LIMIT 5 OFFSET 5;",
     "pistas": [
       "Usa la cláusula LIMIT 5 OFFSET 5 al final.",
