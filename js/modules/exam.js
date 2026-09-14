@@ -4,6 +4,10 @@
  */
 
 function obtenerExamenActivo() {
+  if (typeof window !== "undefined" && typeof window.generarInstanciaExamen === "function") {
+    const inst = window.generarInstanciaExamen(window.seccionActualId);
+    if (inst) return inst;
+  }
   if (typeof window !== "undefined" && window.EXAMENES_CATALOGO && window.EXAMENES_CATALOGO[window.seccionActualId]) {
     return window.EXAMENES_CATALOGO[window.seccionActualId];
   }
@@ -138,8 +142,7 @@ function renderizarExamenTeoria() {
     html += `
       <div class="exam-question-card ${cardStatusClass}" id="exam-q-card-${q.id}">
         <div class="exam-q-header">
-          <span class="exam-q-index">Pregunta ${idx + 1} de ${examData.preguntasTeoricas.length}</span>
-          <span class="exam-q-points">${q.puntos} pts</span>
+          <span class="exam-q-index">Pregunta ${idx + 1} de ${examData.preguntasTeoricas.length} (${q.puntos} pts)</span>
         </div>
         <h4 class="exam-q-title">${escapeHtml(q.titulo)}</h4>
         <p class="exam-q-text">${escapeHtml(q.pregunta)}</p>
@@ -173,7 +176,7 @@ function renderizarExamenTeoria() {
       const esAcierto = respondida === q.correcta;
       html += `
         <div class="exam-explanation-callout ${esAcierto ? 'exp-correct' : 'exp-incorrect'}">
-          <strong>${esAcierto ? '✅ Justificación Técnica:' : '❌ Explicación y Corrección:'}</strong>
+          <strong>${esAcierto ? 'Justificación Técnica:' : 'Explicación y Corrección:'}</strong>
           <p>${escapeHtml(q.explicacion)}</p>
         </div>
       `;
@@ -212,13 +215,14 @@ function renderizarExamenPractica() {
     const isCompleted = window.examenRetosResueltos.has(reto.id);
     const isActive = idx === window.examenRetoPracticoIndex;
     const chipClass = `practical-tab-chip ${isActive ? 'active' : ''} ${isCompleted ? 'passed' : ''}`;
-    const icon = isCompleted ? "✅" : "💻";
+    const statusTag = isCompleted
+      ? `<span class="chip-status-tag passed">Validado</span>`
+      : `<span class="chip-status-tag">${reto.puntos} pts</span>`;
 
     selectorHtml += `
       <button class="${chipClass}" onclick="seleccionarRetoPracticoExamen(${idx})" type="button">
-        <span class="chip-icon">${icon}</span>
-        <span>Reto ${idx + 1}</span>
-        <span class="chip-pts">${reto.puntos} pts</span>
+        <span class="chip-title">Reto ${idx + 1}</span>
+        ${statusTag}
       </button>
     `;
   });
@@ -228,26 +232,29 @@ function renderizarExamenPractica() {
   if (!retoActivo) return;
 
   const estaResuelto = window.examenRetosResueltos.has(retoActivo.id);
+  const tituloLimpio = retoActivo.titulo.replace(/^Reto Práctico \d+:\s*/i, "");
 
   let detailHtml = `
-    <div class="exam-practical-header">
-      <div class="practical-tag-row">
-        <span class="practical-badge">RETO PRÁCTICO ${window.examenRetoPracticoIndex + 1} DE ${retos.length}</span>
-        <span class="practical-points-badge">${retoActivo.puntos} puntos</span>
-        ${estaResuelto ? '<span class="practical-solved-badge">✅ Reto Validado con Éxito (15/15 pts)</span>' : '<span class="practical-pending-badge">⏳ Pendiente de Validación</span>'}
+    <div class="practical-detail-card">
+      <div class="practical-header-clean">
+        <div class="practical-meta-row">
+          <span class="practical-badge-neutral">Reto Práctico ${window.examenRetoPracticoIndex + 1} de ${retos.length}</span>
+          <span class="practical-badge-points">${retoActivo.puntos} puntos</span>
+          <span class="practical-badge-status ${estaResuelto ? 'status-ok' : 'status-pending'}">
+            ${estaResuelto ? 'Validado con éxito' : 'Pendiente de validación'}
+          </span>
+        </div>
+        <h3 class="practical-challenge-title">${escapeHtml(tituloLimpio)}</h3>
       </div>
-      <h3 class="practical-challenge-title">${escapeHtml(retoActivo.titulo)}</h3>
-    </div>
-    <div class="practical-challenge-desc">
-      ${retoActivo.descripcion}
-    </div>
-    <div class="practical-hints-box">
-      <strong>⚙️ Pautas de Evaluación Práctica:</strong>
-      <ul>
-        <li>Escribe la sentencia SQL solicitada en la consola del editor.</li>
-        <li>Presiona <strong>Probar (Ctrl+Enter)</strong> para inspeccionar la tabla devuelta.</li>
-        <li>Presiona <strong>🎯 Comprobar / Validar (Ctrl+Shift+Enter)</strong> para contrastar contra el criterio formal de certificación.</li>
-      </ul>
+      <div class="practical-challenge-desc">
+        ${retoActivo.descripcion}
+      </div>
+      <div class="practical-eval-box">
+        <div class="practical-eval-box-header">Pautas de Evaluación Técnica</div>
+        <p class="practical-eval-box-desc">
+          Escribe la sentencia SQL solicitada en el editor. Usa <kbd>Ctrl</kbd> + <kbd>Enter</kbd> para probar la consulta o <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd> para validar la solución oficial contra el evaluador.
+        </p>
+      </div>
     </div>
   `;
 
@@ -350,7 +357,7 @@ function actualizarPuntajeEnVivoExamen() {
   }
 }
 
-function calificarExamenSeccion() {
+async function calificarExamenSeccion() {
   const examData = obtenerExamenActivo();
   if (!examData) return;
 
@@ -363,12 +370,23 @@ function calificarExamenSeccion() {
   const faltanPractica = totalPractica - resueltosPractica;
 
   if (faltanTeoria > 0 || faltanPractica > 0) {
-    let msg = "Aún tienes componentes pendientes en el examen:\n";
-    if (faltanTeoria > 0) msg += `• ${faltanTeoria} pregunta(s) teórica(s) sin responder.\n`;
-    if (faltanPractica > 0) msg += `• ${faltanPractica} reto(s) práctico(s) sin validar.\n`;
-    msg += "\n¿Deseas finalizar y calificar ahora mismo?";
+    let msg = "<p>Aún tienes componentes pendientes en este examen:</p><ul class='confirm-pending-list'>";
+    if (faltanTeoria > 0) msg += `<li><strong>${faltanTeoria}</strong> pregunta(s) teórica(s) sin responder.</li>`;
+    if (faltanPractica > 0) msg += `<li><strong>${faltanPractica}</strong> reto(s) práctico(s) sin validar.</li>`;
+    msg += "</ul><p>¿Deseas finalizar y calificar ahora mismo? Las partes incompletas recibirán 0 puntos.</p>";
 
-    if (!confirm(msg)) {
+    const confirmado = typeof window.mostrarConfirmacion === "function"
+      ? await window.mostrarConfirmacion({
+          titulo: "¿Finalizar con retos pendientes?",
+          mensaje: msg,
+          badge: "Evaluación Incompleta",
+          tipo: "warning",
+          textoConfirmar: "Calificar de todos modos",
+          textoCancelar: "Continuar Examen"
+        })
+      : confirm("Aún tienes componentes pendientes en el examen. ¿Deseas finalizar y calificar ahora mismo?");
+
+    if (!confirmado) {
       return;
     }
   }
@@ -494,11 +512,27 @@ function renderizarExamenResultados() {
   container.innerHTML = html;
 }
 
-function reiniciarExamenSeccion(confirmar = true) {
+async function reiniciarExamenSeccion(confirmar = true) {
   if (confirmar) {
-    if (!confirm("¿Deseas reiniciar este examen? Se borrarán las respuestas seleccionadas y el puntaje actual para permitirte presentar una nueva evaluación limpia.")) {
+    const confirmado = typeof window.mostrarConfirmacion === "function"
+      ? await window.mostrarConfirmacion({
+          titulo: "¿Reiniciar este examen?",
+          mensaje: "Se seleccionará un <strong>nuevo conjunto aleatorio</strong> de preguntas conceptuales y retos del banco maestro, y se borrarán las respuestas anteriores de esta sección.",
+          badge: "Nuevo Intento",
+          tipo: "warning",
+          textoConfirmar: "Reiniciar Examen",
+          textoCancelar: "Cancelar"
+        })
+      : confirm("¿Deseas reiniciar este examen? Se seleccionará un nuevo conjunto aleatorio de preguntas y retos del banco, y se borrarán las respuestas anteriores.");
+
+    if (!confirmado) {
       return;
     }
+  }
+
+  // Si existe motor de muestreo, forzar un nuevo sorteo fresco
+  if (typeof window.generarInstanciaExamen === "function") {
+    window.generarInstanciaExamen(window.seccionActualId, true);
   }
 
   window.examenRespuestasTeoria = {};
@@ -515,7 +549,7 @@ function reiniciarExamenSeccion(confirmar = true) {
   cambiarTabExamen("teoria");
 
   if (typeof window.mostrarBanner === "function") {
-    window.mostrarBanner("info", "🔄 Examen reiniciado. ¡Mucho éxito en este nuevo intento!");
+    window.mostrarBanner("info", "Examen reiniciado. Se ha seleccionado un nuevo conjunto aleatorio de preguntas y retos.");
   }
 }
 

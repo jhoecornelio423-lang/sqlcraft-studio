@@ -1,0 +1,137 @@
+<section class="bottom-workspace" id="bottom-workspace">
+        <div class="results-header">
+          <div class="results-tabs">
+            <button class="tab-btn active" id="tab-btn-resultado" onclick="cambiarTab('resultado')">
+              📊 Tu Resultado <span class="tab-badge" id="badge-user-rows" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" id="tab-btn-esperado" onclick="cambiarTab('esperado')">
+              🎯 Resultado Esperado <span class="tab-badge" id="badge-expected-rows" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" id="tab-btn-comparar" onclick="cambiarTab('comparar')">
+              ⚖️ Comparativa
+            </button>
+            <button class="tab-btn" id="tab-btn-esquema" onclick="cambiarTab('esquema')">
+              📋 Esquema y Diagrama ER
+            </button>
+            <button class="tab-btn" id="tab-btn-historial" onclick="cambiarTab('historial')">
+              📜 Historial (<span id="history-counter">0</span>)
+            </button>
+          </div>
+
+          <div class="results-actions">
+            <button class="btn-tab-action" id="btn-export-csv" title="Descargar resultado como CSV">
+              📥 Exportar CSV
+            </button>
+            <button class="btn-tab-action" id="btn-copy-json" title="Copiar datos en formato JSON">
+              📋 Copiar JSON
+            </button>
+          </div>
+        </div>
+
+        <div class="results-body">
+          <!-- Banner de Veredicto / Alertas -->
+          <div id="status-banner-container"></div>
+
+          <!-- Pestaña 1: Tu Resultado -->
+          <div id="panel-resultado">
+            <div id="user-table-container">
+              <div class="empty-state">
+                <div class="empty-state-icon">⌨️</div>
+                <p>Escribe tu consulta SQL arriba y presiona <strong>Probar</strong> o <strong>Comprobar</strong>.</p>
+                <div class="empty-state-hints">
+                  <span>Atajos rápidos: <code>Ctrl + Enter</code> para probar | <code>Ctrl + Shift + Enter</code> para evaluar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pestaña 2: Resultado Esperado -->
+          <div id="panel-esperado" style="display: none;">
+            <div id="expected-table-container"></div>
+          </div>
+
+          <!-- Pestaña 3: Comparativa Dividida (Diff) -->
+          <div id="panel-comparar" style="display: none;">
+            <div class="split-diff-grid">
+              <div class="diff-pane">
+                <div class="diff-pane-header">
+                  <span class="diff-pane-title">📊 Tu Resultado</span>
+                  <span class="diff-meta-tag" id="diff-user-meta">--</span>
+                </div>
+                <div id="diff-user-table-container" class="diff-table-scroll"></div>
+              </div>
+              <div class="diff-pane">
+                <div class="diff-pane-header">
+                  <span class="diff-pane-title">🎯 Resultado Esperado</span>
+                  <span class="diff-meta-tag" id="diff-expected-meta">--</span>
+                </div>
+                <div id="diff-expected-table-container" class="diff-table-scroll"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pestaña 4: Esquema de Tablas y Diagrama ER -->
+          <div id="panel-esquema" style="display: none;">
+            <!-- Diagrama Entidad-Relación Visual -->
+            <div class="er-diagram-card">
+              <div class="er-diagram-header">
+                <span class="er-title">🗺️ Diagrama Entidad-Relación (Relaciones de la Tienda)</span>
+                <span class="er-legend">🔑 Clave Primaria (PK) | 🔗 Clave Foránea (FK)</span>
+              </div>
+              <div class="er-diagram-body">
+                <div class="er-node">
+                  <div class="er-node-header">👥 clientes</div>
+                  <div class="er-node-col pk">🔑 id (PK)</div>
+                  <div class="er-node-col">nombre, apellido</div>
+                  <div class="er-node-col">email, pais</div>
+                  <div class="er-node-col">saldo_cuenta, activo</div>
+                </div>
+                
+                <div class="er-connector">
+                  <div class="er-line"></div>
+                  <span class="er-label">1 : N (cliente_id)</span>
+                </div>
+
+                <div class="er-node active-hub">
+                  <div class="er-node-header">🛒 ventas (Transacciones)</div>
+                  <div class="er-node-col pk">🔑 id (PK)</div>
+                  <div class="er-node-col fk">🔗 cliente_id (FK ➔ clientes)</div>
+                  <div class="er-node-col fk">🔗 videojuego_id (FK ➔ videojuegos)</div>
+                  <div class="er-node-col">cantidad, precio_unitario</div>
+                  <div class="er-node-col">fecha_venta, metodo_pago</div>
+                </div>
+
+                <div class="er-connector">
+                  <div class="er-line"></div>
+                  <span class="er-label">N : 1 (videojuego_id)</span>
+                </div>
+
+                <div class="er-node">
+                  <div class="er-node-header">🎮 videojuegos</div>
+                  <div class="er-node-col pk">🔑 id (PK)</div>
+                  <div class="er-node-col">titulo, genero</div>
+                  <div class="er-node-col">consola, año_lanzamiento</div>
+                  <div class="er-node-col">precio, calificacion, stock</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fichas de Estructura de Tablas -->
+            <div class="schema-grid" id="schema-grid-container">
+              <!-- Renderizado dinámico del esquema -->
+            </div>
+          </div>
+
+          <!-- Pestaña 5: Historial de Consultas -->
+          <div id="panel-historial" style="display: none;">
+            <div class="history-container">
+              <div class="history-toolbar">
+                <span>Historial de consultas ejecutadas en esta sesión:</span>
+                <button class="btn btn-secondary btn-sm" id="btn-clear-history">Limpiar Historial</button>
+              </div>
+              <div id="history-list" class="history-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>

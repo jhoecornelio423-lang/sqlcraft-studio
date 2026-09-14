@@ -1,0 +1,27 @@
+<dialog class="app-modal" id="modal-app-confirm" aria-labelledby="app-confirm-title" aria-describedby="app-confirm-desc">
+  <div class="modal-card modal-card-confirm" id="modal-confirm-card">
+    <div class="confirm-modal-header">
+      <div class="confirm-badge badge-warning" id="confirm-modal-badge">
+        <span class="confirm-badge-icon" id="confirm-badge-icon">⚠️</span>
+        <span id="confirm-badge-text">Confirmación</span>
+      </div>
+      <button class="modal-close-btn-subtle" id="btn-cancel-x-confirm" title="Cerrar (Esc)">✕</button>
+    </div>
+
+    <div class="confirm-modal-body">
+      <h3 class="confirm-modal-title" id="app-confirm-title">Título de la acción</h3>
+      <div class="confirm-modal-desc" id="app-confirm-desc">
+        Descripción de la confirmación requerida.
+      </div>
+    </div>
+
+    <div class="confirm-modal-footer">
+      <button class="btn btn-secondary" id="btn-cancel-app-confirm" type="button">
+        Cancelar
+      </button>
+      <button class="btn btn-warning" id="btn-ok-app-confirm" type="button">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</dialog>

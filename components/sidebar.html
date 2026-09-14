@@ -1,0 +1,72 @@
+<aside class="sidebar" id="app-sidebar">
+  <!-- Contenido Normal (Expandido) -->
+  <div class="sidebar-header">
+    <div class="sidebar-title-row">
+      <div class="sidebar-brand-group">
+        <span class="sidebar-title">Banco de Retos</span>
+        <button class="btn-icon-subtle" id="btn-reset-progress" title="Reiniciar progreso guardado">↺</button>
+      </div>
+      <button class="btn-sidebar-toggle" id="btn-toggle-sidebar" title="Colapsar panel lateral (Ahorrar espacio)">
+        <span class="toggle-icon">◀</span>
+      </button>
+    </div>
+
+    <!-- Selector de Sección Compacto (Combobox) -->
+    <div class="section-dropdown-container">
+      <div class="section-select-wrapper">
+        <select id="section-select-dropdown" class="section-select-dropdown" title="Seleccionar sección activa">
+          <option value="1">Sección 1: Consultas SELECT, AS y Filtrado (60 Retos)</option>
+          <option value="2">Sección 2: Combinación de Tablas JOINs y NULL (60 Retos)</option>
+        </select>
+        <span class="dropdown-chevron">▾</span>
+      </div>
+    </div>
+    
+    <!-- Buscador de ejercicios -->
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="exercise-search-input" placeholder="Buscar por tema, tag o SQL..." autocomplete="off">
+      <button class="search-clear-btn" id="btn-clear-search" style="display:none;">✕</button>
+    </div>
+
+    <!-- Filtros de dificultad y estado -->
+    <div class="filter-chips-row">
+      <button class="filter-chip active" data-filter="all">Todos</button>
+      <button class="filter-chip" data-filter="pending">Pendientes</button>
+      <button class="filter-chip" data-filter="completed">Completados</button>
+    </div>
+
+    <div class="filter-chips-row level-filter-row">
+      <button class="level-chip active" data-level="all" id="level-chip-all">Todos (60)</button>
+      <button class="level-chip chip-basico" data-level="Básico" id="level-chip-basico">Básico (20)</button>
+      <button class="level-chip chip-intermedio" data-level="Intermedio" id="level-chip-intermedio">Intermedio (20)</button>
+      <button class="level-chip chip-avanzado" data-level="Avanzado" id="level-chip-avanzado">Avanzado (20)</button>
+    </div>
+  </div>
+
+  <div class="exercise-list" id="exercise-list-container">
+    <!-- Renderizado dinámico desde js/modules/practice.js -->
+  </div>
+
+  <!-- Tarjeta de Acceso al Examen de Sección -->
+  <div class="sidebar-exam-trigger-card" id="sidebar-exam-card">
+    <div class="sidebar-exam-badge">EVALUACIÓN FINAL</div>
+    <div class="sidebar-exam-title" id="sidebar-exam-title">Examen de Sección 1</div>
+    <div class="sidebar-exam-desc" id="sidebar-exam-desc">8 Preguntas Teóricas • 4 Retos Prácticos</div>
+    <button class="btn-sidebar-exam" id="btn-sidebar-exam-trigger">Iniciar Examen (100 pts)</button>
+  </div>
+
+  <div class="sidebar-footer">
+    <span id="showing-exercises-count">Mostrando 60 ejercicios</span>
+  </div>
+
+  <!-- Rail para Versión Reducida / Colapsada -->
+  <div class="sidebar-collapsed-rail" id="sidebar-collapsed-rail" title="Clic para expandir el banco de retos">
+    <button class="btn-rail-expand" id="btn-expand-sidebar" title="Expandir panel lateral">
+      <span>▶</span>
+    </button>
+    <div class="rail-vertical-badge">
+      <span class="rail-title-vertical">BANCO DE RETOS</span>
+    </div>
+  </div>
+</aside>

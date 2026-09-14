@@ -1,0 +1,101 @@
+<dialog class="app-modal" id="cheatsheet-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon">📖</span>
+          <h3>Guía Rápida y Chuleta de Sintaxis SQL</h3>
+        </div>
+        <button class="modal-close-btn" onclick="cerrarModal('cheatsheet-modal')">✕</button>
+      </div>
+
+      <div class="modal-search">
+        <input type="text" id="cheatsheet-search" placeholder="Filtrar por comando (ej. JOIN, GROUP BY, LIKE, WHERE)...">
+      </div>
+
+      <div class="modal-body cheatsheet-content" id="cheatsheet-items-container">
+        <!-- Tarjetas de referencia -->
+        <div class="cheat-card" data-keywords="select as alias proyeccion rename tabla distinct">
+          <h4>1. Selección, Proyección y Alias (SELECT / AS / DISTINCT)</h4>
+          <pre><code>SELECT columna1 AS nuevo_nombre, columna2 FROM tabla;
+SELECT (precio * 0.90) AS precio_oferta FROM videojuegos;
+SELECT c.nombre, c.email FROM clientes AS c; -- Alias de tabla
+SELECT DISTINCT genero FROM videojuegos;     -- Valores únicos</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT c.nombre AS cliente, c.email FROM clientes AS c LIMIT 5;')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="where and or not operadores comparacion filtro">
+          <h4>2. Filtrado de Filas (WHERE / Operadores)</h4>
+          <pre><code>WHERE precio &gt; 50 AND stock &gt; 0
+WHERE pais IN ('España', 'México')
+WHERE año_lanzamiento BETWEEN 2018 AND 2022
+WHERE (genero = 'Rol' OR precio &lt; 30) AND stock &gt; 0</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('WHERE precio > 40 AND stock > 0')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="like ilike comodin texto busqueda patron">
+          <h4>3. Búsqueda de Cadenas (LIKE)</h4>
+          <pre><code>WHERE titulo LIKE 'The%'      -- Empieza con 'The'
+WHERE email LIKE '%@gmail.com' -- Termina con '@gmail.com'
+WHERE apellido LIKE '_o%'      -- Segunda letra es 'o'</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('WHERE titulo LIKE \'The%\'')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="order by sort asc desc limit offset paginacion">
+          <h4>4. Ordenación y Paginación (ORDER BY / LIMIT / OFFSET)</h4>
+          <pre><code>ORDER BY precio DESC, titulo ASC
+LIMIT 5                -- Obtener los primeros 5
+LIMIT 5 OFFSET 10       -- Saltar 10 registros y tomar los siguientes 5</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('ORDER BY precio DESC LIMIT 5;')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="count sum avg min max round agregacion funciones">
+          <h4>5. Funciones de Agregación (COUNT, SUM, AVG, ROUND)</h4>
+          <pre><code>SELECT COUNT(*) AS total_registros,
+       ROUND(AVG(precio), 2) AS precio_promedio,
+       SUM(stock) AS total_unidades,
+       MIN(precio) AS menor_precio,
+       MAX(precio) AS mayor_precio
+FROM videojuegos;</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT COUNT(*), ROUND(AVG(precio), 2) FROM videojuegos;')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="group by having agrupacion grupos categorias">
+          <h4>6. Agrupación y Filtro de Grupos (GROUP BY / HAVING)</h4>
+          <pre><code>SELECT consola, COUNT(*) AS cantidad
+FROM videojuegos
+GROUP BY consola
+HAVING COUNT(*) &gt;= 3
+ORDER BY cantidad DESC;</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT consola, COUNT(*) FROM videojuegos GROUP BY consola;')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="join inner join left join on tablas relaciones foraneas">
+          <h4>7. Combinación de Tablas (INNER JOIN / LEFT JOIN)</h4>
+          <pre><code>-- Solo coincidencias en ambas tablas
+SELECT v.id, c.nombre, j.titulo
+FROM ventas v
+INNER JOIN clientes c ON v.cliente_id = c.id
+INNER JOIN videojuegos j ON v.videojuego_id = j.id;
+
+-- Todos los registros de la izquierda (incluso sin ventas)
+SELECT j.titulo, v.id
+FROM videojuegos j
+LEFT JOIN ventas v ON j.id = v.videojuego_id
+WHERE v.id IS NULL; -- Detectar los que no tienen venta</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT v.id, c.nombre, v.fecha_venta FROM ventas v INNER JOIN clientes c ON v.cliente_id = c.id;')">Insertar Ejemplo</button>
+        </div>
+
+        <div class="cheat-card" data-keywords="subconsulta subquery in where">
+          <h4>8. Subconsultas (Subqueries)</h4>
+          <pre><code>-- Subconsulta escalar
+SELECT titulo, precio FROM videojuegos 
+WHERE precio &gt; (SELECT AVG(precio) FROM videojuegos);
+
+-- Subconsulta con IN
+SELECT nombre FROM clientes
+WHERE id IN (SELECT cliente_id FROM ventas WHERE metodo_pago = 'Cripto');</code></pre>
+          <button class="btn-insert-snippet" onclick="insertarDesdeChuleta('SELECT titulo, precio FROM videojuegos WHERE precio > (SELECT AVG(precio) FROM videojuegos);')">Insertar Ejemplo</button>
+        </div>
+      </div>
+    </div>
+  </dialog>

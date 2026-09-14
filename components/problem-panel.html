@@ -1,0 +1,152 @@
+<article class="problem-panel" id="problem-panel">
+          <!-- Modo Práctica: Contenido de Ejercicio -->
+          <div id="exercise-content-view">
+            <div class="problem-header">
+              <div class="problem-top-nav">
+                <div class="problem-tags" id="problem-tags">
+                  <!-- Tags dinámicos -->
+                </div>
+                <div class="exercise-quick-nav">
+                  <button class="btn-nav-arrow" id="btn-nav-prev" title="Ejercicio anterior (Alt + Flecha Izquierda)">◀ Anterior</button>
+                  <span class="exercise-step-indicator" id="exercise-step-indicator">1 / 32</span>
+                  <button class="btn-nav-arrow" id="btn-nav-next" title="Ejercicio siguiente (Alt + Flecha Derecha)">Siguiente ▶</button>
+                </div>
+              </div>
+              <h2 class="problem-title" id="problem-title">Cargando ejercicio...</h2>
+            </div>
+
+            <div class="problem-desc" id="problem-desc">
+              <!-- Enunciado dinámico -->
+            </div>
+
+            <!-- Pistas y Solución accesibles con <details> nativo -->
+            <div class="helper-section">
+              <details class="accordion-card" id="details-pistas" name="exercise-helpers">
+                <summary class="accordion-header">
+                  <span>💡 ¿Necesitas una pista?</span>
+                  <span class="accordion-arrow">▾</span>
+                </summary>
+                <div class="accordion-body" id="pistas-content"></div>
+              </details>
+
+              <details class="accordion-card" id="details-solucion" name="exercise-helpers">
+                <summary class="accordion-header" id="summary-solucion">
+                  <span>🔓 Ver Solución y Explicación</span>
+                  <span class="accordion-arrow">▾</span>
+                </summary>
+                <div class="accordion-body">
+                  <div id="solucion-content"></div>
+                  <button class="btn btn-secondary btn-sm" id="btn-copiar-solucion" style="margin-top: 0.75rem;">
+                    📋 Copiar solución al editor
+                  </button>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- Modo Sandbox: Guía Rápida y Acciones Rápidas de Exploración -->
+          <div id="sandbox-content-view" style="display: none;">
+            <div class="sandbox-intro">
+              <span class="sandbox-badge">🧪 LABORATORIO LIBRE</span>
+              <h2 class="sandbox-title">Explorador y Consultas Libres</h2>
+              <p class="sandbox-desc">
+                Escribe cualquier consulta SQL que desees probar contra la base de datos (<code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>JOIN</code>, <code>CREATE TABLE</code>). No hay restricciones ni evaluaciones en este modo.
+              </p>
+            </div>
+
+            <div class="sandbox-snippets">
+              <h4 class="snippets-heading">⚡ Consultas Rápidas de Ejemplo:</h4>
+              <div class="snippets-grid">
+                <button class="snippet-btn" onclick="insertarSnippet('SELECT * FROM videojuegos LIMIT 10;')">
+                  🎮 Ver 10 Videojuegos
+                </button>
+                <button class="snippet-btn" onclick="insertarSnippet('SELECT * FROM clientes WHERE activo = 1 LIMIT 10;')">
+                  👥 Ver Clientes Activos
+                </button>
+                <button class="snippet-btn" onclick="insertarSnippet('SELECT * FROM ventas ORDER BY id DESC LIMIT 10;')">
+                  🛒 Ver Últimas Ventas
+                </button>
+                <button class="snippet-btn" onclick="insertarSnippet('SELECT c.nombre, v.titulo, vt.fecha_venta, vt.precio_unitario FROM ventas vt JOIN clientes c ON vt.cliente_id = c.id JOIN videojuegos v ON vt.videojuego_id = v.id LIMIT 10;')">
+                  🔗 Join Completo de Ventas
+                </button>
+                <button class="snippet-btn" onclick="insertarSnippet('SELECT genero, COUNT(*) AS total, ROUND(AVG(precio), 2) AS precio_prom FROM videojuegos GROUP BY genero;')">
+                  📊 Resumen por Género
+                </button>
+              </div>
+            </div>
+
+            <div class="sandbox-danger-zone">
+              <div class="danger-info">
+                <strong>🔄 ¿Modificaste los datos?</strong>
+                <span>Puedes restaurar el catálogo y clientes a su estado de fábrica en un clic.</span>
+              </div>
+              <button class="btn btn-warning btn-sm" id="btn-reset-db">Restaurar DB Original</button>
+            </div>
+          </div>
+
+          <!-- Modo Examen: Evaluación Teórico-Práctica de la Sección 1 -->
+          <div id="exam-content-view" style="display: none;">
+            <div class="exam-header-banner">
+              <div class="exam-badge-row">
+                <span class="exam-badge-pill" id="exam-badge-pill">CERTIFICACIÓN OFICIAL</span>
+                <span class="exam-score-pill" id="exam-live-score-pill">Puntaje: 0 / 100 pts</span>
+                <button class="btn-reset-exam-header" id="btn-reset-exam-header" title="Reiniciar evaluación de esta sección a 0 puntos">
+                  Reiniciar Examen
+                </button>
+              </div>
+              <h2 class="exam-main-title" id="exam-title-display">Examen: Consultas SELECT y Filtrado</h2>
+              <p class="exam-main-desc" id="exam-desc-display">
+                Evaluación integral de <strong>8 preguntas conceptuales (40 pts)</strong> y <strong>4 retos prácticos (60 pts)</strong>. Diseñado para razonar casos límite sin respuestas obvias. Aprobación: <strong>70%</strong>.
+              </p>
+            </div>
+
+            <!-- Pestañas internas del Examen -->
+            <div class="exam-nav-tabs">
+              <button class="exam-tab-btn active" id="btn-exam-tab-teoria" type="button">
+                Teoría Conceptual (8)
+              </button>
+              <button class="exam-tab-btn" id="btn-exam-tab-practica" type="button">
+                Retos Prácticos (4)
+              </button>
+              <button class="exam-tab-btn" id="btn-exam-tab-resultado" type="button" style="display: none;">
+                Calificación y Resultados
+              </button>
+            </div>
+
+            <!-- Panel 1: Teoría -->
+            <div class="exam-panel-body" id="exam-teoria-container">
+              <!-- Renderizado dinámico desde app.js -->
+            </div>
+
+            <!-- Panel 2: Práctica -->
+            <div class="exam-panel-body" id="exam-practica-container" style="display: none;">
+              <div class="exam-practical-selector" id="exam-practical-selector">
+                <!-- Selectores de Reto 1 al 4 dinámicos -->
+              </div>
+              <div class="exam-practical-detail" id="exam-practical-detail">
+                <!-- Enunciado e instrucciones del reto práctico activo -->
+              </div>
+            </div>
+
+            <!-- Panel 3: Resultados -->
+            <div class="exam-panel-body" id="exam-resultado-container" style="display: none;">
+              <!-- Informe y desglose de respuestas -->
+            </div>
+
+            <!-- Footer de Acciones del Examen -->
+            <div class="exam-actions-footer">
+              <button class="btn btn-secondary btn-sm" id="btn-exam-prev-step" type="button" style="display: none;">
+                ◀ Volver a Teoría
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-exam-next-step" type="button">
+                Ir a Retos Prácticos ▶
+              </button>
+              <button class="btn btn-warning btn-sm" id="btn-reset-exam-footer" type="button" title="Reiniciar este examen">
+                🔄 Reiniciar Examen
+              </button>
+              <button class="btn btn-success" id="btn-finalizar-examen" type="button">
+                🎯 Finalizar y Calificar Examen
+              </button>
+            </div>
+          </div>
+        </article>

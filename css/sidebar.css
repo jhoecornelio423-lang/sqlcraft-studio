@@ -30,12 +30,38 @@
   align-items: center;
 }
 
+.sidebar-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .sidebar-title {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.6px;
+}
+
+.btn-sidebar-toggle {
+  background: transparent;
+  border: 1px solid var(--border-glass);
+  color: var(--text-dim);
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: var(--transition-fast);
+}
+.btn-sidebar-toggle:hover {
+  background: var(--bg-surface-hover);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan-glow);
 }
 
 .btn-icon-subtle {
@@ -51,6 +77,65 @@
 .btn-icon-subtle:hover {
   color: var(--accent-rose);
   background: rgba(244, 63, 94, 0.1);
+}
+
+/* Sidebar Colapsada (Versión reducida) */
+.sidebar.collapsed {
+  width: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar.collapsed .sidebar-header,
+.sidebar.collapsed .exercise-list,
+.sidebar.collapsed .sidebar-exam-trigger-card,
+.sidebar.collapsed .sidebar-footer {
+  display: none !important;
+}
+.sidebar-collapsed-rail {
+  display: none;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  background: var(--bg-dark);
+}
+.sidebar.collapsed .sidebar-collapsed-rail {
+  display: flex;
+}
+.btn-rail-expand {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: var(--transition-fast);
+  margin-bottom: 1.5rem;
+}
+.btn-rail-expand:hover {
+  background: var(--accent-cyan);
+  color: var(--bg-darker);
+  box-shadow: 0 0 10px var(--accent-cyan-glow);
+}
+.rail-vertical-badge {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 2px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.sidebar.collapsed:hover .rail-vertical-badge {
+  color: var(--accent-cyan);
 }
 
 /* Search Box */
@@ -372,36 +457,54 @@
    Sección 1 & Módulo de Examen de Certificación
    ==================================================================== */
 
-/* Banner de Sección en Sidebar */
-.section-selector-banner {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(139, 92, 246, 0.12));
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  border-radius: 10px;
-  padding: 0.65rem 0.8rem;
-  margin-bottom: 0.75rem;
+/* Selector de Sección Compacto (Combobox) */
+.section-dropdown-container {
+  margin-bottom: 0.15rem;
 }
-.section-badge-pill {
-  font-size: 0.62rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--accent-cyan);
-  background: rgba(6, 182, 212, 0.2);
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 4px;
-  margin-bottom: 0.25rem;
+.section-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
-.section-banner-title {
-  font-size: 0.84rem;
-  font-weight: 700;
+.section-select-dropdown {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(11, 17, 32, 0.95);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  padding: 0.5rem 1.8rem 0.5rem 0.75rem;
   color: #fff;
-  line-height: 1.25;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition-fast);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
-.section-banner-meta {
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  margin-top: 0.2rem;
+.section-select-dropdown:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg-surface);
+}
+.section-select-dropdown:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+}
+.section-select-dropdown option {
+  background: var(--bg-dark);
+  color: var(--text-main);
+  padding: 0.5rem;
+}
+.dropdown-chevron {
+  position: absolute;
+  right: 0.65rem;
+  pointer-events: none;
+  color: var(--accent-cyan);
+  font-size: 0.7rem;
 }
 
 /* Tarjeta de Acceso al Examen en Sidebar */

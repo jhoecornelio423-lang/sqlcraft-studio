@@ -1,0 +1,32 @@
+<section class="editor-panel" id="editor-panel">
+          <div class="editor-toolbar">
+            <div class="editor-title">
+              <span class="editor-status-dot"></span>
+              <span id="editor-title-text">Editor SQL</span>
+              <span class="editor-hint-tag">Ctrl+Espacio para autocompletar</span>
+            </div>
+            
+            <div class="editor-actions">
+              <!-- Controles de Fuente -->
+              <div class="font-controls">
+                <button class="btn-icon" id="btn-font-decrease" title="Reducir tamaño de letra">A-</button>
+                <button class="btn-icon" id="btn-font-increase" title="Aumentar tamaño de letra">A+</button>
+              </div>
+
+              <button class="btn btn-secondary" id="btn-limpiar" title="Limpiar código">
+                🧹 Limpiar
+              </button>
+              <button class="btn btn-primary" id="btn-ejecutar" title="Ejecutar Consulta (Ctrl + Enter)">
+                ▶ Probar (Ctrl+Enter)
+              </button>
+              <button class="btn btn-success" id="btn-comprobar" title="Comprobar Respuesta (Ctrl + Shift + Enter)">
+                ⚡ Comprobar
+              </button>
+            </div>
+          </div>
+
+          <!-- Contenedor del Editor CodeMirror -->
+          <div class="editor-wrapper" id="editor-wrapper">
+            <textarea id="sql-editor" placeholder="-- Escribe tu consulta SQL aquí...&#10;SELECT * FROM videojuegos;"></textarea>
+          </div>
+        </section>

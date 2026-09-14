@@ -42,7 +42,15 @@ function configurarEventosUI() {
     btnResetExamFooter.addEventListener("click", () => window.reiniciarExamenSeccion(true));
   }
 
-  // Pestañas selectoras de Sección
+  // Selector de Sección (Combobox en el sidebar)
+  const selectSection = document.getElementById("section-select-dropdown");
+  if (selectSection) {
+    selectSection.addEventListener("change", (e) => {
+      window.cambiarSeccion(Number(e.target.value));
+    });
+  }
+
+  // Pestañas selectoras de Sección (si existen en el DOM)
   const tabSec1 = document.getElementById("tab-section-1");
   if (tabSec1) {
     tabSec1.addEventListener("click", () => window.cambiarSeccion(1));
@@ -50,6 +58,23 @@ function configurarEventosUI() {
   const tabSec2 = document.getElementById("tab-section-2");
   if (tabSec2) {
     tabSec2.addEventListener("click", () => window.cambiarSeccion(2));
+  }
+
+  // Botones para colapsar y expandir la barra lateral (modo reducido / slim rail)
+  const btnToggleSidebar = document.getElementById("btn-toggle-sidebar");
+  if (btnToggleSidebar) {
+    btnToggleSidebar.addEventListener("click", () => window.toggleSidebar());
+  }
+  const btnExpandSidebar = document.getElementById("btn-expand-sidebar");
+  if (btnExpandSidebar) {
+    btnExpandSidebar.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.toggleSidebar(false);
+    });
+  }
+  const railSidebar = document.getElementById("sidebar-collapsed-rail");
+  if (railSidebar) {
+    railSidebar.addEventListener("click", () => window.toggleSidebar(false));
   }
 
   // Navegación
@@ -178,6 +203,8 @@ function configurarEventosUI() {
   if (btnOpenCheat) btnOpenCheat.addEventListener("click", () => window.abrirModal("cheatsheet-modal"));
   const btnOpenShort = document.getElementById("btn-open-shortcuts");
   if (btnOpenShort) btnOpenShort.addEventListener("click", () => window.abrirModal("shortcuts-modal"));
+  const btnOpenTour = document.getElementById("btn-open-tour");
+  if (btnOpenTour) btnOpenTour.addEventListener("click", () => window.iniciarTutorial(true));
 
   // Sonido
   const btnToggleSound = document.getElementById("btn-toggle-sound");
@@ -193,8 +220,19 @@ function configurarEventosUI() {
   // Reiniciar Progreso Total (Ejercicios y Exámenes de Todas las Secciones)
   const btnResetProg = document.getElementById("btn-reset-progress");
   if (btnResetProg) {
-    btnResetProg.addEventListener("click", () => {
-      if (confirm("¿Estás seguro de que deseas reiniciar todo el progreso a 0? Esta acción borrará todas las soluciones guardadas, las respuestas de los exámenes y restaurará la base de datos.")) {
+    btnResetProg.addEventListener("click", async () => {
+      const confirmado = typeof window.mostrarConfirmacion === "function"
+        ? await window.mostrarConfirmacion({
+            titulo: "¿Reiniciar todo el progreso a 0?",
+            mensaje: "Esta acción borrará permanentemente todas tus soluciones guardadas, las respuestas de los exámenes en todas las secciones y restaurará la base de datos a su estado original.",
+            badge: "Reinicio Total",
+            tipo: "danger",
+            textoConfirmar: "Sí, reiniciar todo",
+            textoCancelar: "Cancelar"
+          })
+        : confirm("¿Estás seguro de que deseas reiniciar todo el progreso a 0? Esta acción borrará todas las soluciones guardadas, las respuestas de los exámenes y restaurará la base de datos.");
+
+      if (confirmado) {
         window.ejerciciosResueltos.clear();
         window.ejerciciosAyudados.clear();
 
@@ -313,6 +351,11 @@ function configurarEventosUI() {
 
 // Inicialización de la Aplicación al cargar el DOM
 document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Cargar componentes y modales HTML modulares primero
+  if (typeof window.cargarComponentesHTML === "function") {
+    await window.cargarComponentesHTML();
+  }
+
   window.cargarConfiguraciones();
   window.actualizarBotonSonido();
 
@@ -348,6 +391,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.inicializarPanelesRedimensionables();
   window.renderizarVisorEsquema();
   window.cambiarSeccion(window.seccionActualId);
+
+  // Verificar tutorial para nuevos usuarios
+  if (typeof window.verificarTutorialInicial === "function") {
+    window.verificarTutorialInicial();
+  }
 });
 
 // Exportar configuración de eventos

@@ -1,0 +1,28 @@
+<dialog class="app-modal" id="modal-confirm-solution">
+    <div class="modal-card modal-card-subtle">
+      <div class="subtle-modal-header">
+        <div class="subtle-badge-warning">
+          <span>⚠️</span>
+          <span>Aviso</span>
+        </div>
+        <button class="modal-close-btn-subtle" onclick="cerrarModal('modal-confirm-solution')" title="Cerrar">✕</button>
+      </div>
+      <div class="subtle-modal-body">
+        <h3 class="subtle-modal-title">¿Revelar la respuesta oficial?</h3>
+        <p class="subtle-modal-desc">
+          Este reto quedará registrado como <span class="pill-assisted-mini">❌ Con ayuda</span> en tus estadísticas en vez de completado por tus propios méritos.
+        </p>
+        <p class="subtle-modal-hint">
+          💡 <em>Tip: Las pistas no penalizan tu progreso.</em>
+        </p>
+      </div>
+      <div class="subtle-modal-footer">
+        <button class="btn-subtle-cancel" id="btn-cancel-reveal-solution" onclick="cerrarModal('modal-confirm-solution')">
+          Cancelar
+        </button>
+        <button class="btn-subtle-confirm" id="btn-confirm-reveal-solution">
+          Ver solución (❌)
+        </button>
+      </div>
+    </div>
+  </dialog>

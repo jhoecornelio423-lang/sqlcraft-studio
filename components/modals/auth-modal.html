@@ -1,0 +1,66 @@
+<dialog class="app-modal" id="modal-auth">
+    <div class="modal-card modal-card-auth">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="auth-modal-logo">⚡</span>
+          <h3 id="auth-modal-header-title">Acceso a SQLCraft</h3>
+        </div>
+        <button class="modal-close-btn" onclick="cerrarModal('modal-auth')" title="Cerrar ventana">✕</button>
+      </div>
+
+      <!-- Pestañas Iniciar Sesión vs Registro -->
+      <div class="auth-tabs-row">
+        <button class="auth-tab-btn active" id="auth-tab-login">Iniciar Sesión</button>
+        <button class="auth-tab-btn" id="auth-tab-register">Crear Cuenta</button>
+      </div>
+
+      <div class="modal-body auth-modal-body">
+        <!-- Formulario Iniciar Sesión -->
+        <form id="form-auth-login" class="auth-form">
+          <div id="auth-alert-login" class="auth-form-alert" style="display:none;"></div>
+          
+          <div class="form-group">
+            <label for="login-email">Correo Electrónico</label>
+            <input type="email" id="login-email" class="auth-input" placeholder="tu.nombre@empresa.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-login">
+            Iniciar Sesión
+          </button>
+        </form>
+
+        <!-- Formulario Crear Cuenta -->
+        <form id="form-auth-register" class="auth-form" style="display:none;">
+          <div id="auth-alert-register" class="auth-form-alert" style="display:none;"></div>
+
+          <div class="form-group">
+            <label for="reg-nombre">Nombre o Apodo</label>
+            <input type="text" id="reg-nombre" class="auth-input" placeholder="Ej: Carlos M." required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label for="reg-email">Correo Electrónico</label>
+            <input type="email" id="reg-email" class="auth-input" placeholder="tu.nombre@empresa.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="reg-password">Contraseña (Mínimo 6 caracteres)</label>
+            <input type="password" id="reg-password" class="auth-input" placeholder="••••••••" minlength="6" required autocomplete="new-password">
+          </div>
+
+          <button type="submit" class="btn btn-success btn-block" id="btn-submit-register">
+            Crear Mi Cuenta
+          </button>
+        </form>
+
+        <div class="auth-guest-note">
+          <span>💡 <em>Tu progreso se guardará automáticamente en la nube de Supabase para que no lo pierdas nunca.</em></span>
+        </div>
+      </div>
+    </div>
+  </dialog>

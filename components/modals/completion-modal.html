@@ -1,0 +1,23 @@
+<dialog class="app-modal" id="completion-modal">
+    <div class="modal-card modal-card-completion">
+      <div class="completion-banner">
+        <div class="trophy-icon">🏆</div>
+        <h2>¡Maestría SQL Completada!</h2>
+        <p>Has resuelto satisfactoriamente los 90 ejercicios de la plataforma (30 Básicos, 30 Intermedios y 30 Avanzados).</p>
+      </div>
+      <div class="completion-details">
+        <div class="cert-item">
+          <span>Dominio cubierto:</span>
+          <strong>SELECT, WHERE, LIKE, ORDER BY, GROUP BY, HAVING, INNER/LEFT JOIN y Subconsultas</strong>
+        </div>
+        <div class="cert-item">
+          <span>Motor evaluador:</span>
+          <strong>SQLite WASM (Motor oficial)</strong>
+        </div>
+      </div>
+      <div class="completion-actions">
+        <button class="btn btn-primary" onclick="lanzarConfeti(); cerrarModal('completion-modal')">¡Celebrar! 🎉</button>
+        <button class="btn btn-secondary" onclick="cerrarModal('completion-modal')">Continuar Explorando</button>
+      </div>
+    </div>
+  </dialog>

@@ -73,6 +73,110 @@ function cerrarModal(id) {
   }
 }
 
+/**
+ * Muestra un diálogo modal de confirmación asíncrono estilizado con el diseño de SQLCraft Studio.
+ * Reemplaza el confirm() nativo del navegador con una experiencia moderna, accesible y coherente.
+ * Retorna una Promesa que resuelve a true (si confirma) o false (si cancela o presiona Esc).
+ * 
+ * @param {Object} opciones
+ * @param {string} [opciones.titulo="¿Estás seguro?"]
+ * @param {string} [opciones.mensaje=""]
+ * @param {string} [opciones.badge="Confirmación"]
+ * @param {"danger"|"warning"|"info"|"success"} [opciones.tipo="warning"]
+ * @param {string} [opciones.textoConfirmar="Confirmar"]
+ * @param {string} [opciones.textoCancelar="Cancelar"]
+ * @returns {Promise<boolean>}
+ */
+function mostrarConfirmacion({
+  titulo = "¿Estás seguro?",
+  mensaje = "",
+  badge = "Confirmación",
+  tipo = "warning",
+  textoConfirmar = "Confirmar",
+  textoCancelar = "Cancelar"
+} = {}) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("modal-app-confirm");
+    if (!modal || typeof modal.showModal !== "function") {
+      // Fallback seguro si el slot no estuviera disponible
+      const fallbackText = mensaje ? `${titulo}\n\n${mensaje.replace(/<[^>]*>?/gm, "")}` : titulo;
+      resolve(window.confirm(fallbackText));
+      return;
+    }
+
+    const titleEl = document.getElementById("app-confirm-title");
+    const descEl = document.getElementById("app-confirm-desc");
+    const badgeTextEl = document.getElementById("confirm-badge-text");
+    const badgeIconEl = document.getElementById("confirm-badge-icon");
+    const badgeEl = document.getElementById("confirm-modal-badge");
+    const btnOk = document.getElementById("btn-ok-app-confirm");
+    const btnCancel = document.getElementById("btn-cancel-app-confirm");
+    const btnCloseX = document.getElementById("btn-cancel-x-confirm");
+
+    if (titleEl) titleEl.textContent = titulo;
+    if (descEl) descEl.innerHTML = mensaje;
+    if (badgeTextEl) badgeTextEl.textContent = badge;
+    if (btnOk) btnOk.textContent = textoConfirmar;
+    if (btnCancel) btnCancel.textContent = textoCancelar;
+
+    const iconMap = {
+      danger: "⚠️",
+      warning: "⚠️",
+      info: "ℹ️",
+      success: "✅"
+    };
+    if (badgeIconEl) badgeIconEl.textContent = iconMap[tipo] || "⚠️";
+
+    if (badgeEl) {
+      badgeEl.className = `confirm-badge badge-${tipo}`;
+    }
+
+    if (btnOk) {
+      let btnClass = "btn btn-warning";
+      if (tipo === "danger") btnClass = "btn btn-danger";
+      else if (tipo === "info") btnClass = "btn btn-primary";
+      else if (tipo === "success") btnClass = "btn btn-success";
+      btnOk.className = btnClass;
+    }
+
+    let handled = false;
+    const cleanup = (resultado) => {
+      if (handled) return;
+      handled = true;
+      modal.removeEventListener("close", onModalClose);
+      modal.removeEventListener("click", onBackdropClick);
+      if (modal.open) modal.close();
+      resolve(resultado);
+    };
+
+    const onModalClose = () => cleanup(false);
+    const onBackdropClick = (e) => {
+      if (e.target === modal) cleanup(false);
+    };
+
+    btnOk.onclick = (e) => {
+      e.preventDefault();
+      cleanup(true);
+    };
+    btnCancel.onclick = (e) => {
+      e.preventDefault();
+      cleanup(false);
+    };
+    if (btnCloseX) {
+      btnCloseX.onclick = (e) => {
+        e.preventDefault();
+        cleanup(false);
+      };
+    }
+
+    modal.addEventListener("close", onModalClose);
+    modal.addEventListener("click", onBackdropClick);
+
+    modal.showModal();
+    if (btnCancel) btnCancel.focus();
+  });
+}
+
 function lanzarConfeti() {
   if (typeof confetti === "function") {
     confetti({
@@ -81,6 +185,34 @@ function lanzarConfeti() {
       origin: { y: 0.6 }
     });
   }
+}
+
+function toggleSidebar(forceState) {
+  const sidebar = document.getElementById("app-sidebar");
+  const resizerSidebar = document.getElementById("resizer-sidebar");
+  if (!sidebar) return;
+
+  const willCollapse = forceState !== undefined ? forceState : !sidebar.classList.contains("collapsed");
+
+  if (willCollapse) {
+    sidebar.classList.add("collapsed");
+    if (resizerSidebar) resizerSidebar.style.display = "none";
+    localStorage.setItem("sqlcraft_sidebar_collapsed", "true");
+  } else {
+    sidebar.classList.remove("collapsed");
+    if (resizerSidebar) resizerSidebar.style.display = "";
+    localStorage.setItem("sqlcraft_sidebar_collapsed", "false");
+    const savedW = localStorage.getItem("sqlcraft_sidebar_w");
+    sidebar.style.width = savedW ? `${savedW}px` : "330px";
+  }
+
+  if (typeof window.reproducirSonido === "function") {
+    window.reproducirSonido("click");
+  }
+
+  setTimeout(() => {
+    if (window.editorCM) window.editorCM.refresh();
+  }, 220);
 }
 
 function inicializarPanelesRedimensionables() {
@@ -92,6 +224,18 @@ function inicializarPanelesRedimensionables() {
   const resizerEditor = document.getElementById("resizer-editor");
   const bottomWorkspace = document.getElementById("bottom-workspace");
   const resizerWorkspace = document.getElementById("resizer-workspace");
+
+  // Restaurar estado guardado de la barra lateral (colapsada o ancho personalizado)
+  const isCollapsed = localStorage.getItem("sqlcraft_sidebar_collapsed") === "true";
+  if (sidebar) {
+    if (isCollapsed) {
+      sidebar.classList.add("collapsed");
+      if (resizerSidebar) resizerSidebar.style.display = "none";
+    } else {
+      const savedW = localStorage.getItem("sqlcraft_sidebar_w");
+      if (savedW) sidebar.style.width = `${savedW}px`;
+    }
+  }
 
   // 1. Redimensionar Barra Lateral (Sidebar de ejercicios)
   if (resizerSidebar && sidebar) {
@@ -226,5 +370,7 @@ window.reproducirSonido = reproducirSonido;
 window.actualizarBotonSonido = actualizarBotonSonido;
 window.abrirModal = abrirModal;
 window.cerrarModal = cerrarModal;
+window.mostrarConfirmacion = mostrarConfirmacion;
 window.lanzarConfeti = lanzarConfeti;
 window.inicializarPanelesRedimensionables = inicializarPanelesRedimensionables;
+window.toggleSidebar = toggleSidebar;

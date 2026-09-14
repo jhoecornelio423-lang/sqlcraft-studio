@@ -1,0 +1,76 @@
+<header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text-group">
+        <h1 class="brand-title">SQLCraft Studio</h1>
+        <span class="brand-subtitle">Interactive SQL Learning</span>
+      </div>
+      <span class="brand-badge" id="db-status-badge">Iniciando...</span>
+    </div>
+
+    <!-- Selector de Modo de Trabajo -->
+    <div class="mode-switch-group">
+      <button class="mode-btn active" id="btn-mode-practice" title="Modo de Ejercicios Guiados">
+        Desafíos (<span id="mode-solved-counter">0/60</span>)
+      </button>
+      <button class="mode-btn" id="btn-mode-exam" title="Examen de Certificación de la Sección Activa">
+        <span id="header-exam-btn-text">Examen Sección 1</span>
+      </button>
+      <button class="mode-btn" id="btn-mode-sandbox" title="Modo Libre para explorar la Base de Datos">
+        Sandbox Libre
+      </button>
+    </div>
+
+    <!-- Barra de Herramientas y Estadísticas -->
+    <div class="header-stats">
+      <!-- Botón Chuleta / Cheatsheet -->
+      <button class="btn-tool" id="btn-open-cheatsheet" title="Abrir Guía Rápida de SQL">
+        Chuleta SQL
+      </button>
+
+      <!-- Botón Atajos -->
+      <button class="btn-tool" id="btn-open-shortcuts" title="Atajos de Teclado">
+        Atajos
+      </button>
+
+      <!-- Botón Tutorial Guiado -->
+      <button class="btn-tool" id="btn-open-tour" title="Ver tutorial interactivo">
+        Tutorial
+      </button>
+
+      <!-- Botón Sonido -->
+      <button class="btn-tool" id="btn-toggle-sound" title="Alternar Efectos de Audio">
+        <span id="sound-icon">🔊</span>
+      </button>
+
+      <div class="level-capsule" id="user-level-badge" title="Rango según progreso">
+        <span>Novato SQL</span>
+      </div>
+
+      <div class="progress-capsule" title="Progreso total">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill-bar"></div>
+        </div>
+        <span class="stat-val" id="stats-progress-percent">0%</span>
+      </div>
+
+      <!-- Zona de Autenticación con Supabase -->
+      <div class="auth-header-zone" id="auth-header-zone">
+        <button class="btn-auth-trigger" id="btn-open-auth-modal" title="Inicia sesión o regístrate para sincronizar tu progreso en la nube">
+          <span class="auth-text">Iniciar Sesión</span>
+        </button>
+
+        <div class="user-capsule" id="user-profile-capsule" style="display: none;">
+          <div class="user-avatar-badge" id="user-avatar-initials">U</div>
+          <div class="user-info-text">
+            <span class="user-display-name" id="user-display-name">Usuario</span>
+            <div class="sync-status-indicator" id="sync-status-indicator" title="Estado de sincronización en la nube">
+              <span class="sync-dot"></span>
+              <span id="sync-status-text">Nube</span>
+            </div>
+          </div>
+          <button class="btn-logout-icon" id="btn-logout" title="Cerrar sesión">🚪</button>
+        </div>
+      </div>
+    </div>
+  </header>

@@ -206,7 +206,13 @@ function cambiarSeccion(seccionId) {
   window.seccionActualId = Number(seccionId) || 1;
   localStorage.setItem("sqlcraft_active_section", window.seccionActualId);
 
-  // Actualizar pestañas de sección en el sidebar
+  // Sincronizar combobox de sección en el sidebar
+  const selectDropdown = document.getElementById("section-select-dropdown");
+  if (selectDropdown && selectDropdown.value !== String(window.seccionActualId)) {
+    selectDropdown.value = String(window.seccionActualId);
+  }
+
+  // Actualizar pestañas de sección en el sidebar si existieran
   const tab1 = document.getElementById("tab-section-1");
   const tab2 = document.getElementById("tab-section-2");
   if (tab1) tab1.classList.toggle("active", window.seccionActualId === 1);

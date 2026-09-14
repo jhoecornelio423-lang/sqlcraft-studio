@@ -44,8 +44,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>titulo</strong>, la <strong>consola</strong> y el <strong>precio</strong> de todos los videojuegos disponibles en la tabla <code>videojuegos</code>.",
     "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos;",
     "pistas": [
-      "Enumera las tres columnas separadas por comas justo después de la palabra clave SELECT.",
-      "Indica la tabla de origen con FROM videojuegos;"
+      "Identifica las columnas solicitadas en la tabla videojuegos separándolas por coma en el SELECT.",
+      "La cláusula FROM indica la tabla fuente de donde se extraerán los datos."
     ],
     "explicacion": "La proyección explícita de columnas optimiza la transferencia de red y evita cargar atributos innecesarios.",
     "seccionId": 1
@@ -63,8 +63,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Extrae todos los campos y registros de la tabla <code>clientes</code> usando el comodín asterisco (<code>*</code>).",
     "queryEsperada": "SELECT * FROM clientes;",
     "pistas": [
-      "El asterisco (*) representa todas las columnas de la tabla.",
-      "Escribe: SELECT * FROM clientes;"
+      "El comodín asterisco (*) sustituye a la lista de columnas para proyectar todos los atributos.",
+      "Especifica la tabla clientes en la cláusula FROM."
     ],
     "explicacion": "SELECT * es ideal para exploración inicial en consolas de desarrollo, aunque en producción se desaconseja por rendimiento.",
     "seccionId": 1
@@ -82,8 +82,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Muestra el <strong>titulo</strong> renombrado como <code>nombre_juego</code> y la <strong>calificacion</strong> renombrada como <code>puntaje</code> de la tabla <code>videojuegos</code>.",
     "queryEsperada": "SELECT titulo AS nombre_juego, calificacion AS puntaje FROM videojuegos;",
     "pistas": [
-      "Usa la cláusula AS después del nombre original de cada columna.",
-      "Estructura: SELECT columna AS nuevo_nombre FROM ..."
+      "Usa la palabra clave AS para renombrar temporalmente cada columna en el resultado.",
+      "Separa las expresiones con coma: asigna 'nombre_juego' a titulo y 'puntaje' a calificacion."
     ],
     "explicacion": "Los alias mejoran la legibilidad de las columnas en reportes e integraciones con APIs.",
     "seccionId": 1
@@ -122,8 +122,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Asigna un alias corto a la tabla <code>clientes</code> usando la palabra clave <code>AS c</code> (<code>FROM clientes AS c</code>) y califica las columnas proyectadas como <code>c.nombre</code>, <code>c.email</code> y <code>c.pais</code>.",
     "queryEsperada": "SELECT c.nombre, c.email, c.pais FROM clientes AS c;",
     "pistas": [
-      "Define el alias en la cláusula FROM: FROM clientes AS c",
-      "Prefija cada columna con el alias asignado: c.nombre, c.email, c.pais"
+      "Los alias de tabla se declaran en la cláusula FROM usando la sintaxis: nombre_tabla AS alias.",
+      "Prefija cada columna con el alias asignado (por ejemplo, alias.columna)."
     ],
     "explicacion": "Los alias de tabla con AS permiten calificar columnas explícitamente, evitando ambigüedades y preparando el terreno para sentencias JOIN complejas.",
     "seccionId": 1
@@ -161,7 +161,7 @@ const BANCO_EJERCICIOS = [
     "queryEsperada": "SELECT DISTINCT genero FROM videojuegos;",
     "pistas": [
       "Coloca la palabra reservada DISTINCT inmediatamente después de SELECT.",
-      "Sintaxis: SELECT DISTINCT columna FROM ..."
+      "Al aplicar DISTINCT a la columna genero, se filtrarán los valores duplicados mostrando tuplas únicas."
     ],
     "explicacion": "DISTINCT filtra las filas redundantes en la proyección asegurando que cada valor retornado sea único.",
     "seccionId": 1
@@ -178,8 +178,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Muestra todas las combinaciones únicas de <strong>consola</strong> y <strong>genero</strong> existentes en la tabla <code>videojuegos</code>.",
     "queryEsperada": "SELECT DISTINCT consola, genero FROM videojuegos;",
     "pistas": [
-      "Aplica DISTINCT sobre ambas columnas simultáneamente.",
-      "Escribe: SELECT DISTINCT consola, genero FROM videojuegos;"
+      "Aplica DISTINCT sobre ambas columnas simultáneamente tras la cláusula SELECT.",
+      "Al listar varias columnas tras DISTINCT, SQL evalúa la unicidad del par combinado de consola y género."
     ],
     "explicacion": "Cuando DISTINCT se aplica a múltiples columnas, evalúa la unicidad de la tupla completa, no de cada columna por separado.",
     "seccionId": 1
@@ -197,8 +197,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén todos los datos de los clientes cuyo <strong>pais</strong> sea exactamente <code>'México'</code> de la tabla <code>clientes</code>.",
     "queryEsperada": "SELECT * FROM clientes WHERE pais = 'México';",
     "pistas": [
-      "Las cadenas de texto en SQL van encerradas entre comillas simples: 'México'.",
-      "Usa la cláusula WHERE pais = 'México';"
+      "Las cadenas de texto en SQL se delimitan con comillas simples (por ejemplo, 'México').",
+      "Aplica la cláusula WHERE comparando la columna pais mediante el operador de igualdad (=)."
     ],
     "explicacion": "La cláusula WHERE evalúa una condición booleana fila por fila, reteniendo únicamente aquellas donde el resultado es TRUE.",
     "seccionId": 1
@@ -216,8 +216,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Selecciona el <strong>titulo</strong> y la <strong>calificacion</strong> de aquellos videojuegos cuya calificación sea estrictamente mayor a <code>9.5</code>.",
     "queryEsperada": "SELECT titulo, calificacion FROM videojuegos WHERE calificacion > 9.5;",
     "pistas": [
-      "Utiliza el operador relacional mayor que (>).",
-      "Los números decimales en SQL se escriben con punto: 9.5."
+      "Aplica la cláusula WHERE filtrando sobre la columna calificacion.",
+      "Los números decimales en SQL utilizan punto (9.5) y el operador relacional mayor que (>)."
     ],
     "explicacion": "El operador '>' compara valores numéricos de forma estricta excluyendo el valor frontera.",
     "seccionId": 1
@@ -235,8 +235,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Muestra el <strong>titulo</strong> y el <strong>precio</strong> de los videojuegos que cuesten <code>20.0</code> dólares o menos.",
     "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio <= 20.0;",
     "pistas": [
-      "Utiliza el operador menor o igual (<=).",
-      "Condición: WHERE precio <= 20.0;"
+      "Utiliza el operador relacional menor o igual (<=) en la cláusula WHERE.",
+      "El operador <= incluye tanto los valores menores como el valor exacto de la frontera numérica."
     ],
     "explicacion": "El operador '<=' incluye tanto los valores menores como el valor exacto del límite especificado.",
     "seccionId": 1
@@ -254,8 +254,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de todos los clientes que no sean de <code>'España'</code>.",
     "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais <> 'España';",
     "pistas": [
-      "El operador estándar ANSI SQL para desigualdad es <> (también se acepta !=).",
-      "Filtro: WHERE pais <> 'España';"
+      "Para excluir un valor específico, utiliza el operador de desigualdad (<> o !=).",
+      "Aplica la condición en la cláusula WHERE comparando pais contra el texto 'España'."
     ],
     "explicacion": "El operador '<>' excluye filas que coincidan exactamente con el valor dado.",
     "seccionId": 1
@@ -273,8 +273,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Consulta el <strong>titulo</strong>, <strong>consola</strong> y <strong>precio</strong> de los videojuegos que sean para la consola <code>'PC'</code> Y que cuesten menos de <code>30.0</code> dólares.",
     "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos WHERE consola = 'PC' AND precio < 30.0;",
     "pistas": [
-      "El operador AND exige que ambas condiciones se cumplan simultáneamente.",
-      "Condición: WHERE consola = 'PC' AND precio < 30.0;"
+      "Para exigir que se cumplan dos criterios al mismo tiempo, conéctalos con el operador AND.",
+      "Filtra por la consola requerida y utiliza el operador menor que (<) para el precio."
     ],
     "explicacion": "La conjunción lógica AND solo produce TRUE cuando ambas expresiones booleanas son verdaderas.",
     "seccionId": 1
@@ -292,8 +292,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Muestra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes que vivan en <code>'Colombia'</code> O en <code>'Argentina'</code>.",
     "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais = 'Colombia' OR pais = 'Argentina';",
     "pistas": [
-      "El operador OR permite que se cumpla cualquiera de las dos opciones.",
-      "WHERE pais = 'Colombia' OR pais = 'Argentina';"
+      "Para que una fila califique si cumple cualquiera de dos condiciones, únelas con el operador OR.",
+      "Evalúa la columna pais frente a los dos países solicitados usando una expresión disyuntiva."
     ],
     "explicacion": "El operador OR retorna TRUE si al menos una de las condiciones es verdadera.",
     "seccionId": 1
@@ -311,8 +311,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>titulo</strong> y <strong>genero</strong> de todos los videojuegos que NO pertenezcan al género <code>'Acción'</code> usando el operador <code>NOT</code>.",
     "queryEsperada": "SELECT titulo, genero FROM videojuegos WHERE NOT genero = 'Acción';",
     "pistas": [
-      "Antepón la palabra reservada NOT antes de la condición.",
-      "Escribe: WHERE NOT genero = 'Acción';"
+      "El operador NOT invierte el valor de verdad de cualquier expresión booleana.",
+      "Antepón NOT al predicado de igualdad para descartar las filas que coincidan con ese género."
     ],
     "explicacion": "NOT invierte el resultado lógico de una expresión: convierte TRUE en FALSE y viceversa.",
     "seccionId": 1
@@ -329,8 +329,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Muestra el <strong>titulo</strong> y el <strong>año_lanzamiento</strong> de los videojuegos lanzados entre los años <code>2015</code> y <code>2020</code> (ambos inclusive).",
     "queryEsperada": "SELECT titulo, año_lanzamiento FROM videojuegos WHERE año_lanzamiento BETWEEN 2015 AND 2020;",
     "pistas": [
-      "Usa el operador BETWEEN valor_min AND valor_max.",
-      "WHERE año_lanzamiento BETWEEN 2015 AND 2020;"
+      "El operador BETWEEN define un intervalo cerrado e inclusivo acotado por AND.",
+      "Indica primero el límite inferior y después el superior: columna BETWEEN minimo AND maximo."
     ],
     "explicacion": "BETWEEN es una sintaxis concisa equivalente a (campo >= min AND campo <= max), incluyendo siempre ambos límites.",
     "seccionId": 1
@@ -347,8 +347,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encuentra el <strong>titulo</strong> y el <strong>precio</strong> de los videojuegos cuyo precio NO esté dentro de la franja de <code>20.0</code> a <code>60.0</code> dólares.",
     "queryEsperada": "SELECT titulo, precio FROM videojuegos WHERE precio NOT BETWEEN 20.0 AND 60.0;",
     "pistas": [
-      "Combina NOT con BETWEEN.",
-      "WHERE precio NOT BETWEEN 20.0 AND 60.0;"
+      "Antepón NOT al operador BETWEEN para excluir todo valor que caiga dentro del rango.",
+      "La condición evaluará como verdadera para valores estrictamente fuera de la franja numérica."
     ],
     "explicacion": "NOT BETWEEN selecciona valores que se encuentren estrictamente por debajo del mínimo o por encima del máximo.",
     "seccionId": 1
@@ -365,8 +365,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Consulta el <strong>titulo</strong> y la <strong>consola</strong> de los videojuegos disponibles para <code>'Nintendo Switch'</code> o <code>'PlayStation 5'</code> utilizando el operador <code>IN</code>.",
     "queryEsperada": "SELECT titulo, consola FROM videojuegos WHERE consola IN ('Nintendo Switch', 'PlayStation 5');",
     "pistas": [
-      "Encierra los valores permitidos entre paréntesis separados por comas.",
-      "WHERE consola IN ('Nintendo Switch', 'PlayStation 5');"
+      "El operador IN comprueba si el valor de una columna coincide con cualquiera de los elementos de una lista.",
+      "Especifica los valores válidos entre paréntesis separados por coma: IN ('valor1', 'valor2')."
     ],
     "explicacion": "El operador IN simplifica múltiples cláusulas OR sucesivas sobre una misma columna.",
     "seccionId": 1
@@ -383,8 +383,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>pais</strong> de los clientes cuyo país NO sea ni <code>'México'</code> ni <code>'España'</code>.",
     "queryEsperada": "SELECT nombre, apellido, pais FROM clientes WHERE pais NOT IN ('México', 'España');",
     "pistas": [
-      "Usa NOT IN ('México', 'España').",
-      "WHERE pais NOT IN ('México', 'España');"
+      "Combina NOT con IN para descartar filas cuyo valor se encuentre en la lista de exclusión.",
+      "Coloca los países a excluir entre paréntesis separados por comas."
     ],
     "explicacion": "NOT IN comprueba que el valor evaluado no coincida con ninguno de los elementos del conjunto.",
     "seccionId": 1
@@ -401,8 +401,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encuentra el <strong>titulo</strong> y <strong>desarrollador</strong> de los videojuegos cuyo desarrollador comience con la palabra <code>'Rockstar'</code>.",
     "queryEsperada": "SELECT titulo, desarrollador FROM videojuegos WHERE desarrollador LIKE 'Rockstar%';",
     "pistas": [
-      "El comodín % colocado al final busca cualquier texto que inicie con ese prefijo.",
-      "WHERE desarrollador LIKE 'Rockstar%';"
+      "El operador LIKE permite comparar texto utilizando comodines de búsqueda.",
+      "El signo de porcentaje (%) al final de la cadena busca cualquier texto que empiece con ese prefijo."
     ],
     "explicacion": "El operador LIKE permite coincidencias difusas de cadenas. El símbolo % representa cero o más caracteres arbitrarios.",
     "seccionId": 1
@@ -439,8 +439,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>titulo</strong> y la <strong>calificacion</strong> de los <strong>5</strong> videojuegos con mayor calificación de la tienda.",
     "queryEsperada": "SELECT titulo, calificacion FROM videojuegos ORDER BY calificacion DESC LIMIT 5;",
     "pistas": [
-      "Ordena de mayor a menor con DESC y luego corta con LIMIT 5.",
-      "ORDER BY calificacion DESC LIMIT 5;"
+      "Para obtener los mayores puntajes primero, ordena de forma descendente agregando DESC a ORDER BY.",
+      "Utiliza la cláusula LIMIT al final de la consulta para restringir el número máximo de filas a retornar."
     ],
     "explicacion": "La combinación de ORDER BY DESC con LIMIT es el patrón estándar en SQL para resolver problemas de 'Top N'.",
     "seccionId": 1
@@ -520,8 +520,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Selecciona los clientes cuyo país sea <code>'México'</code> O que alternativamente cumplan DOS condiciones juntas: estar activos (<code>activo = 1</code>) Y tener un saldo mayor a <code>100.0</code>.",
     "queryEsperada": "SELECT nombre, apellido, pais, saldo_cuenta FROM clientes WHERE pais = 'México' OR (activo = 1 AND saldo_cuenta > 100.0);",
     "pistas": [
-      "Usa paréntesis para aislar la conjunción AND de clientes solventes activos.",
-      "WHERE pais = 'México' OR (activo = 1 AND saldo_cuenta > 100.0);"
+      "Por precedencia de operadores, AND se evalúa antes que OR salvo que uses paréntesis.",
+      "Encierra entre paréntesis la conjunción (B AND C) para garantizar que el OR se aplique al resultado agrupado."
     ],
     "explicacion": "Ilustra cómo los paréntesis delimitan bloques de evaluación lógica independiente en el motor.",
     "seccionId": 1
@@ -539,8 +539,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encuentra el <strong>titulo</strong> y el <strong>año_lanzamiento</strong> de los videojuegos lanzados en la década de 2020 utilizando el comodín de un solo carácter guion bajo (<code>'_'</code>) para coincidir con el formato <code>'202_'</code>.",
     "queryEsperada": "SELECT titulo, año_lanzamiento FROM videojuegos WHERE año_lanzamiento LIKE '202_';",
     "pistas": [
-      "El guion bajo '_' representa exactamente un único dígito o carácter.",
-      "Condición: WHERE año_lanzamiento LIKE '202_';"
+      "En comparaciones con LIKE, el guion bajo (_) representa exactamente un único carácter posicional.",
+      "Utiliza tres caracteres fijos seguidos de un guion bajo para capturar la década específica."
     ],
     "explicacion": "A diferencia de %, el comodín _ exige una coincidencia estricta de longitud fija en la posición señalada.",
     "seccionId": 1
@@ -560,9 +560,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Utiliza el alias de tabla <code>AS c</code> para la tabla <code>clientes</code>. Proyecta <code>c.nombre AS titular</code>, <code>c.email AS correo</code> y <code>c.pais</code> para aquellos clientes cuyo país sea <code>'México'</code> o <code>'España'</code> (usando <code>IN</code>), ordenando los resultados alfabéticamente por el alias <code>titular ASC</code>.",
     "queryEsperada": "SELECT c.nombre AS titular, c.email AS correo, c.pais FROM clientes AS c WHERE c.pais IN ('México', 'España') ORDER BY titular ASC;",
     "pistas": [
-      "Declara el alias en FROM: FROM clientes AS c",
-      "Renombra columnas en SELECT: c.nombre AS titular, c.email AS correo",
-      "Ordena por el alias: ORDER BY titular ASC"
+      "Asigna un alias conciso a la tabla clientes en la cláusula FROM (por ejemplo, clientes AS c).",
+      "Prefija cada columna con dicho alias tanto en el SELECT como en el WHERE."
     ],
     "explicacion": "La combinación simultánea de alias de tabla y alias de columna es una práctica esencial en SQL para escribir consultas claras, compactas y preparadas para reportes.",
     "seccionId": 1
@@ -580,8 +579,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Selecciona el <strong>titulo</strong> y el <strong>genero</strong> de todos los videojuegos que contengan la subcadena <code>'Acción'</code> en cualquier parte de su campo género.",
     "queryEsperada": "SELECT titulo, genero FROM videojuegos WHERE genero LIKE '%Acción%';",
     "pistas": [
-      "Coloca % al principio y al final del término buscado.",
-      "WHERE genero LIKE '%Acción%';"
+      "Para buscar una palabra en cualquier posición de una columna de texto, rodéala con comodines %.",
+      "El patrón %termino% coincide con inicios, medios o finales de la cadena."
     ],
     "explicacion": "El patrón '%texto%' evalúa si la subsecuencia aparece al inicio, en medio o al final de la cadena analizada.",
     "seccionId": 1
@@ -617,8 +616,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>nombre</strong>, <strong>apellido</strong> y <strong>fecha_registro</strong> de los clientes registrados entre el <code>'2021-01-01'</code> y el <code>'2022-12-31'</code>.",
     "queryEsperada": "SELECT nombre, apellido, fecha_registro FROM clientes WHERE fecha_registro BETWEEN '2021-01-01' AND '2022-12-31';",
     "pistas": [
-      "Las fechas en formato ISO (YYYY-MM-DD) se comparan lexicográficamente con BETWEEN.",
-      "WHERE fecha_registro BETWEEN '2021-01-01' AND '2022-12-31';"
+      "Las fechas en estándar ISO 'YYYY-MM-DD' admiten comparaciones de rango con BETWEEN.",
+      "Indica la fecha inicial y final del bienio separadas por la palabra clave AND."
     ],
     "explicacion": "El estándar ISO 8601 permite usar operadores relacionales y BETWEEN en SQLite garantizando un orden cronológico fiable.",
     "seccionId": 1
@@ -655,8 +654,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Muestra el <strong>titulo</strong>, la <strong>consola</strong> y el <strong>precio</strong> de todos los videojuegos ordenados primero por <strong>consola alfabéticamente (ASC)</strong> y, en caso de empate, por <strong>precio de mayor a menor (DESC)</strong>.",
     "queryEsperada": "SELECT titulo, consola, precio FROM videojuegos ORDER BY consola ASC, precio DESC;",
     "pistas": [
-      "Separa las columnas de ordenamiento con comas en ORDER BY.",
-      "ORDER BY consola ASC, precio DESC;"
+      "En la cláusula ORDER BY puedes separar múltiples criterios de ordenamiento con coma.",
+      "Aplica ASC para el primer criterio alfabético y DESC para el segundo criterio numérico."
     ],
     "explicacion": "El ordenamiento multinivel jerarquiza los criterios de clasificación para resolver colisiones en la presentación.",
     "seccionId": 1
@@ -675,8 +674,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Extrae los países únicos (sin duplicados) donde residen clientes que tengan un saldo mayor a cero (<code>saldo_cuenta > 0</code>), ordenados alfabéticamente.",
     "queryEsperada": "SELECT DISTINCT pais FROM clientes WHERE saldo_cuenta > 0 ORDER BY pais ASC;",
     "pistas": [
-      "Combina SELECT DISTINCT con WHERE y ORDER BY.",
-      "SELECT DISTINCT pais FROM clientes WHERE saldo_cuenta > 0 ORDER BY pais ASC;"
+      "Aplica DISTINCT sobre pais para consolidar nombres repetidos en una sola fila.",
+      "Filtra primero con WHERE para excluir cuentas sin saldo y añade ORDER BY para alfabetizar."
     ],
     "explicacion": "El filtrado WHERE se ejecuta antes de la deduplicación DISTINCT, reduciendo el conjunto sobre el que se evalúa la unicidad.",
     "seccionId": 1
@@ -755,8 +754,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encuentra el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong> de los clientes activos (<code>activo = 1</code>) cuyo saldo sea mayor o igual a <code>50.0</code>.",
     "queryEsperada": "SELECT nombre, apellido, saldo_cuenta FROM clientes WHERE activo = 1 AND saldo_cuenta >= 50.0;",
     "pistas": [
-      "Combina activo = 1 con saldo_cuenta >= 50.0 usando AND.",
-      "WHERE activo = 1 AND saldo_cuenta >= 50.0;"
+      "Combina la condición de usuario activo con el saldo mínimo utilizando el operador lógico AND.",
+      "El operador mayor o igual (>=) incluye exactamente la cota fijada de 50.0."
     ],
     "explicacion": "Filtra segmentos de usuarios con cuentas operativas y capacidad de compra inmediata.",
     "seccionId": 1
@@ -774,8 +773,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>titulo</strong>, <strong>consola</strong> y <strong>stock</strong> de los videojuegos que se encuentren completamente agotados (<code>stock = 0</code>), ordenados alfabéticamente por <strong>titulo ASC</strong>.",
     "queryEsperada": "SELECT titulo, consola, stock FROM videojuegos WHERE stock = 0 ORDER BY titulo ASC;",
     "pistas": [
-      "Filtro: WHERE stock = 0.",
-      "Orden: ORDER BY titulo ASC."
+      "Localiza los títulos sin inventario comparando la columna stock con el valor numérico cero.",
+      "Ordena los resultados alfabéticamente por título mediante la cláusula ORDER BY."
     ],
     "explicacion": "Monitoreo crítico de inventario para generar alertas de reposición inmediata.",
     "seccionId": 1
@@ -794,8 +793,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Identifica los <strong>4</strong> videojuegos con existencias disponibles (<code>stock > 0</code>) que tengan el menor stock registrado para solicitar reabastecimiento.",
     "queryEsperada": "SELECT titulo, precio, stock FROM videojuegos WHERE stock > 0 ORDER BY stock ASC LIMIT 4;",
     "pistas": [
-      "Filtra existencias positivas: WHERE stock > 0.",
-      "Ordena de menor a mayor con ORDER BY stock ASC y limita a 4."
+      "Filtra existencias positivas requiriendo que la columna stock sea estrictamente mayor que cero.",
+      "Ordena ascendentemente por stock para priorizar los más escasos y restringe la salida con LIMIT."
     ],
     "explicacion": "Excluye productos agotados y localiza los elementos activos más próximos al desabastecimiento.",
     "seccionId": 1
@@ -908,8 +907,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encuentra el <strong>titulo</strong> de aquellos videojuegos que incluyan dos puntos seguidos de un espacio (<code>': '</code>) indicando un subtítulo o entrega de saga.",
     "queryEsperada": "SELECT titulo FROM videojuegos WHERE titulo LIKE '%: %';",
     "pistas": [
-      "Usa LIKE con '%: %' para capturar los dos puntos seguidos de un espacio en cualquier parte.",
-      "WHERE titulo LIKE '%: %';"
+      "Un subtítulo suele estructurarse con dos puntos seguidos de un espacio.",
+      "Incluye tanto los dos puntos como el espacio dentro de los comodines (%: %) en el predicado LIKE."
     ],
     "explicacion": "Patrones específicos con puntuación permiten identificar estructuras textuales particulares en bases de datos relacionales.",
     "seccionId": 1
@@ -1086,8 +1085,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Extrae los <strong>3</strong> videojuegos mejor calificados para <code>'Nintendo Switch'</code> que tengan un precio inferior a <code>60.0</code> dólares, mostrando <strong>titulo</strong>, <strong>consola</strong>, <strong>calificacion</strong> y <strong>precio</strong>.",
     "queryEsperada": "SELECT titulo, consola, calificacion, precio\nFROM videojuegos\nWHERE consola = 'Nintendo Switch'\n  AND precio < 60.0\nORDER BY calificacion DESC\nLIMIT 3;",
     "pistas": [
-      "WHERE consola = 'Nintendo Switch' AND precio < 60.0.",
-      "ORDER BY calificacion DESC LIMIT 3;"
+      "Combina el filtro de la consola deseada con la condición de precio inferior a 60.0 usando AND.",
+      "Ordena descendentemente por calificación para obtener los mejores puntuados y acota el podio con LIMIT."
     ],
     "explicacion": "Cálculo de podio de recomendaciones de alta demanda en una plataforma específica.",
     "seccionId": 1
@@ -1105,8 +1104,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Localiza a los clientes antiguos registrados antes del <code>'2021-01-01'</code> que aún conserven un <strong>saldo_cuenta</strong> mayor a <code>50.0</code> dólares, mostrando <strong>nombre</strong>, <strong>apellido</strong>, <strong>fecha_registro</strong> y <strong>saldo_cuenta</strong>, ordenados cronológicamente por <strong>fecha_registro ASC</strong>.",
     "queryEsperada": "SELECT nombre, apellido, fecha_registro, saldo_cuenta\nFROM clientes\nWHERE fecha_registro < '2021-01-01'\n  AND saldo_cuenta > 50.0\nORDER BY fecha_registro ASC;",
     "pistas": [
-      "WHERE fecha_registro < '2021-01-01' AND saldo_cuenta > 50.0.",
-      "ORDER BY fecha_registro ASC;"
+      "Filtra la fecha de registro comparándola con el inicio de 2021 y valida el saldo remanente con AND.",
+      "Ordena cronológicamente desde la fecha más antigua mediante ORDER BY en sentido ascendente."
     ],
     "explicacion": "Análisis de cuentas durmientes o clientes antiguos con pasivo financiero pendiente de redención.",
     "seccionId": 1
@@ -1189,9 +1188,9 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Genera un reporte maestro con registros únicos (<code>DISTINCT</code>) que proyecte: <strong>titulo</strong>, <strong>consola</strong>, <strong>genero</strong>, <strong>precio</strong>, <strong>stock</strong> y una <code>etiqueta_comercial</code> generada con <code>CASE</code> ('AGOTADO' si stock = 0, 'JOYA PREMIUM' si precio >= 60.0 y calificacion >= 9.5, 'OFERTA' si precio < 20.0 y 'REGULAR' para el resto).<br><br>Aplica los siguientes filtros combinados:<br>• Consola en 'PlayStation 5', 'Nintendo Switch' o 'PC'.<br>• Precio entre 10.0 y 70.0.<br>• Género que no contenga 'Deportes'.<br>• Excluir explícitamente juegos que estén agotados con calificación menor a 9.0 con <code>NOT (stock = 0 AND calificacion < 9.0)</code>.<br><br>Ordena por <strong>precio DESC, stock ASC</strong> y limita el reporte a <strong>15</strong> registros.",
     "queryEsperada": "SELECT DISTINCT\n  titulo,\n  consola,\n  genero,\n  precio,\n  stock,\n  CASE\n    WHEN stock = 0 THEN 'AGOTADO'\n    WHEN precio >= 60.0 AND calificacion >= 9.5 THEN 'JOYA PREMIUM'\n    WHEN precio < 20.0 THEN 'OFERTA'\n    ELSE 'REGULAR'\n  END AS etiqueta_comercial\nFROM videojuegos\nWHERE (consola IN ('PlayStation 5', 'Nintendo Switch', 'PC'))\n  AND (precio BETWEEN 10.0 AND 70.0)\n  AND (genero NOT LIKE '%Deportes%')\n  AND NOT (stock = 0 AND calificacion < 9.0)\nORDER BY precio DESC, stock ASC\nLIMIT 15;",
     "pistas": [
-      "Inicia con SELECT DISTINCT titulo, consola, genero, precio, stock, CASE ... END AS etiqueta_comercial.",
-      "En el WHERE enlaza las 4 condiciones con AND: IN, BETWEEN, NOT LIKE y NOT (...).",
-      "Finaliza con ORDER BY precio DESC, stock ASC LIMIT 15;"
+      "Inicia estructurando las columnas proyectadas junto con la expresión condicional CASE para la etiqueta.",
+      "Enlaza las condiciones de consola, precio, exclusión de género y control de stock en el WHERE usando AND.",
+      "Finaliza aplicando el doble criterio de ordenamiento (precio descendente y stock ascendente) con LIMIT."
     ],
     "explicacion": "El reto definitivo de la Sección 1: combina proyección única, lógica condicional por prioridades, filtros complejos de conjunto, rango y exclusión lógica, ordenación compuesta y truncamiento con límite.",
     "seccionId": 1
@@ -1210,8 +1209,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Combina la tabla <code>clientes</code> con <code>ventas</code> mediante un <code>INNER JOIN</code>. Utiliza alias explícitos con la palabra clave <code>AS</code> (<code>clientes AS c</code> y <code>ventas AS vt</code>) sobre la clave foránea <code>vt.cliente_id = c.id</code>. Proyecta el <strong>nombre</strong> y <strong>apellido</strong> del cliente junto a la <strong>fecha_venta</strong> y el <strong>precio_unitario</strong>.",
     "queryEsperada": "SELECT c.nombre, c.apellido, vt.fecha_venta, vt.precio_unitario FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id;",
     "pistas": [
-      "Usa la sintaxis: FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id;",
-      "Proyecta los campos prefijando siempre el alias de su tabla correspondiente (c.nombre, c.apellido, vt.fecha_venta, vt.precio_unitario)."
+      "El INNER JOIN enlaza dos tablas reteniendo únicamente las filas donde se cumple el predicado de unión.",
+      "Empareja la clave primaria id de clientes con la clave foránea cliente_id de ventas en la cláusula ON."
     ],
     "explicacion": "El INNER JOIN combina registros de dos tablas cuando existe coincidencia exacta en la condición de enlace ON. El uso del alias con AS mejora la legibilidad y evita ambigüedad."
   },
@@ -1287,8 +1286,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Obtén el <strong>nombre</strong>, <strong>email</strong> y <strong>fecha_venta</strong> de todas las compras pagadas con <code>'Tarjeta'</code> uniendo <code>clientes AS c</code> y <code>ventas AS vt</code> mediante <code>INNER JOIN</code>.",
     "queryEsperada": "SELECT c.nombre, c.email, vt.fecha_venta FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id WHERE vt.metodo_pago = 'Tarjeta';",
     "pistas": [
-      "Agrega la cláusula WHERE vt.metodo_pago = 'Tarjeta' al final del INNER JOIN.",
-      "Proyecta c.nombre, c.email, vt.fecha_venta."
+      "Realiza la unión interna entre clientes y ventas sobre sus claves correspondientes.",
+      "Añade la cláusula WHERE al final para restringir la forma de pago a 'Tarjeta'."
     ],
     "explicacion": "La cláusula WHERE se aplica después del INNER JOIN para filtrar las filas resultantes de la combinación."
   },
@@ -1306,8 +1305,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Combina <code>videojuegos AS v</code> y <code>ventas AS vt</code> con <code>INNER JOIN</code> para obtener el <strong>titulo</strong>, el <strong>precio</strong> y el <strong>metodo_pago</strong> de todos los videojuegos vendidos para la consola <code>'PC'</code>.",
     "queryEsperada": "SELECT v.titulo, v.precio, vt.metodo_pago FROM videojuegos AS v INNER JOIN ventas AS vt ON v.id = vt.videojuego_id WHERE v.consola = 'PC';",
     "pistas": [
-      "Filtra en el WHERE con: v.consola = 'PC'.",
-      "Selecciona v.titulo, v.precio, vt.metodo_pago."
+      "Une la tabla de videojuegos con ventas en la cláusula ON.",
+      "Filtra en el WHERE sobre la columna consola para seleccionar únicamente los registros de 'PC'."
     ],
     "explicacion": "Permite analizar el comportamiento de ventas segmentado por una plataforma de hardware específica."
   },
@@ -1345,8 +1344,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Enlaza <code>videojuegos AS v</code> y <code>ventas AS vt</code> con <code>INNER JOIN</code> para aquellos juegos cuya <strong>calificacion</strong> sea mayor o igual a <code>9.5</code>. Proyecta el <strong>titulo</strong>, la <strong>calificacion</strong> y la <strong>fecha_venta</strong>, ordenando los resultados de forma descendente por <strong>calificacion</strong>.",
     "queryEsperada": "SELECT v.titulo, v.calificacion, vt.fecha_venta FROM videojuegos AS v INNER JOIN ventas AS vt ON v.id = vt.videojuego_id WHERE v.calificacion >= 9.5 ORDER BY v.calificacion DESC;",
     "pistas": [
-      "Filtra WHERE v.calificacion >= 9.5.",
-      "Ordena con ORDER BY v.calificacion DESC."
+      "Enlaza videojuegos con ventas mediante INNER JOIN sobre el identificador de juego.",
+      "Aplica la cláusula WHERE para filtrar el umbral de calificación y ordena descendentemente por dicha columna."
     ],
     "explicacion": "Combina filtrado por reputación de producto y ordenamiento prioritario sobre el resultado vinculado."
   },
@@ -1403,8 +1402,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "A diferencia de INNER JOIN, <code>LEFT JOIN</code> no descarta clientes sin transacciones. Une <code>clientes AS c</code> con <code>ventas AS vt</code> mediante <code>LEFT JOIN</code> sobre <code>c.id = vt.cliente_id</code>. Proyecta el <strong>nombre</strong>, <strong>apellido</strong>, <strong>pais</strong> y el <strong>id de la venta</strong> renombrado como <code>venta_id</code>.",
     "queryEsperada": "SELECT c.nombre, c.apellido, c.pais, vt.id AS venta_id FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id;",
     "pistas": [
-      "Sintaxis: FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id;",
-      "Observa cómo los clientes sin compras mostrarán NULL en venta_id."
+      "El LEFT JOIN preserva todas las tuplas de la tabla izquierda aunque no tengan ventas asociadas.",
+      "Empareja las tablas en la cláusula ON usando la clave primaria y foránea respectiva."
     ],
     "explicacion": "El LEFT JOIN preserva todas las filas de la tabla izquierda (clientes), rellenando con NULL las columnas de la tabla derecha cuando no hay coincidencia."
   },
@@ -1459,8 +1458,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Aplica <code>LEFT JOIN</code> entre <code>clientes AS c</code> y <code>ventas AS vt</code>, pero filtrando en el <code>WHERE</code> únicamente a los clientes activos (<code>c.activo = 1</code>). Proyecta el <strong>nombre</strong>, <strong>saldo_cuenta</strong> y <strong>fecha_venta</strong>.",
     "queryEsperada": "SELECT c.nombre, c.saldo_cuenta, vt.fecha_venta FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id WHERE c.activo = 1;",
     "pistas": [
-      "Coloca WHERE c.activo = 1.",
-      "Proyecta c.nombre, c.saldo_cuenta, vt.fecha_venta."
+      "Realiza el LEFT JOIN entre clientes y ventas sobre sus identificadores de enlace.",
+      "Filtra en la cláusula WHERE para retener únicamente los clientes con cuenta activa (activo = 1)."
     ],
     "explicacion": "Filtrar por la tabla preservada en el WHERE reduce el universo de partida antes o después de la unión sin alterar la mecánica del LEFT JOIN."
   },
@@ -1478,8 +1477,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "El <code>CROSS JOIN</code> produce el producto cartesiano combinando cada fila de la primera tabla con cada fila de la segunda. Realiza un <code>CROSS JOIN</code> entre <code>clientes AS c</code> y una subconsulta con las consolas distintas (<code>(SELECT DISTINCT consola FROM videojuegos) AS v</code>). Proyecta el <strong>nombre</strong> del cliente y la <strong>consola</strong>, limitando la consulta a los primeros <strong>6</strong> registros.",
     "queryEsperada": "SELECT c.nombre, v.consola FROM clientes AS c CROSS JOIN (SELECT DISTINCT consola FROM videojuegos) AS v LIMIT 6;",
     "pistas": [
-      "Usa la sintaxis: FROM clientes AS c CROSS JOIN (SELECT DISTINCT consola FROM videojuegos) AS v",
-      "Añade LIMIT 6 al final."
+      "El CROSS JOIN genera el producto cartesiano combinando cada fila de la primera tabla con cada fila de la segunda.",
+      "Utiliza una subconsulta que extraiga las consolas únicas con DISTINCT y acota el resultado con LIMIT."
     ],
     "explicacion": "CROSS JOIN no requiere cláusula ON y genera todas las permutaciones posibles entre dos conjuntos de datos."
   },
@@ -1497,8 +1496,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Genera una matriz de posibilidades combinando <code>clientes AS c</code> con los métodos de pago únicos disponibles en ventas (<code>(SELECT DISTINCT metodo_pago FROM ventas WHERE metodo_pago IS NOT NULL) AS m</code>) mediante <code>CROSS JOIN</code>. Proyecta el <strong>nombre</strong> y el <strong>metodo_pago</strong>, limitando a <strong>8</strong> registros.",
     "queryEsperada": "SELECT c.nombre, m.metodo_pago FROM clientes AS c CROSS JOIN (SELECT DISTINCT metodo_pago FROM ventas WHERE metodo_pago IS NOT NULL) AS m LIMIT 8;",
     "pistas": [
-      "Cruza clientes AS c con (SELECT DISTINCT metodo_pago FROM ventas WHERE metodo_pago IS NOT NULL) AS m.",
-      "Limita con LIMIT 8."
+      "Cruza la tabla de clientes con una subconsulta derivada de métodos de pago únicos no nulos.",
+      "No se requiere cláusula ON en un CROSS JOIN; finaliza limitando el número de combinaciones."
     ],
     "explicacion": "Útil en modelos analíticos para planificar coberturas de mercado y matrices de aceptación de pasarelas de pago."
   },
@@ -1555,8 +1554,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "La función <code>IFNULL(expr, sustituto)</code> de SQLite devuelve el sustituto si la expresión es NULL. Une <code>clientes AS c</code> y <code>ventas AS vt</code> con <code>LEFT JOIN</code>. Proyecta el <strong>nombre</strong> del cliente y aplica <code>IFNULL(vt.id, 0) AS id_venta_segura</code>.",
     "queryEsperada": "SELECT c.nombre, IFNULL(vt.id, 0) AS id_venta_segura FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id;",
     "pistas": [
-      "Escribe IFNULL(vt.id, 0) AS id_venta_segura.",
-      "Proyecta también c.nombre."
+      "La función IFNULL(campo, valor_reemplazo) devuelve el valor de reemplazo si el primer parámetro resulta NULL.",
+      "Aplica esta función sobre el identificador de venta para asegurar una salida entera sin nulos."
     ],
     "explicacion": "IFNULL evita devolver valores NULL al frontend o capas intermedias, sustituyéndolos por un valor predeterminado como 0."
   },
@@ -1594,8 +1593,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Combina las tres tablas principales del sistema mediante <code>INNER JOIN</code>: <code>clientes AS c</code> con <code>ventas AS vt</code> (mediante <code>c.id = vt.cliente_id</code>) y <code>ventas AS vt</code> con <code>videojuegos AS v</code> (mediante <code>vt.videojuego_id = v.id</code>). Proyecta el <strong>nombre</strong> y <strong>apellido</strong> del cliente, el <strong>titulo</strong> del videojuego y la <strong>fecha_venta</strong>.",
     "queryEsperada": "SELECT c.nombre, c.apellido, v.titulo, vt.fecha_venta FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id INNER JOIN videojuegos AS v ON vt.videojuego_id = v.id;",
     "pistas": [
-      "Encadena los dos INNER JOIN consecutivamente: FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id INNER JOIN videojuegos AS v ON vt.videojuego_id = v.id;",
-      "Selecciona c.nombre, c.apellido, v.titulo, vt.fecha_venta."
+      "Para relacionar tres tablas, encadena dos cláusulas INNER JOIN consecutivas.",
+      "Primero vincula clientes con ventas (por cliente_id), y luego ventas con videojuegos (por videojuego_id)."
     ],
     "explicacion": "El INNER JOIN de 3 tablas cruza la entidad cliente con la entidad producto a través de la tabla relacional transaccional intermedia ventas."
   },
@@ -1634,8 +1633,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Une las tres tablas con <code>INNER JOIN</code> para obtener las compras realizadas por clientes de <code>'España'</code> que hayan adquirido videojuegos del género <code>'Acción RPG'</code>. Proyecta el <strong>nombre</strong>, <strong>pais</strong>, <strong>titulo</strong> y <strong>genero</strong>.",
     "queryEsperada": "SELECT c.nombre, c.pais, v.titulo, v.genero FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id INNER JOIN videojuegos AS v ON vt.videojuego_id = v.id WHERE c.pais = 'España' AND v.genero = 'Acción RPG';",
     "pistas": [
-      "Agrega WHERE c.pais = 'España' AND v.genero = 'Acción RPG'.",
-      "Proyecta c.nombre, c.pais, v.titulo, v.genero."
+      "Encadena el triple INNER JOIN entre clientes, ventas y videojuegos.",
+      "Aplica la cláusula WHERE combinando el país del cliente y el género del videojuego mediante AND."
     ],
     "explicacion": "El filtrado relacional en consultas multinivel permite responder preguntas de negocio de alta especificidad geográfica y temáticas."
   },
@@ -1653,8 +1652,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Une <code>clientes AS c</code>, <code>ventas AS vt</code> y <code>videojuegos AS v</code> con <code>INNER JOIN</code> filtrando únicamente las transacciones pagadas con <code>'PayPal'</code> o <code>'Transferencia'</code> (usando <code>IN</code>). Proyecta el <strong>nombre</strong>, <strong>titulo</strong> y <strong>metodo_pago</strong>.",
     "queryEsperada": "SELECT c.nombre, v.titulo, vt.metodo_pago FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id INNER JOIN videojuegos AS v ON vt.videojuego_id = v.id WHERE vt.metodo_pago IN ('PayPal', 'Transferencia');",
     "pistas": [
-      "Usa WHERE vt.metodo_pago IN ('PayPal', 'Transferencia').",
-      "Selecciona c.nombre, v.titulo, vt.metodo_pago."
+      "Realiza el triple enlace relacional para acceder simultáneamente a datos de cliente, videojuego y venta.",
+      "Filtra en la cláusula WHERE utilizando el operador IN con la lista de métodos de pago requeridos."
     ],
     "explicacion": "Aplica predicados de membresía sobre atributos de enlace transaccional."
   },
@@ -1692,8 +1691,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Aplica un <code>LEFT JOIN</code> entre <code>clientes AS c</code> y <code>ventas AS vt</code> sobre <code>c.id = vt.cliente_id</code>. Filtra con <code>WHERE vt.id IS NULL</code> para detectar a los clientes registrados que <strong>nunca han efectuado una compra</strong>. Proyecta el <strong>nombre</strong>, <strong>apellido</strong> y <strong>saldo_cuenta</strong>.",
     "queryEsperada": "SELECT c.nombre, c.apellido, c.saldo_cuenta FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id WHERE vt.id IS NULL;",
     "pistas": [
-      "FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id",
-      "WHERE vt.id IS NULL aísla exactamente las filas que no tuvieron correspondencia."
+      "Combina clientes con ventas mediante LEFT JOIN para retener la lista completa de usuarios.",
+      "Aísla a los usuarios sin compras agregando la condición WHERE columna_foranea IS NULL."
     ],
     "explicacion": "Técnica fundamental conocida como 'Anti-Join' para identificar usuarios inactivos o carritos abandonados sin compras."
   },
@@ -1711,8 +1710,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encuentra todos los títulos del catálogo que <strong>jamás han sido vendidos</strong>. Une <code>videojuegos AS v</code> con <code>ventas AS vt</code> mediante <code>LEFT JOIN</code> y filtra donde <code>vt.id IS NULL</code>. Proyecta el <strong>titulo</strong>, la <strong>consola</strong> y el <strong>precio</strong>.",
     "queryEsperada": "SELECT v.titulo, v.consola, v.precio FROM videojuegos AS v LEFT JOIN ventas AS vt ON v.id = vt.videojuego_id WHERE vt.id IS NULL;",
     "pistas": [
-      "FROM videojuegos AS v LEFT JOIN ventas AS vt ON v.id = vt.videojuego_id",
-      "Filtra WHERE vt.id IS NULL."
+      "Aplica LEFT JOIN desde videojuegos hacia ventas para preservar todos los títulos del catálogo.",
+      "Para localizar los videojuegos que nunca se vendieron, filtra donde el identificador de venta sea NULL."
     ],
     "explicacion": "Permite a los analistas de inventario detectar productos estancados para aplicar promociones o descuentos."
   },
@@ -1751,8 +1750,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Encadena un doble <code>LEFT JOIN</code> partiendo de <code>clientes AS c</code> hacia <code>ventas AS vt</code> (<code>c.id = vt.cliente_id</code>) y de <code>ventas AS vt</code> hacia <code>videojuegos AS v</code> (<code>vt.videojuego_id = v.id</code>). Proyecta el <strong>nombre</strong> del cliente y <code>COALESCE(v.titulo, 'Sin Videojuego Comprado') AS titulo_comprado</code>.",
     "queryEsperada": "SELECT c.nombre, COALESCE(v.titulo, 'Sin Videojuego Comprado') AS titulo_comprado FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id LEFT JOIN videojuegos AS v ON vt.videojuego_id = v.id;",
     "pistas": [
-      "Encadena: FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id LEFT JOIN videojuegos AS v ON vt.videojuego_id = v.id",
-      "Usa COALESCE(v.titulo, 'Sin Videojuego Comprado') AS titulo_comprado."
+      "Encadena dos cláusulas LEFT JOIN consecutivas para preservar al cliente en toda la cadena relacional.",
+      "Usa la función COALESCE sobre el título del juego para sustituir valores NULL por un mensaje descriptivo."
     ],
     "explicacion": "El encadenamiento de múltiples LEFT JOINs preserva la raíz (clientes) incluso si no existen ventas ni videojuegos asociados."
   },
@@ -1791,8 +1790,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "A partir de SQLite 3.39+, <code>RIGHT JOIN</code> está soportado nativamente. Invierte la unión colocando <code>ventas AS vt</code> a la izquierda y <code>videojuegos AS v</code> a la derecha mediante <code>RIGHT JOIN</code> (<code>vt.videojuego_id = v.id</code>). Usa <code>WHERE vt.id IS NULL</code> para hallar los títulos sin ventas. Proyecta el <strong>titulo</strong> del juego y <strong>vt.id AS venta_id</strong>.",
     "queryEsperada": "SELECT v.titulo, vt.id AS venta_id FROM ventas AS vt RIGHT JOIN videojuegos AS v ON vt.videojuego_id = v.id WHERE vt.id IS NULL;",
     "pistas": [
-      "Usa: FROM ventas AS vt RIGHT JOIN videojuegos AS v ON vt.videojuego_id = v.id",
-      "Filtra WHERE vt.id IS NULL."
+      "El RIGHT JOIN preserva todas las filas de la tabla especificada a la derecha del operador.",
+      "Filtra en el WHERE con IS NULL sobre la columna de ventas para aislar los juegos sin movimiento."
     ],
     "explicacion": "RIGHT JOIN preserva todas las filas de la tabla de la derecha (videojuegos), dejando en NULL las columnas de la tabla de la izquierda (ventas) si no hay correspondencia."
   },
@@ -1829,8 +1828,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Combina <code>ventas AS vt</code> y <code>clientes AS c</code> mediante <code>RIGHT JOIN</code> (<code>vt.cliente_id = c.id</code>). Proyecta el <strong>nombre</strong>, el <strong>pais</strong> y el <strong>id de la venta</strong> renombrado como <code>venta_id</code>.",
     "queryEsperada": "SELECT c.nombre, c.pais, vt.id AS venta_id FROM ventas AS vt RIGHT JOIN clientes AS c ON vt.cliente_id = c.id;",
     "pistas": [
-      "FROM ventas AS vt RIGHT JOIN clientes AS c ON vt.cliente_id = c.id;",
-      "Proyecta c.nombre, c.pais, vt.id AS venta_id."
+      "Posiciona la tabla de clientes a la derecha del RIGHT JOIN para garantizar que todos figuren en la salida.",
+      "Las ventas no existentes mostrarán NULL de forma natural en el resultado proyectado."
     ],
     "explicacion": "Preserva el 100% de los clientes posicionados a la derecha de la cláusula de unión."
   },
@@ -1867,8 +1866,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "<code>FULL OUTER JOIN</code> preserva todas las filas de ambas tablas. Combina <code>clientes AS c</code> y <code>ventas AS vt</code> mediante <code>FULL OUTER JOIN</code> (<code>c.id = vt.cliente_id</code>). Filtra para mostrar <strong>únicamente las discrepancias bilaterales</strong> (donde no hubo coincidencia en alguno de los dos lados: <code>WHERE c.id IS NULL OR vt.id IS NULL</code>). Proyecta <strong>c.nombre</strong>, <strong>vt.id AS venta_id</strong> y <strong>vt.cliente_id</strong>.",
     "queryEsperada": "SELECT c.nombre, vt.id AS venta_id, vt.cliente_id FROM clientes AS c FULL OUTER JOIN ventas AS vt ON c.id = vt.cliente_id WHERE c.id IS NULL OR vt.id IS NULL;",
     "pistas": [
-      "FROM clientes AS c FULL OUTER JOIN ventas AS vt ON c.id = vt.cliente_id",
-      "Filtra WHERE c.id IS NULL OR vt.id IS NULL."
+      "El FULL OUTER JOIN efectúa una unión bilateral reteniendo tuplas sin pareja de ambos extremos.",
+      "Para detectar registros huérfanos o sin enlace, filtra en el WHERE donde el ID de un lado o del otro sea NULL."
     ],
     "explicacion": "El FULL OUTER JOIN con WHERE c.id IS NULL OR vt.id IS NULL aísla las anomalías de ambas tablas simultáneamente (clientes sin ventas y ventas sin clientes registrados)."
   },
@@ -1887,8 +1886,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Realiza un <code>FULL OUTER JOIN</code> entre <code>videojuegos AS v</code> y <code>ventas AS vt</code> sobre <code>v.id = vt.videojuego_id</code>. Filtra para hallar registros sin coincidencia en cualquiera de los dos lados (<code>WHERE v.id IS NULL OR vt.id IS NULL</code>). Proyecta <strong>v.titulo</strong>, <strong>vt.id AS venta_id</strong> y <strong>vt.videojuego_id</strong>.",
     "queryEsperada": "SELECT v.titulo, vt.id AS venta_id, vt.videojuego_id FROM videojuegos AS v FULL OUTER JOIN ventas AS vt ON v.id = vt.videojuego_id WHERE v.id IS NULL OR vt.id IS NULL;",
     "pistas": [
-      "FROM videojuegos AS v FULL OUTER JOIN ventas AS vt ON v.id = vt.videojuego_id",
-      "WHERE v.id IS NULL OR vt.id IS NULL."
+      "Une bilateralmente videojuegos y ventas con FULL OUTER JOIN para auditar discrepancias en el catálogo.",
+      "Identifica los elementos desvinculados evaluando la presencia de NULL en cualquiera de las dos tablas."
     ],
     "explicacion": "Revela juegos que nunca se vendieron y ventas de productos descontinuados o eliminados del catálogo."
   },
@@ -1946,8 +1945,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Combina los países únicos registrados en clientes con los desarrolladores únicos en videojuegos mediante <code>CROSS JOIN</code>. Limita el resultado a los primeros <strong>8</strong> registros proyectando <strong>pais</strong> y <strong>desarrollador</strong>.",
     "queryEsperada": "SELECT p.pais, d.desarrollador FROM (SELECT DISTINCT pais FROM clientes) AS p CROSS JOIN (SELECT DISTINCT desarrollador FROM videojuegos) AS d LIMIT 8;",
     "pistas": [
-      "Subconsultas: (SELECT DISTINCT pais FROM clientes) AS p y (SELECT DISTINCT desarrollador FROM videojuegos) AS d.",
-      "Enlaza con CROSS JOIN y limita a 8."
+      "Genera dos subconsultas derivadas con alias, aplicando DISTINCT para obtener listas únicas de países y desarrolladores.",
+      "Combina ambas subconsultas mediante CROSS JOIN y limita el número de tuplas resultantes."
     ],
     "explicacion": "Genera combinatorias de dimensión geográfica vs proveedores para prospección comercial."
   },
@@ -2043,8 +2042,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Une <code>clientes AS c</code> y <code>ventas AS vt</code> con <code>LEFT JOIN</code>. Aplica en el <code>WHERE</code> una restricción estricta sobre la tabla izquierda: clientes con saldo mayor a <code>50.0</code> (<code>c.saldo_cuenta > 50.0</code>). Proyecta <strong>c.nombre</strong>, <strong>c.saldo_cuenta</strong> y <strong>vt.id AS venta_id</strong>.",
     "queryEsperada": "SELECT c.nombre, c.saldo_cuenta, vt.id AS venta_id FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id WHERE c.saldo_cuenta > 50.0;",
     "pistas": [
-      "Filtra en el WHERE con: c.saldo_cuenta > 50.0.",
-      "Proyecta c.nombre, c.saldo_cuenta, vt.id AS venta_id."
+      "Aplica LEFT JOIN entre clientes y ventas para mantener la perspectiva centrada en el cliente.",
+      "El filtro sobre una columna de la tabla izquierda (preservada) mantiene intacta la semántica del LEFT JOIN."
     ],
     "explicacion": "Filtrar por la tabla de la izquierda en el WHERE restringe la población base pero mantiene la semántica de LEFT JOIN para la tabla derecha."
   },
@@ -2062,8 +2061,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Cuando filtras en el <code>WHERE</code> un campo de la tabla derecha exigiendo un valor no nulo (como <code>WHERE vt.metodo_pago = 'Tarjeta'</code>), descartas automáticamente las filas donde dicho campo es NULL, degradando en la práctica el <code>LEFT JOIN</code> a un <code>INNER JOIN</code>. Escribe esta consulta demostrativa proyectando <strong>c.nombre</strong>, <strong>c.apellido</strong> y <strong>vt.metodo_pago</strong>.",
     "queryEsperada": "SELECT c.nombre, c.apellido, vt.metodo_pago FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id WHERE vt.metodo_pago = 'Tarjeta';",
     "pistas": [
-      "Usa LEFT JOIN pero con WHERE vt.metodo_pago = 'Tarjeta'.",
-      "Comprueba que el número de filas coincide con un INNER JOIN."
+      "Observa cómo filtrar en el WHERE por una columna de la tabla derecha descarta los NULL generados por el LEFT JOIN.",
+      "Verifica que el número de filas resulte equivalente a haber realizado un INNER JOIN tradicional."
     ],
     "explicacion": "Error clásico de diseño SQL: aplicar filtros restrictivos sobre la tabla derecha en el WHERE elimina el efecto del LEFT JOIN."
   },
@@ -2178,8 +2177,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "La función <code>NULLIF(a, b)</code> devuelve <code>NULL</code> si ambos valores son idénticos. Une <code>clientes AS c</code> y <code>ventas AS vt</code> con <code>LEFT JOIN</code>. Convierte los saldos en cuenta iguales a <code>0.0</code> en valores nulos aplicando <code>NULLIF(c.saldo_cuenta, 0.0) AS saldo_auditado</code>. Proyecta <strong>c.nombre</strong> y <strong>saldo_auditado</strong>.",
     "queryEsperada": "SELECT c.nombre, NULLIF(c.saldo_cuenta, 0.0) AS saldo_auditado FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id;",
     "pistas": [
-      "Escribe: NULLIF(c.saldo_cuenta, 0.0) AS saldo_auditado.",
-      "Proyecta c.nombre junto a la columna calculada."
+      "La función NULLIF(expresion1, expresion2) devuelve NULL si ambas expresiones son idénticas.",
+      "Utiliza NULLIF sobre el saldo indicando el valor cero (0.0) como segundo argumento."
     ],
     "explicacion": "NULLIF es ideal para limpiar datos donde se usaron números centinela (como 0 o -1) para representar la falta real de saldo o información."
   },
@@ -2255,8 +2254,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Combina <code>clientes AS c</code> y <code>ventas AS vt</code> mediante <code>FULL OUTER JOIN</code> sobre <code>c.id = vt.cliente_id</code>. Aplica <code>COALESCE(c.nombre, 'Sin Cliente Registrado') AS cliente_seguro</code> y <code>COALESCE(vt.metodo_pago, 'Sin Transacción') AS pago_seguro</code>. Proyecta ambas columnas calculadas.",
     "queryEsperada": "SELECT COALESCE(c.nombre, 'Sin Cliente Registrado') AS cliente_seguro, COALESCE(vt.metodo_pago, 'Sin Transacción') AS pago_seguro FROM clientes AS c FULL OUTER JOIN ventas AS vt ON c.id = vt.cliente_id;",
     "pistas": [
-      "Aplica COALESCE a ambos extremos de la unión externa bilateral.",
-      "FROM clientes AS c FULL OUTER JOIN ventas AS vt ON c.id = vt.cliente_id."
+      "En un FULL OUTER JOIN pueden presentarse valores NULL en columnas de ambos extremos de la unión.",
+      "Aplica COALESCE tanto al nombre del cliente como al método de pago para garantizar textos limpios y legibles."
     ],
     "explicacion": "Garantiza un dataset 100% normalizado y libre de NULLs crudos en uniones externas bidireccionales."
   },
@@ -2274,8 +2273,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Realiza un triple enlace partiendo de <code>clientes AS c</code> hacia <code>ventas AS vt</code> con <code>LEFT JOIN</code> (<code>c.id = vt.cliente_id</code>) y hacia <code>videojuegos AS v</code> con <code>LEFT JOIN</code> (<code>vt.videojuego_id = v.id</code>). Filtra para clientes cuyo país sea <code>'Colombia'</code>. Proyecta <strong>c.nombre</strong>, <code>COALESCE(v.titulo, 'Sin Compras') AS juego_comprado</code> y <code>COALESCE(vt.precio_unitario, 0.0) AS precio_pagado</code>.",
     "queryEsperada": "SELECT c.nombre, COALESCE(v.titulo, 'Sin Compras') AS juego_comprado, COALESCE(vt.precio_unitario, 0.0) AS precio_pagado FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id LEFT JOIN videojuegos AS v ON vt.videojuego_id = v.id WHERE c.pais = 'Colombia';",
     "pistas": [
-      "Encadena los dos LEFT JOINs.",
-      "Filtra WHERE c.pais = 'Colombia' y usa COALESCE para juego y precio."
+      "Encadena dos enlaces LEFT JOIN sucesivos para rastrear al cliente a través de ventas hasta el videojuego.",
+      "Filtra por el país deseado en el WHERE y sustituye los valores ausentes mediante la función COALESCE."
     ],
     "explicacion": "Permite auditar el comportamiento de un mercado específico asegurando que incluso los usuarios registrados sin compras figuren en el informe."
   },
@@ -2293,8 +2292,8 @@ const BANCO_EJERCICIOS = [
     "descripcion": "Enlaza <code>videojuegos AS v</code> con <code>ventas AS vt</code> mediante <code>LEFT JOIN</code>. Filtra para encontrar videojuegos de consola que contenga <code>'PlayStation'</code> (<code>v.consola LIKE '%PlayStation%'</code>) o que nunca se hayan vendido (<code>vt.id IS NULL</code>). Proyecta <strong>v.titulo</strong>, <strong>v.consola</strong> y <code>IFNULL(vt.id, 'Sin Venta') AS estado_id</code>.",
     "queryEsperada": "SELECT v.titulo, v.consola, IFNULL(vt.id, 'Sin Venta') AS estado_id FROM videojuegos AS v LEFT JOIN ventas AS vt ON v.id = vt.videojuego_id WHERE v.consola LIKE '%PlayStation%' OR vt.id IS NULL;",
     "pistas": [
-      "Filtra con WHERE v.consola LIKE '%PlayStation%' OR vt.id IS NULL.",
-      "Proyecta v.titulo, v.consola, IFNULL(vt.id, 'Sin Venta') AS estado_id."
+      "Combina el catálogo con las transacciones asegurando la presencia de títulos de la marca solicitada.",
+      "Emplea la función IFNULL para proporcionar un valor de contingencia en caso de ausencia de transacción."
     ],
     "explicacion": "Cruza filtros temáticos de catálogo con detección de ausencias transaccionales."
   },
@@ -2580,28 +2579,28 @@ const EXAMEN_SECCION_1 = {
     {
       "id": "p1",
       "titulo": "Reto Práctico 1: Clientes Activos con Alias de Columnas y Tabla (AS)",
-      "descripcion": "Utilizando la tabla <code>clientes</code> con el alias de tabla <code>c</code> (<code>FROM clientes AS c</code>), proyecta <code>c.nombre AS titular</code>, <code>c.apellido</code> y <code>c.saldo_cuenta AS saldo_disponible</code> para clientes activos (<code>c.activo = 1</code>) cuyo país sea <code>'México'</code> o <code>'Colombia'</code> con saldo estrictamente superior a <code>20.0</code> (<code>c.saldo_cuenta > 20.0</code>). Ordena el resultado por <code>saldo_disponible DESC</code>.",
+      "descripcion": "<p class=\"challenge-goal\">Construye una consulta sobre la tabla de clientes aplicando alias explícitos y condiciones lógicas compuestas:</p><ul class=\"challenge-req-list\"><li><strong>Origen de datos:</strong> Tabla <code>clientes</code> con el alias de tabla <code>c</code> (<code>FROM clientes AS c</code>).</li><li><strong>Columnas proyectadas:</strong> <code>c.nombre AS titular</code>, <code>c.apellido</code> y <code>c.saldo_cuenta AS saldo_disponible</code>.</li><li><strong>Filtros obligatorios:</strong> Clientes activos (<code>c.activo = 1</code>), de país <code>'México'</code> o <code>'Colombia'</code>, con saldo estrictamente superior a <code>20.0</code> (<code>c.saldo_cuenta > 20.0</code>).</li><li><strong>Ordenamiento:</strong> Ordena de forma descendente por <code>saldo_disponible DESC</code>.</li></ul>",
       "queryEsperada": "SELECT c.nombre AS titular, c.apellido, c.saldo_cuenta AS saldo_disponible FROM clientes AS c WHERE c.activo = 1 AND (c.pais = 'México' OR c.pais = 'Colombia') AND c.saldo_cuenta > 20.0 ORDER BY saldo_disponible DESC;",
       "puntos": 15
     },
     {
       "id": "p2",
       "titulo": "Reto Práctico 2: Filtro de Precios y Stock sin PlayStation 4",
-      "descripcion": "Muestra el <strong>titulo</strong>, <strong>consola</strong>, <strong>precio</strong> y <strong>stock</strong> de los videojuegos cuyo precio esté entre <code>15.0</code> y <code>65.0</code> (usando <code>BETWEEN</code>), cuya consola sea diferente a <code>'PlayStation 4'</code> (<code>consola <> 'PlayStation 4'</code>) y que cuenten con existencias (<code>stock > 0</code>). Ordena por <strong>precio</strong> descendente y limita la consulta a los <strong>4</strong> títulos más caros.",
+      "descripcion": "<p class=\"challenge-goal\">Filtra el catálogo de videojuegos combinando operadores de rango, exclusión de plataforma y existencias:</p><ul class=\"challenge-req-list\"><li><strong>Columnas proyectadas:</strong> <code>titulo</code>, <code>consola</code>, <code>precio</code> y <code>stock</code>.</li><li><strong>Rango de precios:</strong> Precio entre <code>15.0</code> y <code>65.0</code> (usando <code>BETWEEN</code>).</li><li><strong>Exclusión de consola:</strong> Consola diferente a <code>'PlayStation 4'</code> (<code>consola <> 'PlayStation 4'</code>).</li><li><strong>Stock y límite:</strong> Con inventario disponible (<code>stock > 0</code>), ordenado por <code>precio DESC</code> y limitado a los <code>4</code> títulos más costosos.</li></ul>",
       "queryEsperada": "SELECT titulo, consola, precio, stock FROM videojuegos WHERE precio BETWEEN 15.0 AND 65.0 AND consola <> 'PlayStation 4' AND stock > 0 ORDER BY precio DESC LIMIT 4;",
       "puntos": 15
     },
     {
       "id": "p3",
       "titulo": "Reto Práctico 3: Búsqueda de Género con Exclusión de Desarrollador",
-      "descripcion": "Consulta el <strong>titulo</strong>, <strong>genero</strong> y <strong>desarrollador</strong> de todos los videojuegos cuyo género contenga la palabra <code>'Acción'</code> (usando <code>LIKE '%Acción%'</code>), pero cuyo desarrollador no comience con <code>'Rockstar'</code> (usando <code>NOT LIKE 'Rockstar%'</code>). Ordena los resultados alfabéticamente por <strong>titulo</strong> de forma ascendente.",
+      "descripcion": "<p class=\"challenge-goal\">Ejecuta una búsqueda con comodines textuales para incluir un género y excluir un desarrollador específico:</p><ul class=\"challenge-req-list\"><li><strong>Columnas proyectadas:</strong> <code>titulo</code>, <code>genero</code> y <code>desarrollador</code>.</li><li><strong>Búsqueda por género:</strong> Títulos cuyo género contenga la palabra <code>'Acción'</code> (usando <code>LIKE '%Acción%'</code>).</li><li><strong>Exclusión por desarrollador:</strong> Desarrolladores que no comiencen con <code>'Rockstar'</code> (usando <code>NOT LIKE 'Rockstar%'</code>).</li><li><strong>Ordenamiento:</strong> Alfabético ascendente por <code>titulo ASC</code>.</li></ul>",
       "queryEsperada": "SELECT titulo, genero, desarrollador FROM videojuegos WHERE genero LIKE '%Acción%' AND desarrollador NOT LIKE 'Rockstar%' ORDER BY titulo ASC;",
       "puntos": 15
     },
     {
       "id": "p4",
       "titulo": "Reto Práctico 4: Paginación y Categorización de Precios con CASE",
-      "descripcion": "Genera una consulta sobre videojuegos para <code>'PC'</code> o <code>'Nintendo Switch'</code> (usando <code>IN</code>) que proyecte el <strong>titulo</strong>, <strong>precio</strong> y una columna calculada llamada <code>clasificacion_precio</code> mediante <code>CASE</code>: si el precio es menor a <code>20.0</code> devolverá <code>'Económico'</code>, si está entre <code>20.0</code> y <code>50.0</code> (inclusive) devolverá <code>'Medio'</code>, y en cualquier otro caso devolverá <code>'Alto'</code>. Ordena por <strong>precio</strong> descendente y aplica paginación para obtener únicamente los <strong>5</strong> registros de la segunda página (saltando 5 con <code>OFFSET</code>).",
+      "descripcion": "<p class=\"challenge-goal\">Crea una consulta con expresión condicional CASE y paginación con salto de registros:</p><ul class=\"challenge-req-list\"><li><strong>Filtro de consolas:</strong> Videojuegos para <code>'PC'</code> o <code>'Nintendo Switch'</code> (usando <code>IN</code>).</li><li><strong>Expresión CASE:</strong> Columna calculada con alias <code>clasificacion_precio</code> evaluando:<br>• Si <code>precio < 20.0</code> devolverá <code>'Económico'</code><br>• Si <code>precio BETWEEN 20.0 AND 50.0</code> devolverá <code>'Medio'</code><br>• En cualquier otro caso devolverá <code>'Alto'</code></li><li><strong>Paginación:</strong> Ordena por <code>precio DESC</code> y obtén los <code>5</code> registros de la segunda página (usando <code>LIMIT 5 OFFSET 5</code>).</li></ul>",
       "queryEsperada": "SELECT titulo, precio, CASE WHEN precio < 20.0 THEN 'Económico' WHEN precio BETWEEN 20.0 AND 50.0 THEN 'Medio' ELSE 'Alto' END AS clasificacion_precio FROM videojuegos WHERE consola IN ('PC', 'Nintendo Switch') ORDER BY precio DESC LIMIT 5 OFFSET 5;",
       "puntos": 15
     }
@@ -2827,7 +2826,7 @@ const EXAMEN_SECCION_2 = {
     {
       "id": "s2_p1",
       "titulo": "Reto Práctico 1: Reporte Financiero de Ventas con Triple INNER JOIN",
-      "descripcion": "Combina <code>clientes AS c</code>, <code>ventas AS vt</code> y <code>videojuegos AS v</code> mediante <code>INNER JOIN</code>. Proyecta el <strong>nombre</strong> y <strong>apellido</strong> del cliente, el <strong>titulo</strong> del juego, la <strong>fecha_venta</strong> y el cálculo <code>ROUND(vt.cantidad * vt.precio_unitario, 2) AS total_linea</code>. Ordena por <strong>fecha_venta DESC</strong> y limita a las primeras <strong>5</strong> transacciones.",
+      "descripcion": "<p class=\"challenge-goal\">Genera un reporte de ventas combinando tres tablas relacionales mediante INNER JOIN y calculando el subtotal financiero:</p><ul class=\"challenge-req-list\"><li><strong>Tablas de origen:</strong> Combina <code>clientes AS c</code> con <code>ventas AS vt</code> (en <code>c.id = vt.cliente_id</code>) y <code>ventas AS vt</code> con <code>videojuegos AS v</code> (en <code>vt.videojuego_id = v.id</code>).</li><li><strong>Columnas proyectadas:</strong> <code>c.nombre</code>, <code>c.apellido</code>, <code>v.titulo</code>, <code>vt.fecha_venta</code> y el cálculo redondeado <code>ROUND(vt.cantidad * vt.precio_unitario, 2) AS total_linea</code>.</li><li><strong>Ordenamiento y límite:</strong> Ordena de forma descendente por <code>vt.fecha_venta DESC</code> y limita el resultado a las primeras <code>5</code> transacciones.</li></ul>",
       "queryEsperada": "SELECT c.nombre, c.apellido, v.titulo, vt.fecha_venta, ROUND(vt.cantidad * vt.precio_unitario, 2) AS total_linea FROM clientes AS c INNER JOIN ventas AS vt ON c.id = vt.cliente_id INNER JOIN videojuegos AS v ON vt.videojuego_id = v.id ORDER BY vt.fecha_venta DESC LIMIT 5;",
       "pistas": [
         "Une c con vt por c.id = vt.cliente_id y vt con v por vt.videojuego_id = v.id.",
@@ -2839,10 +2838,10 @@ const EXAMEN_SECCION_2 = {
     {
       "id": "s2_p2",
       "titulo": "Reto Práctico 2: Auditoría de Clientes sin Compras con LEFT JOIN e IS NULL",
-      "descripcion": "Realiza un <code>LEFT JOIN</code> entre <code>clientes AS c</code> y <code>ventas AS vt</code> para aislar a los clientes que <strong>no tienen ninguna compra</strong> en el sistema (<code>WHERE vt.id IS NULL</code>). Proyecta <strong>c.id</strong>, <strong>c.nombre</strong>, <strong>c.apellido</strong>, <strong>c.email</strong> y <strong>c.saldo_cuenta</strong>. Ordena por <strong>c.id ASC</strong>.",
+      "descripcion": "<p class=\"challenge-goal\">Identifica a los clientes inactivos sin transacciones registradas usando una exclusión con LEFT JOIN:</p><ul class=\"challenge-req-list\"><li><strong>Origen de datos:</strong> Une <code>clientes AS c</code> con <code>ventas AS vt</code> mediante <code>LEFT JOIN</code> sobre <code>c.id = vt.cliente_id</code>.</li><li><strong>Filtro de exclusión:</strong> Conserva exclusivamente los clientes sin compras registradas (<code>WHERE vt.id IS NULL</code>).</li><li><strong>Columnas proyectadas:</strong> <code>c.id</code>, <code>c.nombre</code>, <code>c.apellido</code>, <code>c.email</code> y <code>c.saldo_cuenta</code>.</li><li><strong>Ordenamiento:</strong> Ordena ascendentemente por identificador de cliente (<code>c.id ASC</code>).</li></ul>",
       "queryEsperada": "SELECT c.id, c.nombre, c.apellido, c.email, c.saldo_cuenta FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id WHERE vt.id IS NULL ORDER BY c.id ASC;",
       "pistas": [
-        "FROM clientes AS c LEFT JOIN ventas AS vt ON c.id = vt.cliente_id",
+        "Aplica LEFT JOIN desde clientes hacia ventas para preservar a la totalidad de los usuarios.",
         "Filtra WHERE vt.id IS NULL.",
         "Ordena por c.id ASC."
       ],
@@ -2851,10 +2850,10 @@ const EXAMEN_SECCION_2 = {
     {
       "id": "s2_p3",
       "titulo": "Reto Práctico 3: Cobertura de Catálogo con RIGHT JOIN y COALESCE",
-      "descripcion": "Une <code>ventas AS vt</code> hacia <code>videojuegos AS v</code> mediante <code>RIGHT JOIN</code> (<code>vt.videojuego_id = v.id</code>) para identificar los títulos que <strong>no registran ventas</strong> (<code>WHERE vt.id IS NULL</code>). Proyecta el <strong>titulo</strong>, la <strong>consola</strong>, el <strong>precio</strong> y <code>COALESCE(vt.id, 'Sin Ventas') AS codigo_venta</code>. Ordena por <strong>precio DESC</strong>.",
+      "descripcion": "<p class=\"challenge-goal\">Audita el catálogo de productos identificando títulos sin ventas registradas mediante RIGHT JOIN y sustitución de nulos:</p><ul class=\"challenge-req-list\"><li><strong>Origen de datos:</strong> Une <code>ventas AS vt</code> con <code>videojuegos AS v</code> mediante <code>RIGHT JOIN</code> sobre <code>vt.videojuego_id = v.id</code>.</li><li><strong>Filtro de exclusión:</strong> Filtra únicamente los videojuegos que carecen de ventas (<code>WHERE vt.id IS NULL</code>).</li><li><strong>Columnas proyectadas:</strong> <code>v.titulo</code>, <code>v.consola</code>, <code>v.precio</code> y el identificador formateado <code>COALESCE(vt.id, 'Sin Ventas') AS codigo_venta</code>.</li><li><strong>Ordenamiento:</strong> Ordena de forma descendente por <code>v.precio DESC</code>.</li></ul>",
       "queryEsperada": "SELECT v.titulo, v.consola, v.precio, COALESCE(vt.id, 'Sin Ventas') AS codigo_venta FROM ventas AS vt RIGHT JOIN videojuegos AS v ON vt.videojuego_id = v.id WHERE vt.id IS NULL ORDER BY v.precio DESC;",
       "pistas": [
-        "FROM ventas AS vt RIGHT JOIN videojuegos AS v ON vt.videojuego_id = v.id",
+        "Utiliza RIGHT JOIN para garantizar que todos los títulos del catálogo se muestren.",
         "WHERE vt.id IS NULL.",
         "Usa COALESCE(vt.id, 'Sin Ventas') AS codigo_venta y ORDER BY v.precio DESC."
       ],
@@ -2863,10 +2862,10 @@ const EXAMEN_SECCION_2 = {
     {
       "id": "s2_p4",
       "titulo": "Reto Práctico 4: Conciliación Bilateral con FULL OUTER JOIN y Normalización",
-      "descripcion": "Realiza un <code>FULL OUTER JOIN</code> entre <code>clientes AS c</code> y <code>ventas AS vt</code> sobre <code>c.id = vt.cliente_id</code>. Filtra únicamente las discrepancias de ambos lados (<code>WHERE c.id IS NULL OR vt.id IS NULL</code>). Proyecta <code>COALESCE(c.nombre, 'Sin Cliente Registrado') AS titular_cliente</code>, <strong>vt.id AS venta_id</strong> y <code>COALESCE(vt.metodo_pago, 'Sin Transacción') AS pasarela_pago</code>.",
+      "descripcion": "<p class=\"challenge-goal\">Ejecuta una conciliación bilateral identificando registros desalineados en ambas tablas mediante FULL OUTER JOIN:</p><ul class=\"challenge-req-list\"><li><strong>Origen de datos:</strong> Une <code>clientes AS c</code> con <code>ventas AS vt</code> mediante <code>FULL OUTER JOIN</code> sobre <code>c.id = vt.cliente_id</code>.</li><li><strong>Filtro de discrepancias:</strong> Conserva únicamente registros huérfanos de cualquier extremo (<code>WHERE c.id IS NULL OR vt.id IS NULL</code>).</li><li><strong>Columnas proyectadas:</strong> <code>COALESCE(c.nombre, 'Sin Cliente Registrado') AS titular_cliente</code>, <code>vt.id AS venta_id</code> y <code>COALESCE(vt.metodo_pago, 'Sin Transacción') AS pasarela_pago</code>.</li></ul>",
       "queryEsperada": "SELECT COALESCE(c.nombre, 'Sin Cliente Registrado') AS titular_cliente, vt.id AS venta_id, COALESCE(vt.metodo_pago, 'Sin Transacción') AS pasarela_pago FROM clientes AS c FULL OUTER JOIN ventas AS vt ON c.id = vt.cliente_id WHERE c.id IS NULL OR vt.id IS NULL;",
       "pistas": [
-        "FROM clientes AS c FULL OUTER JOIN ventas AS vt ON c.id = vt.cliente_id",
+        "El FULL OUTER JOIN efectúa una unión bilateral que retiene filas no emparejadas de ambos extremos.",
         "Filtra WHERE c.id IS NULL OR vt.id IS NULL.",
         "Aplica COALESCE tanto a c.nombre como a vt.metodo_pago."
       ],

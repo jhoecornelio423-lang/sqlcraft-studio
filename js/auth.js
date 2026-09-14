@@ -363,7 +363,18 @@ function configurarFormulariosAuth() {
   const btnLogout = document.getElementById("btn-logout");
   if (btnLogout) {
     btnLogout.addEventListener("click", async () => {
-      if (confirm("¿Seguro que deseas cerrar sesión? Tu progreso en la nube ya está a salvo.")) {
+      const confirmado = typeof window.mostrarConfirmacion === "function"
+        ? await window.mostrarConfirmacion({
+            titulo: "¿Cerrar sesión?",
+            mensaje: "Tu progreso sincronizado en la nube ya está a salvo. Puedes volver a iniciar sesión cuando lo desees.",
+            badge: "Cerrar Sesión",
+            tipo: "info",
+            textoConfirmar: "Cerrar Sesión",
+            textoCancelar: "Permanecer"
+          })
+        : confirm("¿Seguro que deseas cerrar sesión? Tu progreso en la nube ya está a salvo.");
+
+      if (confirmado) {
         if (supabaseClient) {
           await supabaseClient.auth.signOut();
         }
