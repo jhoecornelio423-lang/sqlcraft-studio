@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npx -y serve -p 5173 .",
     "start": "python -m http.server 5173",
-    "build": "powershell -Command \"Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist; New-Item -ItemType Directory -Path dist | Out-Null; Copy-Item index.html dist/; Copy-Item tienda.db dist/; Copy-Item -Recurse components dist/; Copy-Item -Recurse css dist/; Copy-Item -Recurse js dist/\"",
+    "build": "powershell -Command \"Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist; New-Item -ItemType Directory -Path dist | Out-Null; Copy-Item index.html dist/; Copy-Item _headers dist/ -ErrorAction SilentlyContinue; Copy-Item tienda.db dist/; Copy-Item -Recurse components dist/; Copy-Item -Recurse css dist/; Copy-Item -Recurse js dist/\"",
     "deploy": "npm run build && wrangler pages deploy dist --project-name sqlcraft-studio --branch main",
     "preview": "wrangler dev"
   },

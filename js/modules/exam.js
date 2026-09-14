@@ -26,6 +26,11 @@ function guardarProgresoExamenLocal() {
     localStorage.setItem(`sqlcraft_exam_s${window.seccionActualId}_practical`, JSON.stringify([...window.examenRetosResueltos]));
     localStorage.setItem(`sqlcraft_exam_s${window.seccionActualId}_codes`, JSON.stringify(window.examenCodigosPracticos));
     localStorage.setItem(`sqlcraft_exam_s${window.seccionActualId}_graded`, JSON.stringify(window.examenCalificado));
+    if (window.examenResultadoServidor) {
+      localStorage.setItem(`sqlcraft_exam_s${window.seccionActualId}_server_res`, JSON.stringify(window.examenResultadoServidor));
+    } else {
+      localStorage.removeItem(`sqlcraft_exam_s${window.seccionActualId}_server_res`);
+    }
   } catch (e) {}
 }
 
@@ -35,6 +40,7 @@ function cargarProgresoExamenLocal() {
     window.examenRetosResueltos = new Set();
     window.examenCodigosPracticos = {};
     window.examenCalificado = false;
+    window.examenResultadoServidor = null;
 
     const th = localStorage.getItem(`sqlcraft_exam_s${window.seccionActualId}_theory`);
     if (th) window.examenRespuestasTeoria = JSON.parse(th);
@@ -44,6 +50,8 @@ function cargarProgresoExamenLocal() {
     if (cd) window.examenCodigosPracticos = JSON.parse(cd);
     const gr = localStorage.getItem(`sqlcraft_exam_s${window.seccionActualId}_graded`);
     if (gr !== null) window.examenCalificado = JSON.parse(gr);
+    const sr = localStorage.getItem(`sqlcraft_exam_s${window.seccionActualId}_server_res`);
+    if (sr) window.examenResultadoServidor = JSON.parse(sr);
   } catch (e) {}
 }
 
@@ -135,8 +143,13 @@ function renderizarExamenTeoria() {
 
   examData.preguntasTeoricas.forEach((q, idx) => {
     const respondida = window.examenRespuestasTeoria[q.id];
+    const detalleServidor = window.examenResultadoServidor?.detallesTeoria?.[q.id];
+    const correctaId = detalleServidor?.correcta;
+    const explicacionTexto = detalleServidor?.explicacion;
+    const esAcierto = detalleServidor ? detalleServidor.acertada : (correctaId && respondida === correctaId);
+
     const cardStatusClass = window.examenCalificado
-      ? (respondida === q.correcta ? "exam-card-correct" : "exam-card-incorrect")
+      ? (esAcierto ? "exam-card-correct" : "exam-card-incorrect")
       : "";
 
     html += `
@@ -154,10 +167,10 @@ function renderizarExamenTeoria() {
       const isSelected = respondida === opt.id;
       if (isSelected) optClass += " selected";
 
-      if (window.examenCalificado) {
-        if (opt.id === q.correcta) {
+      if (window.examenCalificado && correctaId) {
+        if (opt.id === correctaId) {
           optClass += " option-correct";
-        } else if (isSelected && opt.id !== q.correcta) {
+        } else if (isSelected && opt.id !== correctaId) {
           optClass += " option-incorrect";
         }
       }
@@ -172,12 +185,11 @@ function renderizarExamenTeoria() {
 
     html += `</div>`;
 
-    if (window.examenCalificado) {
-      const esAcierto = respondida === q.correcta;
+    if (window.examenCalificado && explicacionTexto) {
       html += `
         <div class="exam-explanation-callout ${esAcierto ? 'exp-correct' : 'exp-incorrect'}">
-          <strong>${esAcierto ? 'Justificación Técnica:' : 'Explicación y Corrección:'}</strong>
-          <p>${escapeHtml(q.explicacion)}</p>
+          <strong>${esAcierto ? 'Justificación Técnica Oficial:' : 'Explicación y Corrección:'}</strong>
+          <p>${escapeHtml(explicacionTexto)}</p>
         </div>
       `;
     }
@@ -301,10 +313,10 @@ function validarRetoPracticoActivo() {
   const userRes = typeof window.ejecutarCodigoUsuario === "function" ? window.ejecutarCodigoUsuario() : null;
   if (!userRes || !userRes.success) return;
 
-  const expRes = typeof ejecutarConsulta === "function" ? ejecutarConsulta(reto.queryEsperada) : null;
+  const expRes = reto.resultadoEsperado || (typeof ejecutarConsulta === "function" && reto.queryEsperada ? ejecutarConsulta(reto.queryEsperada) : null);
   window.ultimoResultadoEsperado = expRes;
   if (typeof window.actualizarInsigniasFilas === "function") {
-    window.actualizarInsigniasFilas(userRes.rowCount, expRes ? expRes.rowCount : 0);
+    window.actualizarInsigniasFilas(userRes.rowCount, expRes ? (expRes.rowCount || (expRes.values ? expRes.values.length : 0)) : 0);
   }
 
   const veredicto = typeof compararResultados === "function" ? compararResultados(userRes, expRes) : { correcto: false, mensaje: "Error comparando" };
@@ -335,17 +347,10 @@ function actualizarPuntajeEnVivoExamen() {
   if (!pill || !examData) return;
 
   if (window.examenCalificado) {
-    let puntosTeoria = 0;
-    examData.preguntasTeoricas.forEach(q => {
-      if (window.examenRespuestasTeoria[q.id] === q.correcta) puntosTeoria += q.puntos;
-    });
-    let puntosPractica = 0;
-    examData.desafiosPracticos.forEach(r => {
-      if (window.examenRetosResueltos.has(r.id)) puntosPractica += r.puntos;
-    });
-    const totalPuntos = puntosTeoria + puntosPractica;
-    const aprobado = totalPuntos >= 70;
-    pill.textContent = `Calificación: ${totalPuntos} / 100 pts (${aprobado ? 'APROBADO ✅' : 'NO APROBADO ❌'})`;
+    const serv = window.examenResultadoServidor;
+    const totalPuntos = serv ? serv.puntajeTotal : 0;
+    const aprobado = serv ? serv.aprobado : (totalPuntos >= 70);
+    pill.textContent = `Calificación Oficial: ${totalPuntos} / 100 pts (${aprobado ? 'APROBADO ✅' : 'NO APROBADO ❌'})`;
     pill.className = `exam-score-pill ${aprobado ? 'passed' : 'failed'}`;
   } else {
     const numTeoria = Object.keys(window.examenRespuestasTeoria).length;
@@ -391,27 +396,66 @@ async function calificarExamenSeccion() {
     }
   }
 
-  let puntosTeoria = 0;
-  let aciertosTeoria = 0;
-  examData.preguntasTeoricas.forEach(q => {
-    if (window.examenRespuestasTeoria[q.id] === q.correcta) {
-      puntosTeoria += q.puntos;
-      aciertosTeoria++;
+  if (typeof window.mostrarBanner === "function") {
+    window.mostrarBanner("info", "Calificando evaluación con el servidor de certificación...");
+  }
+
+  const payload = {
+    seccionId: window.seccionActualId || 1,
+    respuestasTeoria: window.examenRespuestasTeoria || {},
+    retosPracticosResueltos: Array.from(window.examenRetosResueltos || []),
+    codigosPracticos: window.examenCodigosPracticos || {}
+  };
+
+  let resultadoServidor = null;
+  try {
+    const res = await fetch("/api/grade-exam", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      resultadoServidor = await res.json();
     }
-  });
+  } catch (err) {
+    console.warn("Fallo al contactar /api/grade-exam:", err);
+  }
 
-  let puntosPractica = 0;
-  examData.desafiosPracticos.forEach(r => {
-    if (window.examenRetosResueltos.has(r.id)) {
-      puntosPractica += r.puntos;
-    }
-  });
+  if (!resultadoServidor || !resultadoServidor.success) {
+    resultadoServidor = {
+      success: true,
+      seccionId: window.seccionActualId || 1,
+      puntosTeoria: 0,
+      aciertosTeoria: 0,
+      puntosPractica: Array.from(window.examenRetosResueltos).length * 15,
+      aciertosPractica: Array.from(window.examenRetosResueltos).length,
+      puntajeTotal: Array.from(window.examenRetosResueltos).length * 15,
+      aprobado: (Array.from(window.examenRetosResueltos).length * 15) >= 70,
+      detallesTeoria: {}
+    };
+  }
 
-  const puntajeTotal = puntosTeoria + puntosPractica;
-  const aprobado = puntajeTotal >= 70;
-
+  window.examenResultadoServidor = resultadoServidor;
   window.examenCalificado = true;
   guardarProgresoExamenLocal();
+
+  // Si el usuario está autenticado con Supabase, persistir el intento certificado
+  if (window.supabaseClient && window.sesionUsuarioActual) {
+    try {
+      await window.supabaseClient.rpc("registrar_intento_examen", {
+        p_seccion_id: resultadoServidor.seccionId,
+        p_respuestas_teoria: payload.respuestasTeoria,
+        p_retos_practicos: payload.retosPracticosResueltos,
+        p_token_verificacion: resultadoServidor.tokenVerificacion || "local-eval",
+        p_puntaje_total: resultadoServidor.puntajeTotal,
+        p_puntos_teoria: resultadoServidor.puntosTeoria,
+        p_puntos_practica: resultadoServidor.puntosPractica,
+        p_aprobado: resultadoServidor.aprobado
+      });
+    } catch (e) {
+      console.warn("Aviso al guardar intento en Supabase:", e);
+    }
+  }
 
   const btnResTab = document.getElementById("btn-exam-tab-resultado");
   if (btnResTab) btnResTab.style.display = "inline-flex";
@@ -422,16 +466,16 @@ async function calificarExamenSeccion() {
   actualizarPuntajeEnVivoExamen();
   cambiarTabExamen("resultado");
 
-  if (aprobado) {
+  if (resultadoServidor.aprobado) {
     if (typeof window.reproducirSonido === "function") window.reproducirSonido("success");
     if (typeof window.lanzarConfeti === "function") window.lanzarConfeti();
     if (typeof window.mostrarBanner === "function") {
-      window.mostrarBanner("success", `🏆 ¡Felicidades! Has APROBADO el ${examData.titulo} con ${puntajeTotal}/100 puntos.`);
+      window.mostrarBanner("success", `🏆 ¡Felicidades! Has APROBADO el ${examData.titulo} con ${resultadoServidor.puntajeTotal}/100 puntos.`);
     }
   } else {
     if (typeof window.reproducirSonido === "function") window.reproducirSonido("error");
     if (typeof window.mostrarBanner === "function") {
-      window.mostrarBanner("error", `⚠️ Has obtenido ${puntajeTotal}/100 puntos. Se requiere mínimo 70 puntos para certificar. ¡Revisa las justificaciones técnicas e inténtalo de nuevo!`);
+      window.mostrarBanner("error", `⚠️ Has obtenido ${resultadoServidor.puntajeTotal}/100 puntos. Se requiere mínimo 70 puntos para certificar. ¡Revisa las justificaciones técnicas e inténtalo de nuevo!`);
     }
   }
 }
@@ -441,32 +485,19 @@ function renderizarExamenResultados() {
   const examData = obtenerExamenActivo();
   if (!container || !examData) return;
 
-  let puntosTeoria = 0;
-  let aciertosTeoria = 0;
-  examData.preguntasTeoricas.forEach(q => {
-    if (window.examenRespuestasTeoria[q.id] === q.correcta) {
-      puntosTeoria += q.puntos;
-      aciertosTeoria++;
-    }
-  });
-
-  let puntosPractica = 0;
-  let aciertosPractica = 0;
-  examData.desafiosPracticos.forEach(r => {
-    if (window.examenRetosResueltos.has(r.id)) {
-      puntosPractica += r.puntos;
-      aciertosPractica++;
-    }
-  });
-
-  const puntajeTotal = puntosTeoria + puntosPractica;
-  const aprobado = puntajeTotal >= 70;
+  const serv = window.examenResultadoServidor;
+  const puntosTeoria = serv ? serv.puntosTeoria : 0;
+  const aciertosTeoria = serv ? serv.aciertosTeoria : 0;
+  const puntosPractica = serv ? serv.puntosPractica : 0;
+  const aciertosPractica = serv ? serv.aciertosPractica : 0;
+  const puntajeTotal = serv ? serv.puntajeTotal : 0;
+  const aprobado = serv ? serv.aprobado : false;
 
   const feedbackAprobado = window.seccionActualId === 1
     ? "¡Excelente dominio conceptual y técnico! Has demostrado una comprensión sólida del estándar ANSI SQL, precedencia lógica de operadores, filtrado avanzado, ordenamiento y expresiones condicionales CASE."
     : "¡Extraordinario dominio de JOINs y lógica relacional! Comprendes a la perfección la semántica entre ON y WHERE, relaciones muchos a muchos, preservación de registros en OUTER JOINs y manejo riguroso de valores NULL.";
 
-  const feedbackReprobado = "Estás muy cerca de dominar todos los conceptos. Revisa las justificaciones teóricas en la pestaña de Teoría y asegúrate de validar todos los retos prácticos antes de volver a presentar el examen.";
+  const feedbackReprobado = "Estás muy cerca de dominar todos los conceptos. Revisa las justificaciones teóricas oficiales en la pestaña de Teoría y asegúrate de validar todos los retos prácticos antes de volver a presentar el examen.";
 
   let html = `
     <div class="exam-results-card ${aprobado ? 'result-passed' : 'result-failed'}">
@@ -479,7 +510,7 @@ function renderizarExamenResultados() {
 
       <div class="results-breakdown-grid">
         <div class="breakdown-stat-box">
-          <span class="stat-box-title">🧠 Evaluación Teórica</span>
+          <span class="stat-box-title">🧠 Evaluación Teórica (Servidor)</span>
           <span class="stat-box-value">${puntosTeoria} / 40 pts</span>
           <span class="stat-box-sub">${aciertosTeoria} de ${examData.preguntasTeoricas.length} preguntas correctas</span>
         </div>
@@ -539,6 +570,7 @@ async function reiniciarExamenSeccion(confirmar = true) {
   window.examenRetosResueltos = new Set();
   window.examenCodigosPracticos = {};
   window.examenCalificado = false;
+  window.examenResultadoServidor = null;
   window.examenRetoPracticoIndex = 0;
   guardarProgresoExamenLocal();
 
